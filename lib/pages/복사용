@@ -1,0 +1,51 @@
+ListTile(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            "/chatting",
+                            arguments: {
+                              "data": contracts.chatListItem[idx].senderIdx,
+                              'owner': contracts.chatListItem[idx].receiverName,
+                              'contract': contracts.chatListItem[idx]
+                            },
+                          );
+                        },
+                        leading: Container(
+                          width: 48.w,
+                          height: 48.h,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Color(0xffDDDDDD)),
+                              borderRadius: BorderRadius.circular(15.0)),
+                          child: Image.network(
+                            "http://ssangu.oig.kr:8080/resources?path=${contracts.chatListItem[idx].productFiles[0].path}",
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        title: Text(
+                          // TMPDATA[idx]["title"],
+                          contracts.chatListItem[idx].productTitle,
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xff333333),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: CustomText(
+                          text: contracts.chatListItem[idx].receiverName,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w500,
+                          textColor: Color(0xff999999),
+                        ),
+                        trailing: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            // CustomText(
+                            //   text:
+                            //   contracts.contracts[idx].createdDate.split("T")[0],
+                            //   fontSize: 12.sp,
+                            //   textColor: Color(0xff999999),
+                            // ),
+                          ],
+                        ),
+                      );
