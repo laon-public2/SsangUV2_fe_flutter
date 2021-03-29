@@ -65,6 +65,7 @@ class ProductProvider extends ChangeNotifier {
   Paging chatListCounter;
   List<ChatListModel> rentListItem = [];
   Paging rentListCounter;
+  String productStart;
 
   String firstAddress = '기본 주소로 사용함';
   String secondAddress = '기타 주소 설정';
@@ -582,7 +583,7 @@ class ProductProvider extends ChangeNotifier {
 
   latestProduct(String idx, Product product, BuildContext context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    List<String> idxList = pref.getStringList("idxs");
+    List<String> idxList = pref.getStringList("idx");
     if (idxList == null) idxList = List<String>();
 
     if (idxList.contains(idx)) {
@@ -713,13 +714,13 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void categoryWant(
-      String category, int page, String type, num lati, num longti) async {
+      String category, int page, String type) async {
     if (page == 0) {
       this.categoryProductsWant = [];
     }
     print("카테고리 물품 로딩");
     final res = await productService.getCategoryProducts(
-        category, page, type, lati, longti);
+        category, page, type, la.toDouble(), lo.toDouble());
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap.toString());
     try {
@@ -742,10 +743,8 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getproductDetail(int productIdx, var lati, var longti) async {
+  Future<void> getproductDetail(int productIdx) async {
     print(productIdx);
-    print(lati);
-    print(longti);
     print("물품 상세정보 로딩");
     this.productDetail = null;
     final res = await productService.productDetail(productIdx, la, lo);
@@ -994,5 +993,20 @@ class ProductProvider extends ChangeNotifier {
     }catch(e){
       print(e);
     }
+  }
+
+  Future<String> rentInit(int senderIdx, int receiverIdx, int productIdx, String token) async {
+    print("대여문의 하기");
+    try{
+      print("${senderIdx}, ${receiverIdx}, ${productIdx}, ${token}");
+      final res = await productService.productInit(senderIdx, receiverIdx, productIdx, token);
+      Map<String, dynamic> jsonMap = json.decode(res.toString());
+      print(jsonMap);
+      this.productStart = jsonMap['data'];
+      return jsonMap['data'];
+    }catch(e){
+      print(e);
+    }
+    notifyListeners();
   }
 }

@@ -1,6 +1,7 @@
 class productDetailWant {
   int id;
   String title = "";
+  int receiverIdx;
   int price;
   int minPrice;
   int maxPrice;
@@ -22,6 +23,7 @@ class productDetailWant {
   productDetailWant.fromJson(Map<String, dynamic> json)
       : id = json["idx"],
         type = json["type"],
+        receiverIdx = json['receiver_idx'],
         name = json['name'],
         title = json["title"],
         price = json['price'],

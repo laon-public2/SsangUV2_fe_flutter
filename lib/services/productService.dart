@@ -290,6 +290,11 @@ class ProductService {
   Future<Response> getCategoryProducts(String category, int page, String type,
       double lati, double longti) async {
     try {
+      print(category);
+      print(page);
+      print(type);
+      print(lati);
+      print(longti);
       print("카테고리 접속");
       Response res = await dio.get(
         '/product/list',
@@ -613,6 +618,25 @@ class ProductService {
       );
       return res;
     }on DioError catch(e){
+      print(e.response.statusCode);
+      print(e.response.data.toString());
+    }
+  }
+
+  Future<Response> productInit(int senderIdx, int receiverIdx, int productIdx, String token) async {
+    print("대여 문의 하기 접속");
+    try{
+      dio.options.headers['x-access-token'] = token;
+      Response res = await dio.post(
+        '/product/init',
+        data: {
+          'sender' : senderIdx,
+          'receiver' : receiverIdx,
+          'productIdx' : productIdx,
+        }
+      );
+      return res;
+    }on DioError catch(e) {
       print(e.response.statusCode);
       print(e.response.data.toString());
     }

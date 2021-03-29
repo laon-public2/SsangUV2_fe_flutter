@@ -19,8 +19,13 @@ class MyActHistory extends StatefulWidget {
   _MyActHistoryState createState() => _MyActHistoryState();
 }
 
-class _MyActHistoryState extends State<MyActHistory> {
-  TextEditingController _searchWord = TextEditingController();
+class _MyActHistoryState extends State<MyActHistory> with SingleTickerProviderStateMixin{
+  TabController controller;
+
+  void initState() {
+    super.initState();
+    controller = new TabController(length: 11, vsync: this);
+  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -39,6 +44,7 @@ class _MyActHistoryState extends State<MyActHistory> {
         unselectedLabelColor: Color(0xff444444),
         labelColor: Color(0xffff0066),
         indicatorColor: Color(0xffff0066),
+        controller: controller,
         tabs: <Widget>[
           Tab(
             child: _CustomTabBarText('전체'),
@@ -130,6 +136,7 @@ class _MyActHistoryState extends State<MyActHistory> {
 
   Widget _body() {
     return TabBarView(
+      controller: controller,
       children: [
         Category0(),
         Category1(),

@@ -3,8 +3,9 @@ class StompSendDTO {
   String sender;
   String content;
   String type;
+  String createAt;
 
-  StompSendDTO({this.orderId, this.sender, this.content, this.type});
+  StompSendDTO({this.orderId, this.sender, this.content, this.type, this.createAt});
 
   Map<String, dynamic> toJson() => {
         'orderId': orderId,
@@ -17,5 +18,6 @@ class StompSendDTO {
       : orderId = json['orderId'],
         sender = json['sender'],
         content = json['content'],
-        type = json['type'];
+        type = json['type'],
+        createAt = json['createDate'];
 }

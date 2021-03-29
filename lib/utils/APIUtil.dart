@@ -1,21 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:share_product_v2/pages/errorpage.dart';
-import 'package:share_product_v2/pages/mypage/loginpage.dart';
-import 'package:share_product_v2/pages/mypage/loginpage_use_phone.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/loading.dart';
 
-// final String SERVER_ADDRESS = "ssangu.oig.kr";
-// final String SERVER_ADDRESS = "hong4383.r-e.kr";
-final String SERVER_ADDRESS = "115.91.73.66";
-// final String SERVER_ADDRESS = "192.168.35.83";
-// final String SERVER_ADDRESS = "192.168.100.232";
+// final String SERVER_ADDRESS = "ssangu.oig.kr"; 오리지널
+// final String SERVER_ADDRESS = "115.91.73.66"; 외부 서버
+final String SERVER_ADDRESS = "192.168.100.232";
+final String chat_address = "115.91.73.66";
 
-final String SERVERURL = "http://${SERVER_ADDRESS}:15000/api";
-final String CHATSERVERURL = "http://${SERVER_ADDRESS}:8090";
+final String SERVERURL = "http://${SERVER_ADDRESS}:5000/api";
+final String CHATSERVERURL = "http://${chat_address}:11111";
 final String AUTHSERVERURL = "http://${SERVER_ADDRESS}:15000/api";
 
 GlobalKey globalKey;
@@ -29,21 +23,27 @@ class ApiUtils {
     globalKey = new GlobalKey();
     dio = new Dio();
     dio.options.baseUrl = SERVERURL;
-    dio
-      ..interceptors.add(InterceptorsWrapper(
-          onRequest: (RequestOptions options) => requestInterceptor(options),
-          onResponse: (Response response) => responseInterceptor(response)));
+    // dio
+    //   ..interceptors.add(InterceptorsWrapper(
+    //       onRequest: (RequestOptions options) => requestInterceptor(options),
+    //       onResponse: (Response response) => responseInterceptor(response)));
     // onError: (DioError error) => errorInterceptor(error)));
   }
-
-  // void setToken(String token) {
-  //   print(token);
-  //   dio.options.headers['Authorization'] = "Bearer $token";
-  //   AuthUtils.instance.setToken(token);
-  //   ChatServerUtils.instance.setToken(token);
-  // }
-
   static ApiUtils instance = ApiUtils();
+}
+
+class ChatUtils {
+  Dio dio;
+  ChatUtils() {
+    globalKey = new GlobalKey();
+    dio = new Dio();
+    dio.options.baseUrl = CHATSERVERURL;
+    // dio
+    //   ..interceptors.add(InterceptorsWrapper(
+    //       onRequest: (RequestOptions options) => requestInterceptor(options),
+    //       onResponse: (Response response) => responseInterceptor(response)));
+  }
+  static ChatUtils instance = ChatUtils();
 }
 
 class AuthUtils {

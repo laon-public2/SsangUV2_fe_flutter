@@ -52,14 +52,6 @@ class _CategoryProductListState extends State<CategoryProductList> {
     setState(() {
       categoryIdx = args['categoryIdx'];
     });
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      String address = pref.getString("address") ?? "NONE";
-      latitude = double.parse(address.split(",")[0]);
-      longitude = double.parse(address.split(",")[1]);
-      geolocator = Geolocator();
-      print("$latitude, $longitude");
-    });
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -171,7 +163,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                           userType = "Want";
                         });
                         Provider.of<ProductProvider>(context, listen: false)
-                            .categoryWant(categoryIdx, page, userType, latitude, longitude);
+                            .categoryWant(categoryIdx, page, userType);
                       },
                       child: Text(
                         '빌려주세요',

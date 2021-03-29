@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
 import 'package:share_product_v2/providers/contractProvider.dart';
@@ -25,8 +28,8 @@ class Chatting extends StatelessWidget {
 
     return FutureBuilder(
       future: chatListLoad(),
-      builder: (context, snapshot){
-        if(snapshot.hasData == false){
+      builder: (context, snapshot) {
+        if (snapshot.hasData == false) {
           return Container(
             height: 300.h,
             child: Center(
@@ -35,7 +38,7 @@ class Chatting extends StatelessWidget {
               ),
             ),
           );
-        }else if(snapshot.hasError) {
+        } else if (snapshot.hasError) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
@@ -43,7 +46,7 @@ class Chatting extends StatelessWidget {
               style: TextStyle(fontSize: 15),
             ),
           );
-        }else{
+        } else {
           return Container(
             child: Consumer<ProductProvider>(
               builder: (_, contracts, __) {
@@ -51,18 +54,21 @@ class Chatting extends StatelessWidget {
                     shrinkWrap: false,
                     itemCount: contracts.chatListItem.length,
                     separatorBuilder: (context, idx) => Divider(
-                      color: Color(0xffdddddd),
-                    ),
+                          color: Color(0xffdddddd),
+                        ),
                     itemBuilder: (context, idx) {
-                      if(idx == contracts.chatListItem.length) {
-                        if(idx == contracts.chatListCounter.totalCount){
+                      if (idx == contracts.chatListItem.length) {
+                        if (idx == contracts.chatListCounter.totalCount) {
                           return Container();
-                        }else{
+                        } else {
                           page++;
-                          Provider.of<ProductProvider>(context, listen: false).chatList(
-                            Provider.of<UserProvider>(context, listen: false).userIdx,
+                          Provider.of<ProductProvider>(context, listen: false)
+                              .chatList(
+                            Provider.of<UserProvider>(context, listen: false)
+                                .userIdx,
                             page,
-                            Provider.of<UserProvider>(context, listen: false).accessToken,
+                            Provider.of<UserProvider>(context, listen: false)
+                                .accessToken,
                           );
                         }
                       }
@@ -70,26 +76,31 @@ class Chatting extends StatelessWidget {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) =>
-                                CustomerMessage(
-                                    contracts.chatListItem[idx].uuid,
-                                    contracts.chatListItem[idx].productIdx,
-                                    contracts.chatListItem[idx].productTitle,
-                                    contracts.chatListItem[idx].status,
-                                ),
-                            )
+                            PageTransition(
+                              child: CustomerMessage(
+                                contracts.chatListItem[idx].uuid,
+                                contracts.chatListItem[idx].productIdx,
+                                contracts.chatListItem[idx].productTitle,
+                                _category(
+                                    contracts.chatListItem[idx].categoryNum),
+                                contracts.chatListItem[idx].receiverName,
+                                contracts.chatListItem[idx].productPrice,
+                                contracts
+                                    .chatListItem[idx].productFiles[0].path,
+                              ),
+                              type: PageTransitionType.rightToLeft,
+                            ),
                           );
                         },
-                        leading: Container(
-                          width: 48.w,
-                          height: 48.h,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(color: Color(0xffDDDDDD)),
-                              borderRadius: BorderRadius.circular(15.0)),
-                          child: Image.network(
-                            "http://192.168.100.232:5066/assets/images/product/${contracts.chatListItem[idx].productFiles[0].path}",
-                            fit: BoxFit.cover,
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Container(
+                            width: 48.w,
+                            height: 48.h,
+                            child: Image.network(
+                              "http://192.168.100.232:5066/assets/images/product/${contracts.chatListItem[idx].productFiles[0].path}",
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         title: Text(
@@ -127,5 +138,39 @@ class Chatting extends StatelessWidget {
         }
       },
     );
+  }
+
+  _category(int categoryNum) {
+    if (categoryNum == 2) {
+      String value = '생활용품';
+      return value;
+    } else if (categoryNum == 3) {
+      String value = '스포츠/레저';
+      return value;
+    } else if (categoryNum == 4) {
+      String value = '육아';
+      return value;
+    } else if (categoryNum == 5) {
+      String value = '반려동물';
+      return value;
+    } else if (categoryNum == 6) {
+      String value = '가전제품';
+      return value;
+    } else if (categoryNum == 7) {
+      String value = '의류/잡화';
+      return value;
+    } else if (categoryNum == 8) {
+      String value = '가구/인테리어';
+      return value;
+    } else if (categoryNum == 9) {
+      String value = '자동차용품';
+      return value;
+    } else if (categoryNum == 10) {
+      String value = '기타';
+      return value;
+    } else {
+      String value = '여행';
+      return value;
+    }
   }
 }

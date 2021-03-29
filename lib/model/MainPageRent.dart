@@ -5,6 +5,7 @@ class MainPageRent {
   int category;
   String name;
   num distance;
+  int receiverIdx;
   List<ProductFile> productFiles;
   // String productFiles;
 
@@ -14,6 +15,7 @@ class MainPageRent {
         title = json["title"],
         price = json["price"],
         distance = json['distance'],
+        receiverIdx = json['receiver_idx'],
         category = json['category_idx'],
         productFiles = json['image'] != null
             ? (json['image'] as List)
@@ -27,6 +29,7 @@ class MainPageRent {
     'title': title,
     'price': price,
     'distance': distance,
+    'receiverIdx' : receiverIdx,
     'category' : category,
     'image': productFiles.isEmpty ? null : productFiles,
     // 'productFiles': productFiles

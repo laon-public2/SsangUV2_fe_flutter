@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/consts/textStyle.dart';
 import 'package:share_product_v2/pages/mypage/MyInfo.dart';
@@ -146,8 +147,9 @@ class MyInfoContainer extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => MyInfo(),
+          PageTransition(
+            child: MyInfo(),
+            type: PageTransitionType.rightToLeft,
           ),
         );
       },
@@ -179,7 +181,8 @@ class MyInfoContainer extends StatelessWidget {
                             fit: BoxFit.cover,
                           ),
                         )
-                      : SizedBox();
+                      : Icon(Icons.account_circle,
+                          color: Colors.grey, size: 50.0);
                 },
               ),
             ),

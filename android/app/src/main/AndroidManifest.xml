@@ -13,7 +13,10 @@
     <application
         android:name=".Application"
         android:label="쌩유 베타버전"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
         android:icon="@mipmap/ic_launcher">
+<!--        largeheap으로 버퍼 메모리 늘림 및 하드웨어 가속 거-->
 <!--        io.flutter.app.FlutterApplication 에서 Application으로 변경. 파이어베이스 오류남.-->
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_app_key"/>

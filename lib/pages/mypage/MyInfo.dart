@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import 'package:kopo/kopo.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/auth/changeAddress.dart';
+import 'package:share_product_v2/pages/mypage/MyPageModified.dart';
 import 'package:share_product_v2/providers/mapProvider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
@@ -27,13 +28,13 @@ class _MyInfo extends State<MyInfo> {
       centerTitle: true,
       title: Text(
         '내정보',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: Colors.black, fontSize: 17.sp),
       ),
       leading: IconButton(
         icon: Icon(
           Icons.arrow_back_ios,
           color: Colors.black,
-          size: 30.0,
+          size: 25.0.sp,
         ),
         onPressed: () => Navigator.pop(context),
       ),
@@ -102,39 +103,47 @@ class _MyInfo extends State<MyInfo> {
               SizedBox(height: 15),
               Divider(height: 1.0),
               SizedBox(height: 15),
-              ListTile(
-                title: Text(
-                  "사업자정보",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-                subtitle: InkWell(
-                  onTap: () {
-                    _showDialog("${myInfo.comIdentity}");
-                  },
-                  child: Text(
-                    myInfo.comNum,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Color(0xff666666),
-                    ),
-                  ),
-                ),
-                trailing: SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: IconButton(
-                    padding: new EdgeInsets.all(0.0),
-                    icon: Image.asset('assets/icon/write.png'),
-                    onPressed: () => null,
-                  ),
-                ),
-              ),
-              SizedBox(height: 15),
-              Divider(height: 1.0),
+              myInfo.comNum != null
+                  ? ListTile(
+                      title: Text(
+                        "사업자정보",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                      subtitle: InkWell(
+                        onTap: () {
+                          _showDialog("${myInfo.comIdentity}");
+                        },
+                        child: Text(
+                          myInfo.comNum,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Color(0xff666666),
+                          ),
+                        ),
+                      ),
+                      trailing: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: IconButton(
+                          padding: new EdgeInsets.all(0.0),
+                          icon: Image.asset('assets/icon/write.png'),
+                          onPressed: () => null,
+                        ),
+                      ),
+                    )
+                  : SizedBox(),
+              myInfo.comNum != null
+                  ? Column(
+                      children: [
+                        SizedBox(height: 15),
+                        Divider(height: 1.0),
+                      ],
+                    )
+                  : SizedBox(),
               ListTile(
                 title: Text(
                   "나의 주소 변경",
@@ -204,18 +213,45 @@ class _MyInfo extends State<MyInfo> {
                 ),
               ),
               Spacer(),
-              InkWell(
-                onTap: () {
-                  myInfo.DeleteUser(myInfo.phNum);
-                },
-                child: Center(
-                  child: Text(
-                    '회원탈퇴',
-                    style: TextStyle(
-                      color: Color(0xff9999999),
-                      fontSize: 15.sp,
+              Container(
+                padding: const EdgeInsets.only(right: 16, left: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    InkWell(
+                      onTap: () {
+                        myInfo.DeleteUser(myInfo.phNum);
+                      },
+                      child: Center(
+                        child: Text(
+                          '회원탈퇴',
+                          style: TextStyle(
+                            color: Color(0xffe40017),
+                            fontSize: 15.sp,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              MyPageModified()
+                          )
+                        );
+                      },
+                      child: Center(
+                        child: Text(
+                          '회원정보 수정',
+                          style: TextStyle(
+                            color: Color(0xff28527a),
+                            fontSize: 15.sp,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

@@ -48,8 +48,6 @@ final routes = {
   "/user/product": (context) => MyProductPage(),
   // "/withdraw" : (context) => WithdrawPage(),
   // "/loginPage": (context) => LoginPage(),
-  // //채팅
-  "/chatting": (context) => Chatting(),
   // //계약
   // "/contract": (context) => Contract(),
   // "/contract/form": (context) => ContractForm(),

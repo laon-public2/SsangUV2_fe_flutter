@@ -7,7 +7,7 @@ import 'package:share_product_v2/utils/APIUtil.dart';
 
 class ContractService {
   Dio dio = ApiUtils.instance.dio;
-  Dio chatDio = ApiUtils.instance.dio;
+  Dio chatDio = ChatUtils.instance.dio;
 
   Future<ApiResponse> contract(int productIdx) async {
     Response response =
@@ -27,14 +27,21 @@ class ContractService {
   }
 
   Future<Response> getChatHistory(String uuid, int page) async {
-    print(1);
     print("uuid : $uuid");
-    Response response =
-        await chatDio.get("/chat/history/$uuid", queryParameters: {
-      "page": page,
-    });
-
-    return response;
+    print("page : $page");
+    try {
+      Response response = await chatDio.get(
+        "/chat/list/$uuid",
+        queryParameters: {
+          "page": page,
+        },
+      );
+      return response;
+    } on DioError catch (e) {
+      print("챗 기록 접속 에러");
+      print(e.response.statusCode);
+      print(e.response.data.toString());
+    }
   }
 
   Future<Response> contractUUID(String uuid) async {

@@ -13,6 +13,8 @@ class RegUserProvider with ChangeNotifier {
   bool chkUserChk = false;
   String phNum;
 
+
+
   RegUserPhModel regPh;
 
   void phoneAct(String phoneAct) async {

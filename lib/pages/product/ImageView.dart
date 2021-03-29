@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:share_product_v2/model/product.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/services.dart';
+import 'package:share_product_v2/model/ProductDetailWant.dart';
 
 class ImageView extends StatelessWidget {
-  final List<ProductFile> allPath;
-  final ProductFile path;
+  List<dynamic> allPath = [];
+  // final ProductFile path;
   final carouselController = new CarouselController();
 
-  ImageView({this.path, this.allPath});
+  ImageView(this.allPath);
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarColor: Colors.white)
+    );
     return Scaffold(
       body: GestureDetector(
         onVerticalDragEnd: (e) {
@@ -22,21 +26,21 @@ class ImageView extends StatelessWidget {
         child: Container(
           width: double.infinity,
           height: double.infinity,
-          color: Colors.white,
+          color: Colors.black,
           child: Hero(
             tag: "image",
             child: CarouselSlider(
               carouselController: carouselController,
               options: CarouselOptions(
                 height: double.infinity,
-                initialPage: allPath.indexOf(path),
+                initialPage: 0,
                 viewportFraction: 1.0,
                 enlargeCenterPage: false,
                 enableInfiniteScroll: false,
               ),
               items: allPath.map((e) {
                 return Image.network(
-                  "http://ssangu.oig.kr:8080/resources?path=${e.path}",
+                  "http://192.168.100.232:5066/assets/images/product/${e.path}",
                   fit: BoxFit.contain,
                 );
               }).toList(),

@@ -25,10 +25,10 @@ class PrivateRentItem extends StatelessWidget {
     return InkWell(
       // color: Colors.white,
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ProductDetailRent(this.idx, this.category)),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => ProductDetailRent(this.idx, this.category)),
+        // );
       },
       child: Container(
         width: double.infinity,

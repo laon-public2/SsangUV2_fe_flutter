@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:share_product_v2/models/default.dart';
 import 'package:share_product_v2/models/ApiResponse.dart';
 import 'package:share_product_v2/models/member.dart';
@@ -320,6 +321,66 @@ class UserService {
           message: e.message,
           data: e.response);
       return apiResponse;
+    }
+  }
+
+  Future<Response> changeUserPic(List<dynamic> userImg, String token, int userIdx, String userName) async{
+    try{
+      dio.options.contentType = "multipart/form-data";
+      dio.options.headers['x-access-token'] = token;
+      FormData formData = FormData.fromMap({
+        'userIdx' : userIdx,
+        'file' : userImg[0],
+        'username' : userName,
+      });
+      Response res = await dio.patch(
+        '/user/modiprofile',
+        data: formData,
+      );
+      return res;
+    }on DioError catch(e){
+      print("유저 사진 변경 에러");
+      print(e.response.statusCode);
+      print(e.response.data.toString());
+    }
+  }
+
+  Future<Response> changeUserName(String name, String userPh, String token) async {
+    try{
+      print("유저 이름 변경 접속");
+      dio.options.headers['x-access-token'] = token;
+
+      Response res = await dio.patch(
+        '/user/modiname',
+        data: {
+          'username' : userPh,
+          'name' : name,
+        }
+      );
+      return res;
+    }on DioError catch(e){
+      print("유저 이름 변경 에러");
+      print(e.response.data.toString());
+    }
+  }
+
+  Future<Response> changePassword(String userPh, String currentPwd, String newPwd, String token) async {
+    try{
+      print("유저 비밀번호 변경 접속");
+      dio.options.headers['x-access-token'] = token;
+      Response res = await dio.patch(
+        '/user/modipassword',
+        data: {
+          'username' : userPh,
+          'password': currentPwd,
+          'newPassword' : newPwd
+        }
+      );
+      return res;
+    }on DioError catch(e){
+      print("유저 비밀번호 변경 오류");
+      print(e.response.statusCode);
+      print(e.response.data.toString());
     }
   }
 }

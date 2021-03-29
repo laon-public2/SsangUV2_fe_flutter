@@ -204,6 +204,7 @@ class ToItem extends StatelessWidget {
                 distance:
                     "${(_myList.mainProducts[idx].distance).toStringAsFixed(2)}",
                 picture: "${_myList.mainProducts[idx].productFiles[0].path}",
+                receiverIdx: _myList.mainProducts[idx].receiverIdx,
               );
             } else {
               if (idx == _myList.mainProductsWant.length) {

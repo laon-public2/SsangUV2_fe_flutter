@@ -25,6 +25,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 1.0,
         brightness: Brightness.light,
         backgroundColor: Colors.white,
         title: Text(
@@ -36,9 +37,10 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
           unselectedLabelColor: Color(0xff999999),
           labelColor: Color(0xff333333),
           indicator: UnderlineTabIndicator(
-              borderSide:
-                  BorderSide(width: 3.0, color: Theme.of(context).primaryColor),
-              insets: EdgeInsets.symmetric(horizontal: 30.w)),
+            borderSide:
+                BorderSide(width: 3.0, color: Theme.of(context).primaryColor),
+            insets: EdgeInsets.symmetric(horizontal: 30.w),
+          ),
           controller: controller,
           tabs: [
             Tab(

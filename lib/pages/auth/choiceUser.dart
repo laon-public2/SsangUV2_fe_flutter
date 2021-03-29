@@ -3,13 +3,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kopo/kopo.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/providers/fcm_model.dart';
+import 'package:share_product_v2/providers/mapProvider.dart';
 import 'package:share_product_v2/providers/regUserProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
+
+import 'changeAddress.dart';
+import 'changeAddressReg.dart';
 
 class ChoiceUser extends StatefulWidget {
   @override
@@ -209,9 +214,31 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
             _image,
             Provider.of<FCMModel>(context, listen: false).mbToken,
           );
+          await Provider.of<UserProvider>(context, listen: false).getAccessTokenReg(
+            Provider.of<RegUserProvider>(context, listen: false).phNum,
+            pwd.text,
+          );
           if (Provider.of<RegUserProvider>(context, listen: false)
               .regUserTruth) {
-            _showDialogSuccess('회원가입이 완료되었습니다.');
+            KopoModel model =
+            await Navigator.of(context).push(PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  Kopo(),
+            ));
+            String position =
+            await Provider.of<MapProvider>(context, listen: false)
+                .getPosition(model.address);
+            List<String> positionSplit = position.split(',');
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChangeAddressReg(
+                      double.parse(positionSplit[0]),
+                      double.parse(positionSplit[1]),
+                      "${model.sido} ${model.sigungu} ${model.bname}",
+                      "${model.buildingName}${model.apartment}"),
+                ));
+            // _showDialogSuccess('회원가입이 완료되었습니다.');
             // Navigator.popUntil(context, (Route<dynamic> route) => route is PageRoute);
           } else {
             _showDialogSuccess('해당 전화번호는 이미 존재하는 회원입니다.');

@@ -3,6 +3,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
+import 'package:share_product_v2/pages/product/ImageView.dart';
 import 'package:share_product_v2/pages/product/detailMapPage.dart';
 import 'package:share_product_v2/pages/product/writeReview.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
@@ -20,7 +22,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ProductDetailRent extends StatefulWidget {
   final int productIdx;
   final String category;
-
   const ProductDetailRent(this.productIdx, this.category);
 
   @override
@@ -36,25 +37,17 @@ class _ProductDetailState extends State<ProductDetailRent> {
   }
 
   List<String> address;
-  int _reviewCount = 130;
+  List<String> Pics;
   int _page = 0;
 
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-    //   await _loadLocator();
-    // });
   }
 
   Future<bool> _loadLocator() async {
-    this.address = ["37.468429845611105", "126.88627882228076"];
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String addStr = pref.get("address");
-    List<String> address;
-    address = addStr.split(',');
     print("주소 ===== $address");
     await Provider.of<ProductProvider>(context, listen: false)
-        .getproductDetail(this.widget.productIdx, address[0], address[1]);
+        .getproductDetail(this.widget.productIdx);
     await Provider.of<ProductProvider>(context, listen: false)
         .getProductReviewFive(this.widget.productIdx, _page);
     return false;
@@ -92,46 +85,67 @@ class _ProductDetailState extends State<ProductDetailRent> {
                     return _body();
                   }
                 })),
-        floatingActionButton: InkWell(
-          onTap: () {
-
-          },
-          child: Container(
-            padding: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-            ),
-            child: Consumer<UserProvider>(
-              builder: (_, _user, __){
-                return Container(
-                  width: double.infinity,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: _user.isLoggenIn ? Color(0xffff0066) : Colors.grey[400],
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        offset: Offset(4, 4),
-                        blurRadius: 4,
-                        spreadRadius: 1,
-                        color: Colors.black.withOpacity(0.08),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      '대여문의하기',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
+        floatingActionButton: Consumer<ProductProvider>(
+          builder: (_, _product, __){
+            return InkWell(
+              onTap: () async{
+                String uuid = await Provider.of<ProductProvider>(context, listen: false).rentInit(
+                  Provider.of<UserProvider>(context, listen: false).userIdx,
+                  _product.productDetail.receiverIdx,
+                  this.widget.productIdx,
+                  Provider.of<UserProvider>(context, listen: false).accessToken,
+                );
+                print(uuid);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CustomerMessage(
+                      uuid,
+                      this.widget.productIdx,
+                      _product.productDetail.title,
+                      this.widget.category,
+                      _product.productDetail.name,
+                      _product.productDetail.price,
+                      _product.productDetail.productFiles[0].path,
+                  ))
                 );
               },
-            ),
-          ),
+              child: Container(
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                ),
+                child: Consumer<UserProvider>(
+                  builder: (_, _user, __){
+                    return Container(
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: _user.isLoggenIn ? Color(0xffff0066) : Colors.grey[400],
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            offset: Offset(4, 4),
+                            blurRadius: 4,
+                            spreadRadius: 1,
+                            color: Colors.black.withOpacity(0.08),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          '대여문의하기',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            );
+          },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat);
   }
-
   _body() {
     return Consumer<ProductProvider>(
       builder: (__, _myProduct, _) {
@@ -154,16 +168,27 @@ class _ProductDetailState extends State<ProductDetailRent> {
                   children: [
                     //배너 사이즈 및 색
                     Positioned.fill(
-                      child: Container(
-                        width: double.infinity,
-                        height: 300,
-                        color: Colors.grey[300],
-                        child: _myProduct.productDetail != null
-                            ? BannerItemProduct(
-                                false,
-                                _myProduct.productDetail.productFiles,
-                              )
-                            : SizedBox(),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ImageView(
+                                    _myProduct.productDetail.productFiles
+                                )
+                              ));
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 300,
+                          color: Colors.grey[300],
+                          child: _myProduct.productDetail != null
+                              ? BannerItemProduct(
+                                  false,
+                                  _myProduct.productDetail.productFiles,
+                                )
+                              : SizedBox(),
+                        ),
                       ),
                     ),
 

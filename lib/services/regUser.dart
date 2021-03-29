@@ -99,10 +99,7 @@ class RegUserService {
       // return jsonMap;
     } on DioError catch (e) {
       print(e.response.statusCode);
-      print(e.response.headers);
-      print(e.response.request);
-      print(e.request);
-      print(e.message);
+      print(e.response.data.toString());
     }
   }
 
@@ -131,7 +128,7 @@ class RegUserService {
           'username': phoneNum,
           'password': password,
           'name': name,
-          'userType': userType,
+          'userType': "NORMAL",
           'push': 0,
           "fcmToken" : fcmToken,
       }
@@ -147,10 +144,7 @@ class RegUserService {
       // return jsonMap;
     } on DioError catch (e) {
       print(e.response.statusCode);
-      print(e.response.headers);
-      print(e.response.request);
-      print(e.request);
-      print(e.message);
+      print(e.response.data.toString());
     }
   }
 }

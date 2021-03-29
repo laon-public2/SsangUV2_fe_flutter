@@ -455,7 +455,12 @@ class _ProductRegState extends State<ProductReg> {
                             _isDialogText = "상품명이 입력되지 않았습니다.";
                           });
                           _showDialog();
-                        } else if (_dateController.text == "") {
+                        }else if (images.length == 0) {
+                          setState(() {
+                            _isDialogText = "사진이 비어있습니다.";
+                          });
+                          _showDialog();
+                        }else if (_dateController.text == "") {
                           setState(() {
                             _isDialogText = "기간이 설정되지 않았습니다.";
                           });

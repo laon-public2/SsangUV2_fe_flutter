@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/providers/contractProvider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
@@ -7,20 +8,41 @@ import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/utils/ConvertNumberFormat.dart';
 import 'package:share_product_v2/widgets/customText.dart';
 
-class Share extends StatelessWidget {
+import '../../providers/productProvider.dart';
+import '../../widgets/CustomDropdown.dart';
+
+class Share extends StatefulWidget {
   const Share({Key key}) : super(key: key);
+
+  @override
+  _ShareState createState() => _ShareState();
+}
+
+class _ShareState extends State<Share> {
+
+  final List<String> itemKind = [
+    "빌린내역",
+    "빌려준내역",
+  ];
+  String _currentItem = "";
+
+  @override
+  void initState() {
+    _currentItem = itemKind.first;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     int page = 0;
-    Future<bool> loadData() async{
+    Future<bool> loadData() async {
       await Provider.of<ProductProvider>(context, listen: false).rentHistory(
           Provider.of<UserProvider>(context, listen: false).userIdx,
           page,
-          Provider.of<UserProvider>(context, listen: false).accessToken
-      );
+          Provider.of<UserProvider>(context, listen: false).accessToken);
       return false;
     }
+
     final titleFontStyle = TextStyle(
         fontSize: 12.sp,
         fontWeight: FontWeight.w400,
@@ -37,8 +59,8 @@ class Share extends StatelessWidget {
 
     return FutureBuilder(
       future: loadData(),
-      builder: (context, snapshot){
-        if(snapshot.hasData == false){
+      builder: (context, snapshot) {
+        if (snapshot.hasData == false) {
           return Container(
             height: 300.h,
             child: Center(
@@ -47,7 +69,7 @@ class Share extends StatelessWidget {
               ),
             ),
           );
-        }else if(snapshot.hasError) {
+        } else if (snapshot.hasError) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
@@ -55,7 +77,7 @@ class Share extends StatelessWidget {
               style: TextStyle(fontSize: 15),
             ),
           );
-        }else{
+        } else {
           return Consumer<ProductProvider>(
             builder: (_, product, __) {
               return Container(
@@ -63,209 +85,121 @@ class Share extends StatelessWidget {
                     shrinkWrap: false,
                     itemCount: product.rentListItem.length,
                     separatorBuilder: (context, idx) => Divider(
-                      color: Color(0xffdddddd),
-                    ),
+                          color: Color(0xffdddddd),
+                        ),
                     itemBuilder: (context, idx) {
-                      if(idx == product.rentListItem.length) {
-                        if(idx == product.rentListCounter.totalCount){
+                      if (idx == product.rentListItem.length) {
+                        if (idx == product.rentListCounter.totalCount) {
                           return Container();
-                        }else{
+                        } else {
                           page++;
-                          Provider.of<ProductProvider>(context, listen: false).rentHistory(
-                            Provider.of<UserProvider>(context, listen: false).userIdx,
+                          Provider.of<ProductProvider>(context, listen: false)
+                              .rentHistory(
+                            Provider.of<UserProvider>(context, listen: false)
+                                .userIdx,
                             page,
-                            Provider.of<UserProvider>(context, listen: false).accessToken,
+                            Provider.of<UserProvider>(context, listen: false)
+                                .accessToken,
                           );
                         }
                       }
-                      return ExpansionTile(
-                        title: Text(
-                          product.rentListItem[idx].productTitle,
-                          style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xff333333)),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        subtitle: CustomText(
-                          text: 'adfadad' +
-                              " ~ " +
-                              'adfasdfasdf',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12.sp,
-                          textColor: Color(0xff999999),
-                        ),
-                        trailing: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 2.0),
-                              child: CustomText(
-                                text: product.rentListItem[idx].senderName
-                                    .toString() +
-                                    "님",
-                                fontSize: 12.sp,
-                                textColor: Color(0xff999999),
-                              ),
+                      return Column(
+                        children: <Widget>[
+                          Container(
+                            width: double.infinity,
+                            height: 60.h,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: Offset(0,2),
+                                    color: Color.fromRGBO(0, 0, 0, 0.15),
+                                    blurRadius: 8.0,
+                                  ),
+                                ]
                             ),
-                            CustomText(
-                              text: "4.5 점",
-                              fontSize: 14.sp,
-                              textColor: Theme.of(context).primaryColor,
-                            ),
-                          ],
-                        ),
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 12),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        child: Text(
-                                          "대여 기간",
-                                          style: titleFontStyle,
-                                        )),
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        "dfadfa"
-                                            .toString() +
-                                            " ~ " +
-                                            "dfadfasdf"
-                                                .toString(),
-                                        style: contentFontStyle,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        child: Text(
-                                          "대여 비용",
-                                          style: titleFontStyle,
-                                        )),
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        numberWithComma(product.rentListItem[idx].productPrice) +
-                                            "원",
-                                        style: contentFontStyle,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        child: Text(
-                                          "대여자 연락처",
-                                          style: titleFontStyle,
-                                        )),
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        // TMPDATA[idx]['detail']['tel'].toString(),
-                                        "010-0000-0000",
-                                        style: contentFontStyle,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        child: Text(
-                                          "대여자 이메일",
-                                          style: titleFontStyle,
-                                        )),
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        product.rentListItem[idx].receiverName
-                                            .toString(),
-                                        style: contentFontStyle,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 5),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    children: [
-                                      RaisedButton(
-                                        color: Colors.white,
-                                        elevation: 0.0,
-                                        shape: RoundedRectangleBorder(
-                                            side: BorderSide(
-                                                color: Color(0xffdddddd), width: 1.0),
-                                            borderRadius: BorderRadius.circular(3.0)),
-                                        onPressed: () {
-                                          Navigator.of(context).pushNamed(
-                                              "/contract/complete/form",
-                                              arguments: {
-                                                "uuid": product.rentListItem[idx].uuid
-                                              });
-                                        },
-                                        child: Text(
-                                          "계약서",
-                                          style: TextStyle(
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                      RaisedButton(
-                                        color: Colors.white,
-                                        elevation: 0.0,
-                                        shape: RoundedRectangleBorder(
-                                            side: BorderSide(
-                                                color: Color(0xffdddddd), width: 1.0),
-                                            borderRadius: BorderRadius.circular(3.0)),
-                                        onPressed: () {
-                                          Navigator.of(context).pushNamed(
-                                            "/chatting",
-                                            arguments: {
-                                              "data": "sds",
-                                              'owner': "adfas",
-                                              'contract': "adf"
-                                            },
-                                          );
-                                        },
-                                        child: Text(
-                                          "채팅내용",
-                                          style: TextStyle(
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                      // RaisedButton(
-                                      //   color: Colors.white,
-                                      //   elevation: 0.0,
-                                      //   shape: RoundedRectangleBorder(
-                                      //       side: BorderSide(
-                                      //           color: Color(0xffdddddd), width: 1.0),
-                                      //       borderRadius: BorderRadius.circular(3.0)),
-                                      //   onPressed: () {},
-                                      //   child: Text(
-                                      //     "평가",
-                                      //     style: TextStyle(
-                                      //       fontSize: 14.sp,
-                                      //       fontWeight: FontWeight.w500,
-                                      //     ),
-                                      //   ),
-                                      // ),
-                                    ],
+                                Container(
+                                  margin: const EdgeInsets.only(left: 16),
+                                  child: CustomDropdown(
+                                    items: itemKind,
+                                    value: _currentItem,
+                                    onChange: (value) {
+                                      setState(() {
+                                        _currentItem = value;
+                                      });
+                                    },
                                   ),
                                 ),
                               ],
+                            ),
+                          ),
+                          SizedBox(height: 10.h),
+                          ListTile(
+                            onTap: () {},
+                            leading: Container(
+                              width: 48.w,
+                              height: 48.h,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: Color(0xffDDDDDD)),
+                                  borderRadius: BorderRadius.circular(15.0)),
+                              child: Image.network(
+                                "http://192.168.100.232:5066/assets/images/product/${product.rentListItem[idx].productFiles[0].path}",
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            title: Text(
+                              // TMPDATA[idx]["title"],
+                              product.rentListItem[idx].productTitle,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xff333333),
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                           ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomText(
+                                  text: "${product.rentListItem[idx].receiverName}님",
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w700,
+                                  textColor: Color(0xff999999),
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    CustomText(
+                                      text: _dateFormat(
+                                          product.rentListItem[idx].startDate),
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Color(0xff999999),
+                                    ),
+                                    Text(
+                                      ' ~ ',
+                                      style: TextStyle(
+                                          color: Color(0xff999999),
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12.sp),
+                                    ),
+                                    CustomText(
+                                      text: _dateFormat(
+                                          product.rentListItem[idx].endDate),
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Color(0xff999999),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [],
                             ),
                           ),
                         ],
@@ -277,5 +211,11 @@ class Share extends StatelessWidget {
         }
       },
     );
+  }
+
+  _dateFormat(String date) {
+    String formatDate(DateTime date) =>
+        new DateFormat("yyyy/MM/dd").format(date);
+    return formatDate(DateTime.parse(date));
   }
 }

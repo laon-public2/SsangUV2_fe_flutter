@@ -80,14 +80,14 @@ class _Category1State extends State<Category0> {
 
   _toItem() {
     return Consumer<UserProvider>(
-      builder: (__, _myInfo, _){
+      builder: (__, _myInfo, _) {
         return Consumer<MyPageProvider>(
           builder: (_, _myActHistory, __) {
             return ListView.separated(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, idx) {
-                if (_currentItem == "빌려드려요")
+                if (_currentItem == "빌려드려요") {
                   return LendItemMyAct(
                     category: '전체',
                     title: '${_myActHistory.proRent[idx].title}',
@@ -99,7 +99,7 @@ class _Category1State extends State<Category0> {
                     arrayNum: idx,
                     token: _myInfo.accessToken,
                   );
-                else if (_currentItem == '빌려주세요')
+                } else if (_currentItem == '빌려주세요') {
                   return RentItem(
                     category: "생활용품",
                     title: "[사성 오피스] 사무실 대여 (누구나 대여 가능합니다.)",
@@ -109,11 +109,12 @@ class _Category1State extends State<Category0> {
                     startDate: "01/22",
                     endDate: "02/02",
                   );
-                else
+                } else {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => ProductDetail()),
                   );
+                }
               },
               separatorBuilder: (context, idx) {
                 return Padding(
@@ -121,8 +122,9 @@ class _Category1State extends State<Category0> {
                   child: Divider(),
                 );
               },
-              itemCount:
-              _myActHistory.proRent == null ? 0 : _myActHistory.proRent.length,
+              itemCount: _myActHistory.proRent == null
+                  ? 0
+                  : _myActHistory.proRent.length,
             );
           },
         );

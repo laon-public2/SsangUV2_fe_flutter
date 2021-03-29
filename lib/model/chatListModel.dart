@@ -31,10 +31,14 @@ class ChatListModel {
   String type;
   String uuid;
   int isNew;
+  String startDate;
+  String endDate;
+  int categoryNum;
   List<ProductFile> productFiles;
 
   ChatListModel.fromJson(Map<String, dynamic> json)
       : senderIdx = json['sender_idx'],
+        categoryNum = json['category_idx'],
         senderNumber = json['sender_username'],
         senderName = json['sender_name'],
         senderType = json['sender_userType'],
@@ -66,6 +70,8 @@ class ChatListModel {
         status = json['status'],
         uuid = json['UUID'],
         isNew = json['isNew'],
+        startDate = json['start_date'],
+        endDate = json['end_date'],
         productFiles = json['image'] != null
             ? (json['image'] as List)
                 .map((e) => ProductFile.fromJson(e))
