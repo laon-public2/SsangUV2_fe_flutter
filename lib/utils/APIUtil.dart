@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share_product_v2/widgets/loading.dart';
+import 'package:http/http.dart' as http;
 
 // final String SERVER_ADDRESS = "ssangu.oig.kr"; 오리지널
 // final String SERVER_ADDRESS = "115.91.73.66"; 외부 서버
@@ -45,6 +46,7 @@ class ChatUtils {
   }
   static ChatUtils instance = ChatUtils();
 }
+
 
 class AuthUtils {
   Dio dio;

@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:share_product_v2/model/StompSendDTO.dart';
 import 'package:share_product_v2/pages/product/ProductDetailRent.dart';
 import 'package:share_product_v2/providers/contractProvider.dart';
@@ -46,7 +47,7 @@ class _CustomerMessage extends State<CustomerMessage>
   Map<String, String> headers;
   int page = 0;
   final picker = ImagePicker();
-  List<Asset> images = List<Asset>();
+  List<Asset> images = [];
   bool _imageView = false;
 
   ScrollController bottomScrollController = ScrollController();
@@ -198,6 +199,12 @@ class _CustomerMessage extends State<CustomerMessage>
     final cvm = Provider.of<ContractProvider>(context, listen: false);
     await cvm.getChatHistory(this.widget.uuid, this.page);
     return true;
+  }
+
+  void _handleSubmitted(String text) async {
+    if(text.trim().isEmpty) return null;
+    await _sendMsg(text);
+    _textController.clear();
   }
 
   _scrollerListener() async {
@@ -476,6 +483,7 @@ class _CustomerMessage extends State<CustomerMessage>
                                 onTap: () {
                                   setState(() {
                                     this._imageView = false;
+                                    this.images = [];
                                   });
                                 },
                                 child: Container(
@@ -504,9 +512,17 @@ class _CustomerMessage extends State<CustomerMessage>
                               ),
                               SizedBox(width: 10.w),
                               InkWell(
-                                onTap: () {
+                                onTap: () async {
                                   setState(() {
-                                    this._imageView = false;
+                                    this._imageView = true;
+                                  });
+                                  await Provider.of<ContractProvider>(context, listen: false).uploadImage(
+                                      images,
+                                      this.widget.uuid,
+                                      Provider.of<UserProvider>(context, listen: false).username,
+                                  );
+                                  setState(() {
+                                    this.images = [];
                                   });
                                 },
                                 child: Container(
@@ -557,7 +573,9 @@ class _CustomerMessage extends State<CustomerMessage>
 
   Widget _buildTextComposer() {
     return IconTheme(
-      data: IconThemeData(color: Theme.of(context).accentColor),
+      data: IconThemeData(color: Theme
+          .of(context)
+          .accentColor),
       child: Container(
         height: defaultTargetPlatform == TargetPlatform.iOS ? 90 : null,
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -571,16 +589,19 @@ class _CustomerMessage extends State<CustomerMessage>
                 borderRadius: BorderRadius.circular(50),
                 border: Border.all(color: Color(0xffdddddd)),
               ),
-              child: IconButton(
-                icon: Image.asset('assets/icon/inputImg.png'),
-                iconSize: 16,
-                onPressed: () async {
-                  setState(() {
-                    this._imageView = true;
-                  });
-                  await loadAssets();
+              child: Consumer<ContractProvider>(
+                builder: (_, _contract, __){
+                  return IconButton(
+                    icon: Image.asset('assets/icon/inputImg.png'),
+                    iconSize: 16,
+                    onPressed: () async {
+                      setState(() {
+                        this._imageView = true;
+                      });
+                      await loadAssets();
+                    },
+                  );
                 },
-                // onPressed: () {},
               ),
             ),
             Flexible(
@@ -601,12 +622,12 @@ class _CustomerMessage extends State<CustomerMessage>
                           margin: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: TextField(
                             controller: _textController,
-                            onChanged: (String text) {
-                              setState(() {
-                                _isComposing = text.length > 0;
-                              });
-                            },
-                            onSubmitted: _isComposing ? _handleSubmitted : null,
+                            // onChanged: (String text) {
+                            //   setState(() {
+                            //     _isComposing = text.length > 0;
+                            //   });
+                            // },
+                            onSubmitted: _handleSubmitted,
                             decoration: InputDecoration.collapsed(
                               hintText: "",
                             ),
@@ -632,9 +653,7 @@ class _CustomerMessage extends State<CustomerMessage>
                             icon: Image.asset('assets/icon/send.png'),
                             color: Colors.white,
                             iconSize: 16,
-                            onPressed: _isComposing
-                                ? () => _handleSubmitted(_textController.text)
-                                : null,
+                            onPressed: () => _handleSubmitted(_textController.text),
                           ),
                         ),
                       ),
@@ -648,15 +667,6 @@ class _CustomerMessage extends State<CustomerMessage>
       ),
     );
   }
-
-  void _handleSubmitted(String text) async {
-    setState(() {
-      _isComposing = false;
-    });
-    await _sendMsg(text);
-    _textController.clear();
-  }
-
   _appBar() {
     return AppBar(
       centerTitle: true,
@@ -695,7 +705,7 @@ class ChatMessage extends StatelessWidget {
   // final AnimationController animationController;
   @override
   Widget build(BuildContext context) {
-    print("$sender, $text, $date, $type, $uuid");
+    // print("$sender, $text, $date, $type, $uuid");
     return Consumer<UserProvider>(
       builder: (_, _user, __) {
         return _user.username == sender
@@ -733,7 +743,7 @@ class ChatMessage extends StatelessWidget {
                             : ClipRRect(
                                 borderRadius: BorderRadius.circular(6),
                                 child: Image.network(
-                                  'http://115.91.73.66:11111/chat/resource/image?path=/${this.uuid}/${_imageDateFormat(this.date)}/',
+                                  'http://115.91.73.66:11111/chat/resource/image?path=$text',
                                   width: 200.w,
                                   fit: BoxFit.cover,
                                 ),

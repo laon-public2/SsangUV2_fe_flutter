@@ -38,7 +38,7 @@ class ContractProvider extends ChangeNotifier {
     }
     final res = await contractService.getChatHistory(uuid, page);
     Map<String, dynamic> json = jsonDecode(res.toString());
-    print(json);
+    // print(json);
     try {
       List<StompSendDTO> list = (json['data'] as List)
           .map((e) => StompSendDTO.fromJson(e))
@@ -57,6 +57,13 @@ class ContractProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+  }
+
+
+  Future<void> uploadImage(List<Asset> imgFile, String uuid, String sender) async {
+    print("채팅방 이미지 업로드 부분");
+    final res = await contractService.sendImgFile(imgFile, uuid, sender);
+    print(res.toString());
   }
 
   Future<void> addChat(StompSendDTO dto) {
