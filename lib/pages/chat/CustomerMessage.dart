@@ -14,12 +14,15 @@ import 'package:share_product_v2/model/StompSendDTO.dart';
 import 'package:share_product_v2/pages/product/ProductDetailRent.dart';
 import 'package:share_product_v2/providers/contractProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/widgets/chatBigImg.dart';
+import 'package:share_product_v2/widgets/loading.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 
 import '../../providers/userProvider.dart';
 import '../product/ProductDetail.dart';
+import 'package:extended_image/extended_image.dart';
 
 const String _name = "SampleName";
 const String _date = "02/02 02:02";
@@ -43,7 +46,7 @@ class CustomerMessage extends StatefulWidget {
 }
 
 class _CustomerMessage extends State<CustomerMessage>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver{
   Map<String, String> headers;
   int page = 0;
   final picker = ImagePicker();
@@ -59,7 +62,7 @@ class _CustomerMessage extends State<CustomerMessage>
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 10,
+        maxImages: 8,
         enableCamera: true,
         selectedAssets: images,
         cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
@@ -98,6 +101,7 @@ class _CustomerMessage extends State<CustomerMessage>
                 Padding(
                   padding: const EdgeInsets.only(right: 15.0),
                   child: AssetThumb(
+                    quality: 50,
                     asset: e,
                     width: 90,
                     height: 90,
@@ -182,6 +186,7 @@ class _CustomerMessage extends State<CustomerMessage>
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
     print("채팅방 입장");
     print("uuid : ${this.widget.uuid}");
@@ -192,6 +197,7 @@ class _CustomerMessage extends State<CustomerMessage>
   void dispose() {
     _textController.dispose();
     if (client != null) client.deactivate();
+    WidgetsBinding.instance.addObserver(this);
     super.dispose();
   }
 
@@ -202,7 +208,7 @@ class _CustomerMessage extends State<CustomerMessage>
   }
 
   void _handleSubmitted(String text) async {
-    if(text.trim().isEmpty) return null;
+    if (text.trim().isEmpty) return null;
     await _sendMsg(text);
     _textController.clear();
   }
@@ -216,6 +222,23 @@ class _CustomerMessage extends State<CustomerMessage>
         this.page += 1;
       });
       await cvm.getChatHistory(this.widget.uuid, page);
+    }
+  }
+
+  void didChangeAppLifeCycleState(AppLifecycleState state) {
+    switch(state) {
+      case AppLifecycleState.resumed:
+        print("앱이 Resumed된 상태입니다.");
+        break;
+      case AppLifecycleState.inactive:
+        print("앱이 Inactive된 상태입니다.");
+        break;
+      case AppLifecycleState.paused:
+        print("앱이 백그라운드로 돌아가며 Paused된 상태입니다.");
+        break;
+      case AppLifecycleState.detached:
+        print("앱이 여전히 돌아가지만 호스트 view에서 분리됩니다. detached상태");
+        break;
     }
   }
 
@@ -329,9 +352,34 @@ class _CustomerMessage extends State<CustomerMessage>
                               child: Container(
                                 width: 50,
                                 height: 50,
-                                child: Image.network(
+                                child: ExtendedImage.network(
                                   "http://192.168.100.232:5066/assets/images/product/${this.widget.pic}",
                                   fit: BoxFit.cover,
+                                  cache: true,
+                                  borderRadius: BorderRadius.circular(5),
+                                  loadStateChanged: (ExtendedImageState state) {
+                                    switch(state.extendedImageLoadState) {
+                                      case LoadState.loading :
+                                          return Image.asset(
+                                            "/assets/icon/loadingGif/Spin-1.3s-224px.gif",
+                                            fit: BoxFit.fill,
+                                          );
+                                          break;
+                                      case LoadState.completed :
+                                        break;
+                                      case LoadState.failed :
+                                        return GestureDetector(
+                                          child: Image.asset(
+                                            "assets/icon/icons8-cloud-refresh-96.png",
+                                            fit: BoxFit.fill,
+                                          ),
+                                          onTap: () {
+                                            state.reLoadImage();
+                                          },
+                                        );
+                                        break;
+                                    }
+                                  },
                                 ),
                               ),
                             ),
@@ -440,119 +488,132 @@ class _CustomerMessage extends State<CustomerMessage>
                       ),
                     ),
                     //이미지 박스
-                    _imageView ?
-                    images.length != 0
-                        ? Positioned(
-                            left: 8,
-                            right: 8,
-                            bottom: 10,
-                            child: Container(
-                              width: double.infinity,
-                              height: 150.h,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    offset: Offset(0, 2),
-                                    color:
-                                    Color.fromRGBO(0, 0, 0, 0.15),
-                                    blurRadius: 8.0,
+                    _imageView
+                        ? images.length != 0
+                            ? Positioned(
+                                left: 8,
+                                right: 8,
+                                bottom: 10,
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 150.h,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        offset: Offset(0, 2),
+                                        color: Color.fromRGBO(0, 0, 0, 0.15),
+                                        blurRadius: 8.0,
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 10, right: 10),
-                                  child: photoApply(),
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 10, right: 10),
+                                      child: photoApply(),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          )
-                        : SizedBox():SizedBox(),
+                              )
+                            : SizedBox()
+                        : SizedBox(),
                     //이미지 박스 닫기 버튼
-                    _imageView ?
-                    images.length != 0
-                        ? Positioned(
-                          bottom: 160,
-                          left: 8,
-                          child: Row(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    this._imageView = false;
-                                    this.images = [];
-                                  });
-                                },
-                                child: Container(
-                                  width: 80.w,
-                                  height: 40.h,
-                                  decoration: BoxDecoration(
-                                      color: Color(0xffff0066),
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            offset: Offset(0,2),
-                                            color: Color.fromRGBO(0, 0, 0, 0.15),
-                                            blurRadius: 8.0
+                    _imageView
+                        ? images.length != 0
+                            ? Positioned(
+                                bottom: 160,
+                                left: 8,
+                                child: Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          this._imageView = false;
+                                          this.images = [];
+                                        });
+                                      },
+                                      child: Container(
+                                        width: 80.w,
+                                        height: 40.h,
+                                        decoration: BoxDecoration(
+                                            color: Color(0xffff0066),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  offset: Offset(0, 2),
+                                                  color: Color.fromRGBO(
+                                                      0, 0, 0, 0.15),
+                                                  blurRadius: 8.0),
+                                            ]),
+                                        child: Center(
+                                          child: Text(
+                                            '닫기',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
-                                      ]
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      '닫기',
-                                      style: TextStyle(
-                                        color: Colors.white,
                                       ),
                                     ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 10.w),
-                              InkWell(
-                                onTap: () async {
-                                  setState(() {
-                                    this._imageView = true;
-                                  });
-                                  await Provider.of<ContractProvider>(context, listen: false).uploadImage(
-                                      images,
-                                      this.widget.uuid,
-                                      Provider.of<UserProvider>(context, listen: false).username,
-                                  );
-                                  setState(() {
-                                    this.images = [];
-                                  });
-                                },
-                                child: Container(
-                                  width: 80.w,
-                                  height: 40.h,
-                                  decoration: BoxDecoration(
-                                      color: Color(0xff046582),
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            offset: Offset(0,2),
-                                            color: Color.fromRGBO(0, 0, 0, 0.15),
-                                            blurRadius: 8.0
+                                    SizedBox(width: 10.w),
+                                    InkWell(
+                                      onTap: () async {
+                                        setState(() {
+                                          this._imageView = false;
+                                        });
+                                        showDialog(
+                                            context: context,
+                                            barrierColor:
+                                                Colors.black.withOpacity(0.0),
+                                            builder: (BuildContext context) {
+                                              return Loading();
+                                            });
+                                        await Provider.of<ContractProvider>(
+                                                context,
+                                                listen: false)
+                                            .uploadImage(
+                                          images,
+                                          this.widget.uuid,
+                                          Provider.of<UserProvider>(context,
+                                                  listen: false)
+                                              .username,
+                                        );
+                                        setState(() {
+                                          this.images = [];
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                      child: Container(
+                                        width: 80.w,
+                                        height: 40.h,
+                                        decoration: BoxDecoration(
+                                            color: Color(0xff046582),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  offset: Offset(0, 2),
+                                                  color: Color.fromRGBO(
+                                                      0, 0, 0, 0.15),
+                                                  blurRadius: 8.0),
+                                            ]),
+                                        child: Center(
+                                          child: Text(
+                                            '보내기',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
-                                      ]
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      '보내기',
-                                      style: TextStyle(
-                                        color: Colors.white,
                                       ),
                                     ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        )
-                        :SizedBox():SizedBox(),
+                                  ],
+                                ))
+                            : SizedBox()
+                        : SizedBox(),
                     //이미지 보내기 버튼
                   ],
                 ),
@@ -573,9 +634,7 @@ class _CustomerMessage extends State<CustomerMessage>
 
   Widget _buildTextComposer() {
     return IconTheme(
-      data: IconThemeData(color: Theme
-          .of(context)
-          .accentColor),
+      data: IconThemeData(color: Theme.of(context).accentColor),
       child: Container(
         height: defaultTargetPlatform == TargetPlatform.iOS ? 90 : null,
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -590,7 +649,7 @@ class _CustomerMessage extends State<CustomerMessage>
                 border: Border.all(color: Color(0xffdddddd)),
               ),
               child: Consumer<ContractProvider>(
-                builder: (_, _contract, __){
+                builder: (_, _contract, __) {
                   return IconButton(
                     icon: Image.asset('assets/icon/inputImg.png'),
                     iconSize: 16,
@@ -653,7 +712,8 @@ class _CustomerMessage extends State<CustomerMessage>
                             icon: Image.asset('assets/icon/send.png'),
                             color: Colors.white,
                             iconSize: 16,
-                            onPressed: () => _handleSubmitted(_textController.text),
+                            onPressed: () =>
+                                _handleSubmitted(_textController.text),
                           ),
                         ),
                       ),
@@ -667,6 +727,7 @@ class _CustomerMessage extends State<CustomerMessage>
       ),
     );
   }
+
   _appBar() {
     return AppBar(
       centerTitle: true,
@@ -742,10 +803,49 @@ class ChatMessage extends StatelessWidget {
                               )
                             : ClipRRect(
                                 borderRadius: BorderRadius.circular(6),
-                                child: Image.network(
-                                  'http://115.91.73.66:11111/chat/resource/image?path=$text',
+                                child: Container(
                                   width: 200.w,
-                                  fit: BoxFit.cover,
+                                  height: 200.h,
+                                  child: InkWell(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          barrierColor:
+                                          Colors.black.withOpacity(0.0),
+                                          builder: (BuildContext context) {
+                                            return ChatBigImg(this.text);
+                                          });
+                                    },
+                                    child: ExtendedImage.network(
+                                      "http://115.91.73.66:11111/chat/resource/image?path=${this.text}",
+                                      fit: BoxFit.cover,
+                                      cache: true,
+                                      borderRadius: BorderRadius.circular(5),
+                                      loadStateChanged: (ExtendedImageState state) {
+                                        switch(state.extendedImageLoadState) {
+                                          case LoadState.loading :
+                                            return Image.asset(
+                                              "/assets/icon/loadingGif/Spin-1.3s-224px.gif",
+                                              fit: BoxFit.fill,
+                                            );
+                                            break;
+                                          case LoadState.completed :
+                                            break;
+                                          case LoadState.failed :
+                                            return GestureDetector(
+                                              child: Image.asset(
+                                                "assets/icon/icons8-cloud-refresh-96.png",
+                                                fit: BoxFit.fill,
+                                              ),
+                                              onTap: () {
+                                                state.reLoadImage();
+                                              },
+                                            );
+                                            break;
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 ),
                               ),
                       ),

@@ -870,7 +870,7 @@ class ProductProvider extends ChangeNotifier {
 
   Future<void> getUserGeo(num la, num long) async {
     print('유저 위치 정보 조회');
-    final res = await productService.getGeo(la, long);
+    final res = await productService.getGeo(long, la);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap);
     List<Geolocation> list = (jsonMap['documents'] as List)
