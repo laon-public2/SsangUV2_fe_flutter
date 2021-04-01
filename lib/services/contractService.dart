@@ -100,7 +100,7 @@ class ContractService {
 
     for(var file in imgFiles) {
       print("이미지 갯수만큼");
-      ByteData byteData = await file.getByteData(); //getByteData에 이미지 품질을 넣을 수 있음 (주의! 폰 성능이 매우 필요로 함. 똥폰은 앱이 꺼질 수 있으니 주의해야 함.)
+      ByteData byteData = await file.getByteData(quality: 30); //getByteData에 이미지 품질을 넣을 수 있음 (주의! 폰 성능이 매우 필요로 함. 똥폰은 앱이 꺼질 수 있으니 주의해야 함.)
       List<int> imageData = byteData.buffer.asUint8List();
       request.files.add(
         http.MultipartFile.fromBytes(

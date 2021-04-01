@@ -173,6 +173,7 @@ class _LendItemMyActState extends State<LendItemMyAct> {
                                   : "대여가능으로 변경",
                               style: TextStyle(
                                 color: Colors.white,
+                                fontSize: 15.sp,
                               ),
                             ),
                           ),

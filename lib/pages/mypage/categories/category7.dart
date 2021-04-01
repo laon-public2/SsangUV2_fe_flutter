@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:share_product_v2/pages/auth/myPage.dart';
 import 'package:share_product_v2/providers/myPageProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/CustomDropdown.dart';
 import 'package:share_product_v2/widgets/CustomDropdownMain.dart';
+import 'package:share_product_v2/widgets/WantItemMainPage.dart';
+import 'package:share_product_v2/widgets/WantItemMyAct.dart';
 import 'package:share_product_v2/widgets/lendItem.dart';
 import 'package:share_product_v2/widgets/lendItemMyAct.dart';
+import 'package:share_product_v2/widgets/loading.dart';
 import 'package:share_product_v2/widgets/rentItem.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../product/ProductDetail.dart';
+
+//futureBuilder 제작 해야함.
 
 class Category7 extends StatefulWidget {
   @override
@@ -19,19 +26,25 @@ class Category7 extends StatefulWidget {
 class _Category1State extends State<Category7> {
   final List<String> itemKind = ["빌려드려요", "빌려주세요", "거래요청해요"];
 
-  int userIdx;
   int page;
   int category = 8;
   int totalCount;
 
   String _currentItem = "";
+
   @override
   void initState() {
     _currentItem = itemKind.first;
     super.initState();
-    this.userIdx = Provider.of<UserProvider>(context, listen: false).userIdx;
-    Provider.of<MyPageProvider>(context, listen: false)
-        .getProWant(this.userIdx, page, category);
+  }
+
+  Future<bool>_loadingProduct() async {
+    int userIdx = Provider.of<UserProvider>(context, listen: false).userIdx;
+    await Provider.of<MyPageProvider>(context, listen: false)
+        .getProWant(userIdx, page, category);
+    await Provider.of<MyPageProvider>(context, listen: false)
+        .getProRent(userIdx, page, category);
+    return true;
   }
 
   @override
@@ -41,6 +54,7 @@ class _Category1State extends State<Category7> {
       body: _body(),
     );
   }
+
 
   _body() {
     return SingleChildScrollView(
@@ -53,7 +67,7 @@ class _Category1State extends State<Category7> {
               margin: const EdgeInsets.only(top: 20),
               child: Row(
                 children: [
-                  CustomDropdownMain(
+                  CustomDropdown(
                     items: itemKind,
                     value: _currentItem,
                     onChange: (value) {
@@ -67,7 +81,30 @@ class _Category1State extends State<Category7> {
             ),
             Container(
               margin: const EdgeInsets.only(top: 10),
-              child: _toItem(),
+              child: FutureBuilder(
+                future: _loadingProduct(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData == false) {
+                    return Container(
+                      height: 300.h,
+                      color: Colors.white,
+                      child: Center(
+                        child: Image.asset("assets/loading1.gif", width: 48.0, height: 48.0,),
+                      ),
+                    );
+                  }else if (snapshot.hasError) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Error: ${snapshot.error}',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    );
+                  } else {
+                    return _toItem();
+                  }
+                },
+              ),
             ),
             SizedBox(height: 30.h),
           ],
@@ -78,16 +115,19 @@ class _Category1State extends State<Category7> {
 
   _toItem() {
     return Consumer<UserProvider>(
-      builder: (__, _myInfo, _){
+      builder: (__, _myInfo, _) {
         return Consumer<MyPageProvider>(
           builder: (_, _myActHistory, __) {
             return ListView.separated(
+              itemCount: _currentItem == '빌려드려요'
+                  ? _myActHistory.proRent.length
+                  : _myActHistory.proWant.length,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, idx) {
-                if (_currentItem == "빌려드려요")
+                if (_currentItem == "빌려드려요") {
                   return LendItemMyAct(
-                    category: '의류/잡화',
+                    category: '전체',
                     title: '${_myActHistory.proRent[idx].title}',
                     name: _myActHistory.proRent[idx].name,
                     price: _moneyFormat("${_myActHistory.proRent[idx].price}"),
@@ -97,30 +137,32 @@ class _Category1State extends State<Category7> {
                     arrayNum: idx,
                     token: _myInfo.accessToken,
                   );
-                else if (_currentItem == '빌려주세요')
-                  return RentItem(
-                    category: "의류/잡화",
-                    title: "[사성 오피스] 사무실 대여 (누구나 대여 가능합니다.)",
-                    name: "laonstory",
-                    startPrice: "500,000",
-                    endPrice: "650,000원",
-                    startDate: "01/22",
-                    endDate: "02/02",
+                } else if (_currentItem == '빌려주세요') {
+                  return WantItemMyAct(
+                    idx: _myActHistory.proWant[idx].id,
+                    category:
+                    "전체",
+                    title: "${_myActHistory.proWant[idx].title}",
+                    name: "${_myActHistory.proWant[idx].name}",
+                    minPrice: "${_moneyFormat("${_myActHistory.proWant[idx].minPrice}")}원",
+                    maxPrice: "${_moneyFormat("${_myActHistory.proWant[idx].maxPrice}")}원",
+                    startDate: _dateFormat(_myActHistory.proWant[idx].startDate),
+                    endDate: _dateFormat(_myActHistory.proWant[idx].endDate),
+                    picture: _myActHistory.proWant[idx].productFiles[0].path,
                   );
-                else
+                } else {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => ProductDetail()),
                   );
+                }
               },
               separatorBuilder: (context, idx) {
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.only(bottom: 8.0),
                   child: Divider(),
                 );
               },
-              itemCount:
-              _myActHistory.proRent == null ? 0 : _myActHistory.proRent.length,
             );
           },
         );
@@ -135,5 +177,10 @@ class _Category1State extends State<Category7> {
       value = value.replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), ',');
       return value;
     }
+  }
+
+  _dateFormat(String date) {
+    String formatDate(DateTime date) => new DateFormat("MM/dd").format(date);
+    return formatDate(DateTime.parse(date));
   }
 }

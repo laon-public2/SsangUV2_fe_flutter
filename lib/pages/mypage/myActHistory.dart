@@ -15,6 +15,7 @@ import 'package:share_product_v2/pages/mypage/categories/category9.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 
 class MyActHistory extends StatefulWidget {
+  const MyActHistory({Key key}) : super(key:key);
   @override
   _MyActHistoryState createState() => _MyActHistoryState();
 }
@@ -28,12 +29,10 @@ class _MyActHistoryState extends State<MyActHistory> with SingleTickerProviderSt
   }
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 11,
-      child: Scaffold(
-        appBar: _appBar(),
-        body: _body(),
-      ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: _appBar(),
+      body: _body(),
     );
   }
 
@@ -41,8 +40,8 @@ class _MyActHistoryState extends State<MyActHistory> with SingleTickerProviderSt
     return AppBar(
       bottom: TabBar(
         isScrollable: true,
-        unselectedLabelColor: Color(0xff444444),
-        labelColor: Color(0xffff0066),
+        unselectedLabelColor: Color(0xff999999),
+        labelColor: Color(0xff333333),
         indicatorColor: Color(0xffff0066),
         controller: controller,
         tabs: <Widget>[

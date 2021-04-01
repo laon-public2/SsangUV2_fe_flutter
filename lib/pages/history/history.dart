@@ -36,11 +36,12 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
         bottom: TabBar(
           unselectedLabelColor: Color(0xff999999),
           labelColor: Color(0xff333333),
-          indicator: UnderlineTabIndicator(
-            borderSide:
-                BorderSide(width: 3.0, color: Theme.of(context).primaryColor),
-            insets: EdgeInsets.symmetric(horizontal: 30.w),
-          ),
+          // indicator: UnderlineTabIndicator(
+          //   borderSide:
+          //       BorderSide(width: 3.0, color: Theme.of(context).primaryColor),
+          //   insets: EdgeInsets.symmetric(horizontal: 30.w),
+          // ),
+          indicatorColor: Color(0xffff0066),
           controller: controller,
           tabs: [
             Tab(
