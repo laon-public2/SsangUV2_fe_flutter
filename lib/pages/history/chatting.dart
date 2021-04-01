@@ -87,6 +87,8 @@ class Chatting extends StatelessWidget {
                                 contracts.chatListItem[idx].productPrice,
                                 contracts
                                     .chatListItem[idx].productFiles[0].path,
+                                contracts.chatListItem[idx].status,
+                                contracts.chatListItem[idx].receiverIdx,
                               ),
                               type: PageTransitionType.rightToLeft,
                             ),

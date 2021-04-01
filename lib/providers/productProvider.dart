@@ -130,7 +130,7 @@ class ProductProvider extends ChangeNotifier {
         desiredAccuracy: LocationAccuracy.bestForNavigation);
     await getGeo(currentPosition.latitude, currentPosition.longitude);
     if (this.laUser != null) {
-      await getUserGeo(this.laUser, this.loUser);
+      await getUserGeo( this.loUser, this.laUser);
     }
     print("la 좌표${currentPosition.latitude}");
     print("lo 좌표${currentPosition.longitude}");
@@ -870,7 +870,7 @@ class ProductProvider extends ChangeNotifier {
 
   Future<void> getUserGeo(num la, num long) async {
     print('유저 위치 정보 조회');
-    final res = await productService.getGeo(long, la);
+    final res = await productService.getGeo(la, long);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap);
     List<Geolocation> list = (jsonMap['documents'] as List)
@@ -957,7 +957,6 @@ class ProductProvider extends ChangeNotifier {
       List<ChatListModel> list = (jsonMap['data'] as List)
           .map((e) => ChatListModel.fromJson(e))
           .toList();
-      print(list);
       Paging paging = Paging.fromJson(jsonMap);
       this.chatListCounter = paging;
       if(this.chatListCounter.currentPage == null || this.chatListCounter.currentPage == 0) {
@@ -1004,6 +1003,31 @@ class ProductProvider extends ChangeNotifier {
       print(jsonMap);
       this.productStart = jsonMap['data'];
       return jsonMap['data'];
+    }catch(e){
+      print(e);
+    }
+    notifyListeners();
+  }
+
+  Future<void> rentStatus(String token, int sender, int receiver, int productIdx, String status, String uuid) async {
+    print("대여시작 및 대여 종료기능 프로바이더");
+    try{
+      print("$token, $sender, $receiver, $productIdx, $status, $uuid");
+      var rentStartRes;
+      var rentFinishRes;
+      switch(status){
+        case "INIT" :
+          return rentStartRes = await productService.historyStart(
+              token, sender, receiver, productIdx, status, uuid);
+          break;
+        case "START" :
+          return rentFinishRes = await productService.historyFinish(token, productIdx, uuid);
+          break;
+      }
+      Map<String, dynamic> startMap = json.decode(rentStartRes.toString());
+      Map<String, dynamic> finishMap = json.decode(rentFinishRes.toString());
+      print(startMap);
+      print(finishMap);
     }catch(e){
       print(e);
     }

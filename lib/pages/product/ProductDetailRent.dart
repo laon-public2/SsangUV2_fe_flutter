@@ -106,6 +106,8 @@ class _ProductDetailState extends State<ProductDetailRent> {
                       _product.productDetail.name,
                       _product.productDetail.price,
                       _product.productDetail.productFiles[0].path,
+                      "INIT",
+                      _product.productDetail.receiverIdx,
                   ))
                 );
               },

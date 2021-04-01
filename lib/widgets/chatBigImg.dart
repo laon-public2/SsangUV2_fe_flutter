@@ -30,7 +30,7 @@ class ChatBigImg extends StatelessWidget {
                   switch(state.extendedImageLoadState) {
                     case LoadState.loading :
                       return Image.asset(
-                        "/assets/icon/loadingGif/Spin-1.3s-224px.gif",
+                        "assets/icon/loadingGif/loadingIcon.gif",
                         fit: BoxFit.cover,
                       );
                       break;

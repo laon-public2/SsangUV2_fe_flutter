@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:share_product_v2/model/StompSendDTO.dart';
 import 'package:share_product_v2/model/contract.dart';

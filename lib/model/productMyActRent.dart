@@ -3,9 +3,11 @@ class ProductMyActRent {
   String title = "";
   int price;
   String date;
+  String startDate;
+  String endDate;
   String name;
-  String minPrice;
-  String maxPrice;
+  int minPrice;
+  int maxPrice;
   String type;
   String status;
   String address;
@@ -17,8 +19,13 @@ class ProductMyActRent {
       : id = json["idx"],
         name = json['name'],
         title = json["title"],
+        startDate = json['start_date'],
+        endDate = json['end_date'],
+        minPrice = json['min_price'],
+        maxPrice = json['max_price'],
         price = json["price"],
         status = json['status'],
+        type = json['type'],
         productFiles = json['image'] != null
             ? (json['image'] as List)
                 .map((e) => ProductFile.fromJson(e))

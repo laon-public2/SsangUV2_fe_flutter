@@ -184,33 +184,26 @@ class ProductService {
     return response;
   }
 
-  Future<List> getProRent(int userIdx, int page, int category) async {
-    ApiResponse defaultJson;
+  Future<Response> getProRent(int userIdx, int page, int category, String type) async {
     try {
-      print("빌려드려요 접속");
+      print("$type 접속");
       Response res = await dio.get(
         '/user/myactivity',
         queryParameters: {
           'userIdx': userIdx,
           'page': page,
           'category': category,
-          'type': 'rent'
+          'type': type,
         },
       );
-      print('빌려드려요 접속 상태 === > ${res.statusCode}');
-      Map<String, dynamic> jsonMap = jsonDecode(res.toString());
-      List<ProductMyActRent> datas = (jsonMap['data'] as List)
-          .map((e) => ProductMyActRent.fromJson(e))
-          .toList();
-      jsonMap['data'] = datas;
-      defaultJson = ApiResponse<List<ProductMyActRent>>.fromJson(jsonMap);
+      print('$type 접속 상태 === > ${res.statusCode}');
+      return res;
     } on DioError catch (e) {
       print(e.response.statusCode);
       print(e.response.headers);
       print(e.response.request);
       print(e.request);
     }
-    return defaultJson.data;
   }
 
   Future<Response> rentStatusModified(int idx, String token) async {
@@ -601,7 +594,9 @@ class ProductService {
       );
       return res;
     }on DioError catch(e) {
-      print(e);
+      print("채팅내역 접속 에러");
+      print(e.response.statusCode);
+      print(e.response.data.toString());
     }
   }
 
@@ -637,6 +632,48 @@ class ProductService {
       );
       return res;
     }on DioError catch(e) {
+      print(e.response.statusCode);
+      print(e.response.data.toString());
+    }
+  }
+
+  Future<Response> historyStart(String token, int sender, int receiver, int productIdx, String status, String uuid) async {
+    print("대여 물품 대여 시작");
+    try{
+      dio.options.headers["x-access-token"] = token;
+      Response res = await dio.patch(
+        "/history/start",
+        data: {
+          "sender" : sender,
+          "receiver" : receiver,
+          "productIdx" : productIdx,
+          "type" : "RENT",
+          "status" : status,
+          "UUID" : uuid,
+        }
+      );
+      return res;
+    }on DioError catch(e){
+      print("대여시작 접속 에러");
+      print(e.response.statusCode);
+      print(e.response.data.toString());
+    }
+  }
+
+  Future<Response> historyFinish(String token, int productIdx, String uuid) async {
+    print("대여 물품 대여 시작");
+    try{
+      dio.options.headers["x-access-token"] = token;
+      Response res = await dio.patch(
+          "/history/end",
+          data: {
+            "productIdx" : productIdx,
+            "UUID" : uuid,
+          }
+      );
+      return res;
+    }on DioError catch(e){
+      print("대여종료 접속 에러");
       print(e.response.statusCode);
       print(e.response.data.toString());
     }

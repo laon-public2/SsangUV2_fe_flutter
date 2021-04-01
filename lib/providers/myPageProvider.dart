@@ -11,14 +11,29 @@ class MyPageProvider extends ChangeNotifier {
   final ProductService productSv = ProductService();
 
   List<ProductMyActRent> proRent = [];
+  List<ProductMyActRent> proWant = [];
+
+  Future<void> getProRent(int userIdx, int page, int category) async {
+    print("나의 활동 빌려드려요.");
+    this.proRent = [];
+    final res = await productSv.getProRent(userIdx, page, category, "RENT");
+    Map<String, dynamic> jsonMap = jsonDecode(res.toString());
+    List<ProductMyActRent> datas = (jsonMap['data'] as List)
+        .map((e) => ProductMyActRent.fromJson(e))
+        .toList();
+    this.proRent = datas;
+    notifyListeners();
+  }
 
   Future<void> getProWant(int userIdx, int page, int category) async {
-    print("나의 활동 빌려드려요.");
-    this.proRent = null;
-    List<ProductMyActRent> list =
-        await productSv.getProRent(userIdx, page, category);
-    this.proRent = list;
-    print(this.proRent.toString());
+    print("나의 활동 빌려주세요");
+    this.proWant = [];
+    final res = await productSv.getProRent(userIdx, page, category, "WANT");
+    Map<String, dynamic> jsonMap = jsonDecode(res.toString());
+    List<ProductMyActRent> datas = (jsonMap['data'] as List)
+        .map((e) => ProductMyActRent.fromJson(e))
+        .toList();
+    this.proRent = datas;
     notifyListeners();
   }
 

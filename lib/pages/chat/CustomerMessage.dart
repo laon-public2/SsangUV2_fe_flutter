@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:share_product_v2/model/StompSendDTO.dart';
 import 'package:share_product_v2/pages/product/ProductDetailRent.dart';
 import 'package:share_product_v2/providers/contractProvider.dart';
+import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/chatBigImg.dart';
 import 'package:share_product_v2/widgets/loading.dart';
@@ -35,24 +36,29 @@ class CustomerMessage extends StatefulWidget {
   final String productOwner;
   final int price;
   final String pic;
+  String status;
+  final int receiverIdx;
 
   // final String status; 이건 왜넣었는지 나도 모르겠음.. 필요하면
   //여기 아래에 필요한 파리미터 적어서 필요한 곳에 넣어서 잘 쓰면 됨.
   CustomerMessage(this.uuid, this.productIdx, this.title, this.category,
-      this.productOwner, this.price, this.pic);
+      this.productOwner, this.price, this.pic, this.status, this.receiverIdx);
 
   @override
   _CustomerMessage createState() => _CustomerMessage();
 }
 
 class _CustomerMessage extends State<CustomerMessage>
-    with TickerProviderStateMixin, WidgetsBindingObserver{
+    with WidgetsBindingObserver, TickerProviderStateMixin{
   Map<String, String> headers;
   int page = 0;
   final picker = ImagePicker();
   List<Asset> images = [];
   bool _imageView = false;
+  int imgQuality = 100;
 
+
+  //스크롤 컨트롤러 애니메이션
   ScrollController bottomScrollController = ScrollController();
   ScrollController chatScrollController = ScrollController();
 
@@ -133,6 +139,7 @@ class _CustomerMessage extends State<CustomerMessage>
   bool _isComposing = false;
 
   Future<void> setClient() {
+    print(this.widget.uuid);
     //웹 소켓을 연결하기 위한 설정 코드
     client = StompClient(
       config: StompConfig(
@@ -159,7 +166,9 @@ class _CustomerMessage extends State<CustomerMessage>
             },
           );
         },
-        onStompError: (error) => print("stompError : ${error.body}"),
+        onStompError: (error) {
+          print("stompError : ${error.body.toString()}");
+        },
         onWebSocketError: (error) => print("error : ${error.toString()}"),
       ),
     );
@@ -184,6 +193,17 @@ class _CustomerMessage extends State<CustomerMessage>
     await setClient();
   }
 
+  chatScroller() async{
+    final cvm = Provider.of<ContractProvider>(context, listen: false);
+   if(bottomScrollController.position.pixels == bottomScrollController.position.minScrollExtent) {
+     print("현재 채팅방의 스크롤이 가장 위에 위치하고 있습니다.");
+     if(cvm.chatHistoriesCounter.totalCount != cvm.chatHistories.length){
+       this.page++;
+       await cvm.getChatHistory(this.widget.uuid, page);
+     }
+   }
+  }
+
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -192,10 +212,26 @@ class _CustomerMessage extends State<CustomerMessage>
     print("uuid : ${this.widget.uuid}");
     _talking();
     bottomScrollController.addListener(_scrollerListener);
+    bottomScrollController.addListener(chatScroller);
+    KeyboardVisibility.onChange.listen((bool visible) {
+      print('키보드 상태가 업데이트 되었습니다. Is visible: ${visible}');
+      if (visible){
+        print("키보드가 올라와 있습니다.");
+        double _position =  500.0 + bottomScrollController.position.maxScrollExtent;
+        bottomScrollController.animateTo(
+          _position,
+          duration: Duration(milliseconds: 700),
+          curve: Curves.ease,
+        );
+      }
+      else
+        print("키보드가 내려갔습니다.");
+    });
   }
 
   void dispose() {
     _textController.dispose();
+    bottomScrollController.dispose();
     if (client != null) client.deactivate();
     WidgetsBinding.instance.addObserver(this);
     super.dispose();
@@ -214,15 +250,15 @@ class _CustomerMessage extends State<CustomerMessage>
   }
 
   _scrollerListener() async {
-    final cvm = Provider.of<ContractProvider>(context, listen: false);
-    if (bottomScrollController.position.minScrollExtent ==
-            bottomScrollController.offset &&
-        cvm.chatHistories.length > cvm.chatHistoriesCounter.totalCount) {
-      setState(() {
-        this.page += 1;
-      });
-      await cvm.getChatHistory(this.widget.uuid, page);
-    }
+    // final cvm = Provider.of<ContractProvider>(context, listen: false);
+    // if (bottomScrollController.position.minScrollExtent ==
+    //         bottomScrollController.offset &&
+    //     cvm.chatHistories.length > cvm.chatHistoriesCounter.totalCount) {
+    //   setState(() {
+    //     this.page += 1;
+    //   });
+    //   await cvm.getChatHistory(this.widget.uuid, page);
+    // }
   }
 
   void didChangeAppLifeCycleState(AppLifecycleState state) {
@@ -238,6 +274,20 @@ class _CustomerMessage extends State<CustomerMessage>
         break;
       case AppLifecycleState.detached:
         print("앱이 여전히 돌아가지만 호스트 view에서 분리됩니다. detached상태");
+        break;
+    }
+  }
+
+  chatStatus(String status) {
+    switch(status) {
+      case "INIT":
+        return "대여시작";
+        break;
+      case "START" :
+        return "대여종료";
+        break;
+      case "FINISH" :
+        return "대여종료됨";
         break;
     }
   }
@@ -279,344 +329,375 @@ class _CustomerMessage extends State<CustomerMessage>
                   );
                 }
               });
-              return Container(
-                width: double.infinity,
-                height: double.infinity,
-                child: Stack(
-                  children: <Widget>[
-                    Positioned.fill(
-                      child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        padding: const EdgeInsets.only(bottom: 57),
-                        child: Container(
-                          child: SingleChildScrollView(
-                            controller: bottomScrollController,
-                            child: Column(
-                              children: <Widget>[
-                                SizedBox(height: 80.h),
-                                Consumer<ContractProvider>(
-                                  builder: (_, chat, __) {
-                                    return ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      controller: chatScrollController,
-                                      padding: const EdgeInsets.all(8.0),
-                                      reverse: true,
-                                      itemBuilder: (context, idx) {
-                                        return ChatMessage(
-                                          text: chat.chatHistories[idx].content,
-                                          date:
-                                              chat.chatHistories[idx].createAt,
-                                          sender:
-                                              chat.chatHistories[idx].sender,
-                                          type: chat.chatHistories[idx].type,
-                                          uuid: this.widget.uuid,
-                                        );
-                                      },
-                                      itemCount: chat.chatHistories.length,
-                                    );
-                                  },
-                                ),
-                                SizedBox(height: 50),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.5),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: Offset(0, 2),
-                              color: Color.fromRGBO(0, 0, 0, 0.15),
-                              blurRadius: 8.0,
-                            ),
-                          ],
-                        ),
-                        child: Container(
-                          height: 80,
-                          decoration: BoxDecoration(
-                            color: Color(0xffffffff).withOpacity(.4),
-                          ),
-                          child: ListTile(
-                            leading: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                child: ExtendedImage.network(
-                                  "http://192.168.100.232:5066/assets/images/product/${this.widget.pic}",
-                                  fit: BoxFit.cover,
-                                  cache: true,
-                                  borderRadius: BorderRadius.circular(5),
-                                  loadStateChanged: (ExtendedImageState state) {
-                                    switch(state.extendedImageLoadState) {
-                                      case LoadState.loading :
-                                          return Image.asset(
-                                            "/assets/icon/loadingGif/Spin-1.3s-224px.gif",
-                                            fit: BoxFit.fill,
+              return Consumer<UserProvider>(
+                builder: (_, _user, __){
+                  return Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: Stack(
+                      children: <Widget>[
+                        Positioned.fill(
+                          child: Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            padding: const EdgeInsets.only(bottom: 57),
+                            child: Container(
+                              child: SingleChildScrollView(
+                                controller: bottomScrollController,
+                                child: Column(
+                                  children: <Widget>[
+                                    SizedBox(height: 80.h),
+                                    Consumer<ContractProvider>(
+                                      builder: (_, chat, __) {
+                                        return ListView.builder(
+                                            shrinkWrap: true,
+                                            physics: NeverScrollableScrollPhysics(),
+                                            controller: chatScrollController,
+                                            padding: const EdgeInsets.all(8.0),
+                                            reverse: true,
+                                            itemBuilder: (context, idx) {
+                                              return ChatMessage(
+                                                text: chat.chatHistories[idx].content,
+                                                date:
+                                                chat.chatHistories[idx].createAt,
+                                                sender:
+                                                chat.chatHistories[idx].sender,
+                                                type: chat.chatHistories[idx].type,
+                                                uuid: this.widget.uuid,
+                                              );
+                                            },
+                                            itemCount: chat.chatHistories.length,
                                           );
-                                          break;
-                                      case LoadState.completed :
-                                        break;
-                                      case LoadState.failed :
-                                        return GestureDetector(
-                                          child: Image.asset(
-                                            "assets/icon/icons8-cloud-refresh-96.png",
-                                            fit: BoxFit.fill,
-                                          ),
-                                          onTap: () {
-                                            state.reLoadImage();
-                                          },
-                                        );
-                                        break;
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                            title: Container(
-                              margin: const EdgeInsets.only(top: 10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    '${this.widget.title}',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Color(0xff444444),
+                                      },
                                     ),
-                                  ),
-                                  Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: Colors.black,
-                                    size: 16,
-                                  ),
-                                ],
+                                    SizedBox(height: defaultTargetPlatform == TargetPlatform.iOS ? 90 : 50),
+                                  ],
+                                ),
                               ),
                             ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${this.widget.productOwner}',
-                                  style: TextStyle(
-                                    color: Color(0xff999999),
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                Text(
-                                  '${_moneyFormat("${this.widget.price}")}원 / 일',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Color(0xff444444),
-                                  ),
+                          ),
+                        ),
+                        Positioned(
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.5),
+                              boxShadow: [
+                                BoxShadow(
+                                  offset: Offset(0, 2),
+                                  color: Color.fromRGBO(0, 0, 0, 0.15),
+                                  blurRadius: 8.0,
                                 ),
                               ],
                             ),
-                            onTap: () {
-                              client.deactivate();
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  child: ProductDetailRent(
-                                    this.widget.productIdx,
-                                    this.widget.category,
-                                  ),
-                                  type: PageTransitionType.rightToLeft,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
-                        width: double.infinity,
-                        height: 60.h,
-                        color: Colors.white,
-                        child: Column(
-                          children: <Widget>[
-                            Divider(height: 1.0),
-                            _buildTextComposer(),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      right: 0,
-                      left: 0,
-                      bottom: 70,
-                      child: Container(
-                        width: double.infinity,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            InkWell(
-                              child: Container(
-                                width: 120.w,
-                                height: 40.h,
-                                decoration: BoxDecoration(
-                                    color: Color(0xffff0066),
-                                    borderRadius: BorderRadius.circular(40)),
-                                child: Center(
-                                  child: Text(
-                                    '대여시작',
-                                    style: TextStyle(
-                                      color: Colors.white,
+                            child: Container(
+                              height: 80,
+                              decoration: BoxDecoration(
+                                color: Color(0xffffffff).withOpacity(.4),
+                              ),
+                              child: ListTile(
+                                leading: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    width: 50,
+                                    height: 50,
+                                    child: ExtendedImage.network(
+                                      "http://192.168.100.232:5066/assets/images/product/${this.widget.pic}",
+                                      fit: BoxFit.cover,
+                                      cache: true,
+                                      borderRadius: BorderRadius.circular(5),
+                                      loadStateChanged: (ExtendedImageState state) {
+                                        switch(state.extendedImageLoadState) {
+                                          case LoadState.loading :
+                                            return Image.asset(
+                                              "assets/loadingIcon.gif",
+                                              fit: BoxFit.fill,
+                                            );
+                                            break;
+                                          case LoadState.completed :
+                                            break;
+                                          case LoadState.failed :
+                                            return GestureDetector(
+                                              child: Image.asset(
+                                                "assets/icon/icons8-cloud-refresh-96.png",
+                                                fit: BoxFit.fill,
+                                              ),
+                                              onTap: () {
+                                                state.reLoadImage();
+                                              },
+                                            );
+                                            break;
+                                        }
+                                      },
                                     ),
                                   ),
                                 ),
-                              ),
-                              onTap: () {},
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    //이미지 박스
-                    _imageView
-                        ? images.length != 0
-                            ? Positioned(
-                                left: 8,
-                                right: 8,
-                                bottom: 10,
-                                child: Container(
-                                  width: double.infinity,
-                                  height: 150.h,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        offset: Offset(0, 2),
-                                        color: Color.fromRGBO(0, 0, 0, 0.15),
-                                        blurRadius: 8.0,
+                                title: Container(
+                                  margin: const EdgeInsets.only(top: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                        '${this.widget.title}',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Color(0xff444444),
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: Colors.black,
+                                        size: 16,
                                       ),
                                     ],
                                   ),
-                                  child: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10, right: 10),
-                                      child: photoApply(),
-                                    ),
-                                  ),
                                 ),
-                              )
-                            : SizedBox()
-                        : SizedBox(),
-                    //이미지 박스 닫기 버튼
-                    _imageView
-                        ? images.length != 0
-                            ? Positioned(
-                                bottom: 160,
-                                left: 8,
-                                child: Row(
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          this._imageView = false;
-                                          this.images = [];
-                                        });
-                                      },
-                                      child: Container(
-                                        width: 80.w,
-                                        height: 40.h,
-                                        decoration: BoxDecoration(
-                                            color: Color(0xffff0066),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  offset: Offset(0, 2),
-                                                  color: Color.fromRGBO(
-                                                      0, 0, 0, 0.15),
-                                                  blurRadius: 8.0),
-                                            ]),
-                                        child: Center(
-                                          child: Text(
-                                            '닫기',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
+                                    Text(
+                                      '${this.widget.productOwner}',
+                                      style: TextStyle(
+                                        color: Color(0xff999999),
+                                        fontSize: 14,
                                       ),
                                     ),
-                                    SizedBox(width: 10.w),
-                                    InkWell(
-                                      onTap: () async {
-                                        setState(() {
-                                          this._imageView = false;
-                                        });
-                                        showDialog(
-                                            context: context,
-                                            barrierColor:
-                                                Colors.black.withOpacity(0.0),
-                                            builder: (BuildContext context) {
-                                              return Loading();
-                                            });
-                                        await Provider.of<ContractProvider>(
-                                                context,
-                                                listen: false)
-                                            .uploadImage(
-                                          images,
-                                          this.widget.uuid,
-                                          Provider.of<UserProvider>(context,
-                                                  listen: false)
-                                              .username,
-                                        );
-                                        setState(() {
-                                          this.images = [];
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                      child: Container(
-                                        width: 80.w,
-                                        height: 40.h,
-                                        decoration: BoxDecoration(
-                                            color: Color(0xff046582),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  offset: Offset(0, 2),
-                                                  color: Color.fromRGBO(
-                                                      0, 0, 0, 0.15),
-                                                  blurRadius: 8.0),
-                                            ]),
-                                        child: Center(
-                                          child: Text(
-                                            '보내기',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
+                                    Text(
+                                      '${_moneyFormat("${this.widget.price}")}원 / 일',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Color(0xff444444),
                                       ),
                                     ),
                                   ],
-                                ))
+                                ),
+                                onTap: () {
+                                  client.deactivate();
+                                  Navigator.push(
+                                    context,
+                                    PageTransition(
+                                      child: ProductDetailRent(
+                                        this.widget.productIdx,
+                                        this.widget.category,
+                                      ),
+                                      type: PageTransitionType.rightToLeft,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: Container(
+                            width: double.infinity,
+                            height: 60.h,
+                            color: Colors.white,
+                            child: Column(
+                              children: <Widget>[
+                                Divider(height: 1.0),
+                                _buildTextComposer(),
+                              ],
+                            ),
+                          ),
+                        ),
+                        this.widget.productOwner == _user.username ?
+                        Positioned(
+                          right: 0,
+                          left: 0,
+                          bottom: defaultTargetPlatform == TargetPlatform.iOS ? 90 : 70,
+                          child: Container(
+                            width: double.infinity,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Consumer<ProductProvider>(
+                                  builder: (_, _product, __){
+                                    return InkWell(
+                                      child: Container(
+                                        width: 120.w,
+                                        height: 40.h,
+                                        decoration: BoxDecoration(
+                                            color: this.widget.status != "FINISH" ? Color(0xffff0066) : Color(0xffc4c4c4),
+                                            borderRadius: BorderRadius.circular(40)),
+                                        child: Center(
+                                          child: Text(
+                                            '${chatStatus(this.widget.status)}',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      onTap: () async{
+                                        if(this.widget.status == "FINISH") {
+                                          return null;
+                                        }else{
+                                          await _product.rentStatus(
+                                            Provider.of<UserProvider>(context, listen: false).accessToken,
+                                            Provider.of<UserProvider>(context, listen: false).userIdx,
+                                            this.widget.receiverIdx,
+                                            this.widget.productIdx,
+                                            this.widget.status,
+                                            this.widget.uuid,
+                                          );
+                                          if(this.widget.status == "INIT"){
+                                            setState(() {
+                                              this.widget.status = "START";
+                                            });
+                                          }else if(this.widget.status == "START"){
+                                            setState(() {
+                                              this.widget.status = "FINISH";
+                                            });
+                                          }
+                                        }
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ):SizedBox(),
+                        //이미지 박스
+                        _imageView
+                            ? images.length != 0
+                            ? Positioned(
+                          left: 8,
+                          right: 8,
+                          bottom: 10,
+                          child: Container(
+                            width: double.infinity,
+                            height: 150.h,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  offset: Offset(0, 2),
+                                  color: Color.fromRGBO(0, 0, 0, 0.15),
+                                  blurRadius: 8.0,
+                                ),
+                              ],
+                            ),
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10, right: 10),
+                                child: photoApply(),
+                              ),
+                            ),
+                          ),
+                        )
                             : SizedBox()
-                        : SizedBox(),
-                    //이미지 보내기 버튼
-                  ],
-                ),
+                            : SizedBox(),
+                        //이미지 박스 닫기 버튼
+                        _imageView
+                            ? images.length != 0
+                            ? Positioned(
+                            bottom: 160.h,
+                            left: 8,
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      this._imageView = false;
+                                      this.images = [];
+                                    });
+                                  },
+                                  child: Container(
+                                    width: 80.w,
+                                    height: 40.h,
+                                    decoration: BoxDecoration(
+                                        color: Color(0xffff0066),
+                                        borderRadius:
+                                        BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              offset: Offset(0, 2),
+                                              color: Color.fromRGBO(
+                                                  0, 0, 0, 0.15),
+                                              blurRadius: 8.0),
+                                        ]),
+                                    child: Center(
+                                      child: Text(
+                                        '닫기',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 10.w),
+                                InkWell(
+                                  onTap: () async {
+                                    setState(() {
+                                      this._imageView = false;
+                                    });
+                                    showDialog(
+                                        context: context,
+                                        barrierColor:
+                                        Colors.black.withOpacity(0.0),
+                                        builder: (BuildContext context) {
+                                          return Loading();
+                                        });
+                                    await Provider.of<ContractProvider>(
+                                        context,
+                                        listen: false)
+                                        .uploadImage(
+                                      images,
+                                      this.widget.uuid,
+                                      Provider.of<UserProvider>(context,
+                                          listen: false)
+                                          .username,
+                                    );
+                                    setState(() {
+                                      this.images = [];
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                  child: Container(
+                                    width: 80.w,
+                                    height: 40.h,
+                                    decoration: BoxDecoration(
+                                        color: Color(0xff046582),
+                                        borderRadius:
+                                        BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              offset: Offset(0, 2),
+                                              color: Color.fromRGBO(
+                                                  0, 0, 0, 0.15),
+                                              blurRadius: 8.0),
+                                        ]),
+                                    child: Center(
+                                      child: Text(
+                                        '보내기',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ))
+                            : SizedBox()
+                            : SizedBox(),
+                        //이미지 보내기 버튼
+                      ],
+                    ),
+                  );
+                },
               );
             }
           },
@@ -636,7 +717,7 @@ class _CustomerMessage extends State<CustomerMessage>
     return IconTheme(
       data: IconThemeData(color: Theme.of(context).accentColor),
       child: Container(
-        height: defaultTargetPlatform == TargetPlatform.iOS ? 90 : null,
+        height: defaultTargetPlatform == TargetPlatform.iOS ? 70 : null,
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
           children: <Widget>[
@@ -666,7 +747,7 @@ class _CustomerMessage extends State<CustomerMessage>
             Flexible(
               child: Container(
                 height: defaultTargetPlatform == TargetPlatform.iOS ? 60 : 50,
-                padding: const EdgeInsets.only(left: 7, bottom: 7, top: 7),
+                padding: const EdgeInsets.only(left: 7, bottom: 6, top: 7),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Color(0xffebebeb),
@@ -681,6 +762,9 @@ class _CustomerMessage extends State<CustomerMessage>
                           margin: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: TextField(
                             controller: _textController,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 3,
+                            minLines: 1,
                             // onChanged: (String text) {
                             //   setState(() {
                             //     _isComposing = text.length > 0;
@@ -762,7 +846,6 @@ class ChatMessage extends StatelessWidget {
   final String date;
   final String type;
   final String uuid;
-
   // final AnimationController animationController;
   @override
   Widget build(BuildContext context) {
@@ -825,8 +908,9 @@ class ChatMessage extends StatelessWidget {
                                         switch(state.extendedImageLoadState) {
                                           case LoadState.loading :
                                             return Image.asset(
-                                              "/assets/icon/loadingGif/Spin-1.3s-224px.gif",
-                                              fit: BoxFit.fill,
+                                              "assets/loadingIcon.gif",
+                                              width: 20.w,
+                                              height: 20.h,
                                             );
                                             break;
                                           case LoadState.completed :
@@ -893,12 +977,61 @@ class ChatMessage extends StatelessWidget {
                         constraints: BoxConstraints(
                           maxHeight: double.infinity,
                         ),
-                        child: Text(
-                          "$text",
+                        child: this.type == "TEXT"
+                            ? Text(
+                          this.text == null ? "null오류입니다." : "$text",
                           softWrap: true,
                           style: TextStyle(
                             fontSize: 15.sp,
                             color: Color(0xff666666),
+                          ),
+                        )
+                            : ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: Container(
+                            width: 200.w,
+                            height: 200.h,
+                            child: InkWell(
+                              onTap: () {
+                                showDialog(
+                                    context: context,
+                                    barrierColor:
+                                    Colors.black.withOpacity(0.0),
+                                    builder: (BuildContext context) {
+                                      return ChatBigImg(this.text);
+                                    });
+                              },
+                              child: ExtendedImage.network(
+                                "http://115.91.73.66:11111/chat/resource/image?path=${this.text}",
+                                fit: BoxFit.cover,
+                                cache: true,
+                                borderRadius: BorderRadius.circular(5),
+                                loadStateChanged: (ExtendedImageState state) {
+                                  switch(state.extendedImageLoadState) {
+                                    case LoadState.loading :
+                                      return Image.asset(
+                                        "assets/loadingIcon.gif",
+                                        width: 20.w,
+                                        height: 20.h,
+                                      );
+                                      break;
+                                    case LoadState.completed :
+                                      break;
+                                    case LoadState.failed :
+                                      return GestureDetector(
+                                        child: Image.asset(
+                                          "assets/icon/icons8-cloud-refresh-96.png",
+                                          fit: BoxFit.fill,
+                                        ),
+                                        onTap: () {
+                                          state.reLoadImage();
+                                        },
+                                      );
+                                      break;
+                                  }
+                                },
+                              ),
+                            ),
                           ),
                         ),
                       ),
