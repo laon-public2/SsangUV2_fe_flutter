@@ -23,6 +23,20 @@ class MyActHistory extends StatefulWidget {
 class _MyActHistoryState extends State<MyActHistory> with SingleTickerProviderStateMixin{
   TabController controller;
 
+  List<Tab> myTabs = <Tab> [
+    Tab(text: '전체'),
+    Tab(text: '생활용품'),
+    Tab(text: '여행'),
+    Tab(text: '스포츠/레저'),
+    Tab(text: '육아'),
+    Tab(text: '반려동물'),
+    Tab(text: '가전제품'),
+    Tab(text: '의류/잡화'),
+    Tab(text: '가구/인테리어'),
+    Tab(text: '자동차용품'),
+    Tab(text: '기타'),
+  ];
+
   void initState() {
     super.initState();
     controller = new TabController(length: 11, vsync: this);
@@ -44,41 +58,9 @@ class _MyActHistoryState extends State<MyActHistory> with SingleTickerProviderSt
         labelColor: Color(0xff333333),
         indicatorColor: Color(0xffff0066),
         controller: controller,
-        tabs: <Widget>[
-          Tab(
-            child: _CustomTabBarText('전체'),
-          ),
-          Tab(
-            child: _CustomTabBarText('생활용품'),
-          ),
-          Tab(
-            child: _CustomTabBarText('여행'),
-          ),
-          Tab(
-            child: _CustomTabBarText('스포츠/레저'),
-          ),
-          Tab(
-            child: _CustomTabBarText('육아'),
-          ),
-          Tab(
-            child: _CustomTabBarText('반려동물'),
-          ),
-          Tab(
-            child: _CustomTabBarText('가전제품'),
-          ),
-          Tab(
-            child: _CustomTabBarText('의류/잡화'),
-          ),
-          Tab(
-            child: _CustomTabBarText('가구/인테리어'),
-          ),
-          Tab(
-            child: _CustomTabBarText('자동차용품'),
-          ),
-          Tab(
-            child: _CustomTabBarText('기타'),
-          ),
-        ],
+        tabs: myTabs.map((Tab tab){
+          return Tab(child: _CustomTabBarText(tab.text));
+        }).toList(),
       ),
       elevation: 1.0,
       centerTitle: true,
@@ -124,9 +106,9 @@ class _MyActHistoryState extends State<MyActHistory> with SingleTickerProviderSt
       ),
       leading: IconButton(
         icon: Icon(
-          Icons.arrow_back_sharp,
+          Icons.arrow_back_ios,
+          size: 24,
           color: Colors.black,
-          size: 30.0,
         ),
         onPressed: () => Navigator.pop(context),
       ),

@@ -24,7 +24,7 @@ class Category5 extends StatefulWidget {
 }
 
 class _Category1State extends State<Category5> {
-  final List<String> itemKind = ["빌려드려요", "빌려주세요", "거래요청해요"];
+  final List<String> itemKind = ["빌려드려요", "빌려주세요"];
 
   int page;
   int category = 6;
@@ -41,9 +41,9 @@ class _Category1State extends State<Category5> {
   Future<bool>_loadingProduct() async {
     int userIdx = Provider.of<UserProvider>(context, listen: false).userIdx;
     await Provider.of<MyPageProvider>(context, listen: false)
-        .getProWant(userIdx, page, category);
+        .getProWantCa5(userIdx, page, category);
     await Provider.of<MyPageProvider>(context, listen: false)
-        .getProRent(userIdx, page, category);
+        .getProRentCa5(userIdx, page, category);
     return true;
   }
 
@@ -71,9 +71,16 @@ class _Category1State extends State<Category5> {
                     items: itemKind,
                     value: _currentItem,
                     onChange: (value) {
-                      setState(() {
-                        _currentItem = value;
-                      });
+                      if(value == "거래요청해요"){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ProductDetail()),
+                        );
+                      }else{
+                        setState(() {
+                          _currentItem = value;
+                        });
+                      }
                     },
                   ),
                 ],

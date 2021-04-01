@@ -57,7 +57,7 @@ class _LoginMyPageState extends State<LoginMyPage> {
                       ),
                       CustomLinkTextContainer(
                         title: "고객센터",
-                        link: '/main',
+                        link: '/center',
                       ),
                       CustomLinkTextContainer(
                         title: "약관 및 정책",

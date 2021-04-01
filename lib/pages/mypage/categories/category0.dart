@@ -24,7 +24,9 @@ class Category0 extends StatefulWidget {
 }
 
 class _Category1State extends State<Category0> {
-  final List<String> itemKind = ["빌려드려요", "빌려주세요", "거래요청해요"];
+
+
+  final List<String> itemKind = ["빌려드려요", "빌려주세요"];
 
   int page;
   int category = 1;
@@ -71,9 +73,16 @@ class _Category1State extends State<Category0> {
                     items: itemKind,
                     value: _currentItem,
                     onChange: (value) {
-                      setState(() {
-                        _currentItem = value;
-                      });
+                      if(value == "거래요청해요"){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ProductDetail()),
+                        );
+                      }else{
+                        setState(() {
+                          _currentItem = value;
+                        });
+                      }
                     },
                   ),
                 ],
@@ -150,11 +159,6 @@ class _Category1State extends State<Category0> {
                       endDate: _dateFormat(_myActHistory.proWant[idx].endDate),
                       picture: _myActHistory.proWant[idx].productFiles[0].path,
                     );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProductDetail()),
-                  );
                 }
               },
               separatorBuilder: (context, idx) {

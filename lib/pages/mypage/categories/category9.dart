@@ -24,7 +24,7 @@ class Category9 extends StatefulWidget {
 }
 
 class _Category1State extends State<Category9> {
-  final List<String> itemKind = ["빌려드려요", "빌려주세요", "거래요청해요"];
+  final List<String> itemKind = ["빌려드려요", "빌려주세요"];
 
   int page;
   int category = 10;
@@ -41,9 +41,9 @@ class _Category1State extends State<Category9> {
   Future<bool>_loadingProduct() async {
     int userIdx = Provider.of<UserProvider>(context, listen: false).userIdx;
     await Provider.of<MyPageProvider>(context, listen: false)
-        .getProWant(userIdx, page, category);
+        .getProWantCa9(userIdx, page, category);
     await Provider.of<MyPageProvider>(context, listen: false)
-        .getProRent(userIdx, page, category);
+        .getProRentCa9(userIdx, page, category);
     return true;
   }
 
@@ -71,9 +71,16 @@ class _Category1State extends State<Category9> {
                     items: itemKind,
                     value: _currentItem,
                     onChange: (value) {
-                      setState(() {
-                        _currentItem = value;
-                      });
+                      if(value == "거래요청해요"){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ProductDetail()),
+                        );
+                      }else{
+                        setState(() {
+                          _currentItem = value;
+                        });
+                      }
                     },
                   ),
                 ],
@@ -120,20 +127,20 @@ class _Category1State extends State<Category9> {
           builder: (_, _myActHistory, __) {
             return ListView.separated(
               itemCount: _currentItem == '빌려드려요'
-                  ? _myActHistory.proRent.length
-                  : _myActHistory.proWant.length,
+                  ? _myActHistory.proRentCa9.length
+                  : _myActHistory.proWantCa9.length,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, idx) {
                 if (_currentItem == "빌려드려요") {
                   return LendItemMyAct(
                     category: '전체',
-                    title: '${_myActHistory.proRent[idx].title}',
-                    name: _myActHistory.proRent[idx].name,
-                    price: _moneyFormat("${_myActHistory.proRent[idx].price}"),
-                    status: _myActHistory.proRent[idx].status,
-                    idx: _myActHistory.proRent[idx].id,
-                    picFile: _myActHistory.proRent[idx].productFiles[0].path,
+                    title: '${_myActHistory.proRentCa9[idx].title}',
+                    name: _myActHistory.proRentCa9[idx].name,
+                    price: _moneyFormat("${_myActHistory.proRentCa9[idx].price}"),
+                    status: _myActHistory.proRentCa9[idx].status,
+                    idx: _myActHistory.proRentCa9[idx].id,
+                    picFile: _myActHistory.proRentCa9[idx].productFiles[0].path,
                     arrayNum: idx,
                     token: _myInfo.accessToken,
                   );
@@ -142,13 +149,13 @@ class _Category1State extends State<Category9> {
                     idx: _myActHistory.proWant[idx].id,
                     category:
                     "전체",
-                    title: "${_myActHistory.proWant[idx].title}",
-                    name: "${_myActHistory.proWant[idx].name}",
-                    minPrice: "${_moneyFormat("${_myActHistory.proWant[idx].minPrice}")}원",
-                    maxPrice: "${_moneyFormat("${_myActHistory.proWant[idx].maxPrice}")}원",
-                    startDate: _dateFormat(_myActHistory.proWant[idx].startDate),
-                    endDate: _dateFormat(_myActHistory.proWant[idx].endDate),
-                    picture: _myActHistory.proWant[idx].productFiles[0].path,
+                    title: "${_myActHistory.proWantCa9[idx].title}",
+                    name: "${_myActHistory.proWantCa9[idx].name}",
+                    minPrice: "${_moneyFormat("${_myActHistory.proWantCa9[idx].minPrice}")}원",
+                    maxPrice: "${_moneyFormat("${_myActHistory.proWantCa9[idx].maxPrice}")}원",
+                    startDate: _dateFormat(_myActHistory.proWantCa9[idx].startDate),
+                    endDate: _dateFormat(_myActHistory.proWantCa9[idx].endDate),
+                    picture: _myActHistory.proWantCa9[idx].productFiles[0].path,
                   );
                 } else {
                   Navigator.push(

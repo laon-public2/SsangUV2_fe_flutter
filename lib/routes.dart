@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:share_product_v2/pages/mypage/centerpage.dart';
 import 'package:share_product_v2/pages/product/ProductRegOner.dart';
 import 'package:share_product_v2/pages/product/ProductReg.dart';
 import 'package:share_product_v2/pages/auth/choiceUser.dart';
@@ -38,6 +39,7 @@ final routes = {
   "/loggedPage": (context) => LoginMyPage(),
   "/loginNode": (context) => LoginPageNode(),
   '/myPageInit': (context) => MyPage(),
+  '/center': (context) => CenterPage(),
   // '/members/product': (context) => MyProductPage(), 삭제된 기능. 쓰지 않습니더.
   // "/user" : (context) => UserPage(),
   '/myActHistory': (context) => MyActHistory(),
