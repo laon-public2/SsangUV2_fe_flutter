@@ -13,12 +13,12 @@ import "package:flutter_screenutil/flutter_screenutil.dart";
 import 'package:geolocator/geolocator.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 
-class ProductReg extends StatefulWidget {
+class ProductModified extends StatefulWidget {
   @override
   _ProductRegState createState() => _ProductRegState();
 }
 
-class _ProductRegState extends State<ProductReg> {
+class _ProductRegState extends State<ProductModified> {
   List<String> categories = [
     "생활용품",
     "여행",
@@ -201,7 +201,7 @@ class _ProductRegState extends State<ProductReg> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      '상품요청하기',
+                      '상품수정하기',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 25,
