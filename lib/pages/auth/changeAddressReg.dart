@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share_product_v2/pages/auth/SuccessReg.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -95,11 +96,14 @@ class _ChangeAddressState extends State<ChangeAddressReg> {
                       );
                       await Provider.of<ProductProvider>(context, listen: false)
                           .changeUserPosition(
-                        Provider.of<UserProvider>(context, listen: false).userLocationY,
                         Provider.of<UserProvider>(context, listen: false).userLocationX,
+                        Provider.of<UserProvider>(context, listen: false).userLocationY,
                       );
                       await Provider.of<ProductProvider>(context, listen: false).getGeolocator();
-                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SuccessReg()),
+                      );
                     }
                   },
                   child: Container(

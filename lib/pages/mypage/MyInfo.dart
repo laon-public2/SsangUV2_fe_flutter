@@ -219,8 +219,9 @@ class _MyInfo extends State<MyInfo> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     InkWell(
-                      onTap: () {
-                        myInfo.DeleteUser(myInfo.phNum);
+                      onTap: () async{
+                        await myInfo.DeleteUser(myInfo.phNum);
+                        Navigator.of(context).popUntil((route) => route.isFirst);
                       },
                       child: Center(
                         child: Text(

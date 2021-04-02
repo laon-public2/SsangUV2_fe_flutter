@@ -120,6 +120,8 @@ class UserService {
         },
       );
     }on DioError catch (e){
+      print("회원탈퇴 에러");
+      print(e.response.data.toString());
       print(e.response.statusCode);
     }
   }

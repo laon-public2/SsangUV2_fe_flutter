@@ -72,7 +72,7 @@ class _ProductRegState extends State<ProductReg> {
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 4,
+        maxImages: 3,
         enableCamera: true,
         selectedAssets: images,
         cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),

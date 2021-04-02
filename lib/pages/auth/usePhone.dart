@@ -16,6 +16,10 @@ class _UsePhoneState extends State<UsePhone> {
   TextEditingController _myPhact = TextEditingController();
   String _isDialogText;
   bool isPhAct = false;
+  Future<String> _fetch1() async {
+    await Future.delayed(Duration(seconds: 10));
+    return 'lateNum';
+  }
   // final isPhoneActive =
   var maskFormatter = new MaskTextInputFormatter(
       mask: '###-####-####', filter: {"#": RegExp(r'[0-9]')});
@@ -77,7 +81,32 @@ class _UsePhoneState extends State<UsePhone> {
                         ),
                       ),
                     // Spacer(),
-                    SizedBox(height: 30.h),
+                    SizedBox(height: 10.h),
+                    if(isPhAct)
+                    FutureBuilder(
+                      future: _fetch1(),
+                      builder: (context, snapshot){
+                        return InkWell(
+                          onTap: () {
+                            Provider.of<RegUserProvider>(context, listen: false)
+                                .phoneAct(_myPh.text);
+                          },
+                          child: Container(
+                            height: 30.h,
+                            child: Center(
+                              child: Text(
+                                "인증번호 재요청",
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Color(0xffff0066),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 10.h),
                     isPhAct
                         ? InkWell(
                       onTap: () async {

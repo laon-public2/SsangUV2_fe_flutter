@@ -350,6 +350,7 @@ class _ProductDetailState extends State<ProductDetailRent> {
                               padding: const EdgeInsets.only(top: 10),
                               alignment: Alignment.topLeft,
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     '${_myProduct.productDetail.title}',
@@ -368,7 +369,8 @@ class _ProductDetailState extends State<ProductDetailRent> {
                                     ),
                                   ),
                                 ],
-                              )),
+                              ),
+                          ),
                           Container(
                             padding: const EdgeInsets.only(top: 10),
                             alignment: Alignment.topLeft,
@@ -616,7 +618,7 @@ class _ProductDetailState extends State<ProductDetailRent> {
                                       "${_reviewdateFormat(_myProduct.productReviewnot[idx].createAt)}",
                                   grage: _myProduct.productReviewnot[idx].grade,
                                   description:
-                                      "${_myProduct.productReviewnot[idx].description}",
+                                      "${_myProduct.productReviewnot[idx].content}",
                                 );
                               },
                               separatorBuilder: (context, idx) {

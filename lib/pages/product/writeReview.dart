@@ -132,6 +132,7 @@ class _WriteReviewState extends State<WriteReview> {
                             this.descriptionContorller.text,
                             this.ratingCount.toInt(),
                             _myInfo.accessToken);
+                        Navigator.pop(context);
                       }
                     },
                     child: Container(

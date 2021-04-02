@@ -19,7 +19,7 @@ class CustomTextFieldContainer extends StatelessWidget {
       ),
       padding: EdgeInsets.symmetric(horizontal: 10),
       width: double.infinity,
-      height: 50.h,
+      height: 55.h,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

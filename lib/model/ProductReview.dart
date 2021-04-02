@@ -3,6 +3,7 @@ class productReview{
   String nickname;
   String createAt;
   String description;
+  String content;
   int grade;
   String productFiles;
 
@@ -11,6 +12,7 @@ class productReview{
         nickname = json['name'],
         createAt = json['created_at'],
         description = json['description'],
+        content = json['content'],
         grade = json['grade'],
         productFiles = json['image'];
 

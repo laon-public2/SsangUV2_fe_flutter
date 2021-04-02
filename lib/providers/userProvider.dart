@@ -264,9 +264,11 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  void DeleteUser(String userPh) async {
+  Future<void> DeleteUser(String userPh) async {
     final res = await userService.delete_user(userPh, accessToken);
     print(res.toString());
+    this.isLoggenIn = false;
+    notifyListeners();
   }
 
   Future<void> withdrawal() async {

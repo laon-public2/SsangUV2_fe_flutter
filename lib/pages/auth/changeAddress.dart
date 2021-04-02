@@ -90,8 +90,8 @@ class _ChangeAddressState extends State<ChangeAddress> {
                       await _myInfo.changeAddress(
                         this.widget.address,
                         "${this.widget.addressDetail} ${this._addressDetail.text}",
-                        this.widget.lo,
                         this.widget.la,
+                        this.widget.lo,
                       );
                       await Provider.of<ProductProvider>(context, listen: false)
                           .changeUserPosition(

@@ -83,14 +83,14 @@ class _Category1State extends State<Category2> {
       builder: (_, _myList, __) {
         return ListView.separated(
           itemCount: this._currentItem == '빌려드려요'
-              ? _myList.searchDataProduct.length
-              : _myList.searchDataProductWant.length,
+              ? _myList.searchDataProductCa2.length
+              : _myList.searchDataProductWantCa2.length,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, idx) {
             if (this._currentItem == "빌려드려요") {
-              if (idx == _myList.searchDataProduct.length) {
-                if (idx == _myList.searchPaging.totalCount) {
+              if (idx == _myList.searchDataProductCa2.length) {
+                if (idx == _myList.searchPagingCa2.totalCount) {
                   return SizedBox();
                 } else {
                   this.page++;
@@ -99,14 +99,14 @@ class _Category1State extends State<Category2> {
                 }
               }
               return LendItemMainPage(
-                category: "${_category(_myList.searchDataProduct[idx].category)}",
-                idx: _myList.searchDataProduct[idx].id,
-                title: "${_myList.searchDataProduct[idx].title}",
-                name: "${_myList.searchDataProduct[idx].name}",
-                price: "${_moneyFormat("${_myList.searchDataProduct[idx].price}")}원",
+                category: "${_category(_myList.searchDataProductCa2[idx].category)}",
+                idx: _myList.searchDataProductCa2[idx].id,
+                title: "${_myList.searchDataProductCa2[idx].title}",
+                name: "${_myList.searchDataProductCa2[idx].name}",
+                price: "${_moneyFormat("${_myList.searchDataProductCa2[idx].price}")}원",
                 distance:
-                "${(_myList.searchDataProduct[idx].distance).toStringAsFixed(2)}",
-                picture: "${_myList.searchDataProduct[idx].productFiles[0].path}",
+                "${(_myList.searchDataProductCa2[idx].distance).toStringAsFixed(2)}",
+                picture: "${_myList.searchDataProductCa2[idx].productFiles[0].path}",
               );
             } else {
               if (idx == _myList.mainProductsWant.length) {

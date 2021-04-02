@@ -307,7 +307,24 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
           );
           if (Provider.of<RegUserProvider>(context, listen: false)
               .regUserTruth) {
-            _showDialogSuccess('회원가입이 완료되었습니다.');
+            KopoModel model =
+            await Navigator.of(context).push(PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  Kopo(),
+            ));
+            String position =
+            await Provider.of<MapProvider>(context, listen: false)
+                .getPosition(model.address);
+            List<String> positionSplit = position.split(',');
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChangeAddressReg(
+                      double.parse(positionSplit[0]),
+                      double.parse(positionSplit[1]),
+                      "${model.sido} ${model.sigungu} ${model.bname}",
+                      "${model.buildingName}${model.apartment}"),
+                ));
           } else {
             _showDialogSuccess('해당 전화번호는 이미 존재하는 회원입니다.');
           }

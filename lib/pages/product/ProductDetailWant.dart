@@ -151,7 +151,12 @@ class _ProductDetailState extends State<ProductDetailWant> {
                         ),
                       ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute() => ProductReg()
+                          // );
+                        },
                         child: Container(
                           padding: const EdgeInsets.only(
                             left: 16,

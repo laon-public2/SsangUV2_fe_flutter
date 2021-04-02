@@ -40,7 +40,6 @@ class ProductProvider extends ChangeNotifier {
 
   Paging paging;
   ReviewPaging reviewPaging;
-  Paging searchPaging;
 
   Product product;
 
@@ -56,8 +55,6 @@ class ProductProvider extends ChangeNotifier {
   List<Geolocation> geoUserLocation = [];
   productDetailWant productDetail;
   List<productReview> productReviewnot;
-  List<SearchDataProduct> searchDataProduct = [];
-  List<SearchDataProduct> searchDataProductWant = [];
   List<PrivateRent> privateRentList = [];
   Paging privateRentCounter;
 
@@ -85,6 +82,57 @@ class ProductProvider extends ChangeNotifier {
   num loUser;
 
   List<SpecialProduct> specialProduct = [];
+
+  //검색 카테고리 1
+  List<SearchDataProduct> searchDataProduct = [];
+  List<SearchDataProduct> searchDataProductWant = [];
+  Paging searchPaging;
+
+  //검색 카테고리 2
+  List<SearchDataProduct> searchDataProductCa2 = [];
+  List<SearchDataProduct> searchDataProductWantCa2 = [];
+  Paging searchPagingCa2;
+
+  //검색 카테고리 3
+  List<SearchDataProduct> searchDataProductCa3 = [];
+  List<SearchDataProduct> searchDataProductWantCa3 = [];
+  Paging searchPagingCa3;
+
+  //검색 카테고리 4
+  List<SearchDataProduct> searchDataProductCa4 = [];
+  List<SearchDataProduct> searchDataProductWantCa4 = [];
+  Paging searchPagingCa4;
+
+  //검색 카테고리 5
+  List<SearchDataProduct> searchDataProductCa5 = [];
+  List<SearchDataProduct> searchDataProductWantCa5 = [];
+  Paging searchPagingCa5;
+
+  //검색 카테고리 6
+  List<SearchDataProduct> searchDataProductCa6 = [];
+  List<SearchDataProduct> searchDataProductWantCa6 = [];
+  Paging searchPagingCa6;
+
+  //검색 카테고리 7
+  List<SearchDataProduct> searchDataProductCa7 = [];
+  List<SearchDataProduct> searchDataProductWantCa7 = [];
+  Paging searchPagingCa7;
+
+  //검색 카테고리 8
+  List<SearchDataProduct> searchDataProductCa8 = [];
+  List<SearchDataProduct> searchDataProductWantCa8 = [];
+  Paging searchPagingCa8;
+
+  //검색 카테고리 9
+  List<SearchDataProduct> searchDataProductCa9 = [];
+  List<SearchDataProduct> searchDataProductWantCa9 = [];
+  Paging searchPagingCa9;
+
+  //검색 카테고리 10
+  List<SearchDataProduct> searchDataProductCa10 = [];
+  List<SearchDataProduct> searchDataProductWantCa10 = [];
+  Paging searchPagingCa10;
+
 
   void resetAddress() {
     this.firstAddress = '기본 주소 설정';
@@ -882,34 +930,319 @@ class ProductProvider extends ChangeNotifier {
 
   Future<void> SearchingDataProduct(
       int page, String searchData, int category) async {
-    print(page);
-    print(searchData);
-    print(category);
-    print('검색 조회 프로바이더 서비스');
-    if (page == 0) {
-      this.searchDataProduct = [];
-    }
-    try {
-      final res = await productService.searchProduct(
-          page, searchData, la, lo, category);
-      Map<String, dynamic> jsonMap = json.decode(res.toString());
-      List<SearchDataProduct> list = (jsonMap['data'] as List)
-          .map((e) => SearchDataProduct.fromJson(e))
-          .toList();
-      print(list);
-      Paging paging = Paging.fromJson(jsonMap);
-      this.searchPaging = paging;
-      if (this.searchPaging.currentPage == null ||
-          this.searchPaging.currentPage == 0) {
-        this.searchDataProduct = list;
-      } else {
-        for (var e in list) {
-          this.searchDataProduct.add(e);
+    switch(category){
+      //카테고리 1
+      case 2 :
+        print(page);
+        print(searchData);
+        print(category);
+        print('검색 조회 프로바이더 서비스');
+        if (page == 0) {
+          this.searchDataProduct = [];
         }
-      }
-    } catch (e) {
-      print(e);
+        try {
+          final res = await productService.searchProduct(
+              page, searchData, la, lo, category);
+          Map<String, dynamic> jsonMap = json.decode(res.toString());
+          List<SearchDataProduct> list = (jsonMap['data'] as List)
+              .map((e) => SearchDataProduct.fromJson(e))
+              .toList();
+          print(list);
+          Paging paging = Paging.fromJson(jsonMap);
+          this.searchPaging = paging;
+          if (this.searchPaging.currentPage == null ||
+              this.searchPaging.currentPage == 0) {
+            this.searchDataProduct = list;
+          } else {
+            for (var e in list) {
+              this.searchDataProduct.add(e);
+            }
+          }
+        } catch (e) {
+          print(e);
+        }
+        break;
+       //카테고리 2
+      case 3 :
+        print(page);
+        print(searchData);
+        print(category);
+        print('검색 조회 프로바이더 서비스');
+        if (page == 0) {
+          this.searchDataProductCa2 = [];
+        }
+        try {
+          final res = await productService.searchProduct(
+              page, searchData, la, lo, category);
+          Map<String, dynamic> jsonMap = json.decode(res.toString());
+          List<SearchDataProduct> list = (jsonMap['data'] as List)
+              .map((e) => SearchDataProduct.fromJson(e))
+              .toList();
+          print(list);
+          Paging paging = Paging.fromJson(jsonMap);
+          this.searchPagingCa2 = paging;
+          if (this.searchPagingCa2.currentPage == null ||
+              this.searchPagingCa2.currentPage == 0) {
+            this.searchDataProductCa2 = list;
+          } else {
+            for (var e in list) {
+              this.searchDataProductCa2.add(e);
+            }
+          }
+        } catch (e) {
+          print(e);
+        }
+        break;
+      //카테고리 3
+      case 4 :
+        print(page);
+        print(searchData);
+        print(category);
+        print('검색 조회 프로바이더 서비스');
+        if (page == 0) {
+          this.searchDataProductCa3 = [];
+        }
+        try {
+          final res = await productService.searchProduct(
+              page, searchData, la, lo, category);
+          Map<String, dynamic> jsonMap = json.decode(res.toString());
+          List<SearchDataProduct> list = (jsonMap['data'] as List)
+              .map((e) => SearchDataProduct.fromJson(e))
+              .toList();
+          print(list);
+          Paging paging = Paging.fromJson(jsonMap);
+          this.searchPagingCa3 = paging;
+          if (this.searchPagingCa3.currentPage == null ||
+              this.searchPagingCa3.currentPage == 0) {
+            this.searchDataProductCa3 = list;
+          } else {
+            for (var e in list) {
+              this.searchDataProductCa3.add(e);
+            }
+          }
+        } catch (e) {
+          print(e);
+        }
+        break;
+      //카테고리 4
+      case 5 :
+        print(page);
+        print(searchData);
+        print(category);
+        print('검색 조회 프로바이더 서비스');
+        if (page == 0) {
+          this.searchDataProductCa4 = [];
+        }
+        try {
+          final res = await productService.searchProduct(
+              page, searchData, la, lo, category);
+          Map<String, dynamic> jsonMap = json.decode(res.toString());
+          List<SearchDataProduct> list = (jsonMap['data'] as List)
+              .map((e) => SearchDataProduct.fromJson(e))
+              .toList();
+          print(list);
+          Paging paging = Paging.fromJson(jsonMap);
+          this.searchPaging = paging;
+          if (this.searchPagingCa4.currentPage == null ||
+              this.searchPagingCa4.currentPage == 0) {
+            this.searchDataProductCa4 = list;
+          } else {
+            for (var e in list) {
+              this.searchDataProductCa4.add(e);
+            }
+          }
+        } catch (e) {
+          print(e);
+        }
+        break;
+      //카테고리 5
+      case 6 :
+        print(page);
+        print(searchData);
+        print(category);
+        print('검색 조회 프로바이더 서비스');
+        if (page == 0) {
+          this.searchDataProductCa5 = [];
+        }
+        try {
+          final res = await productService.searchProduct(
+              page, searchData, la, lo, category);
+          Map<String, dynamic> jsonMap = json.decode(res.toString());
+          List<SearchDataProduct> list = (jsonMap['data'] as List)
+              .map((e) => SearchDataProduct.fromJson(e))
+              .toList();
+          print(list);
+          Paging paging = Paging.fromJson(jsonMap);
+          this.searchPaging = paging;
+          if (this.searchPagingCa5.currentPage == null ||
+              this.searchPagingCa5.currentPage == 0) {
+            this.searchDataProductCa5 = list;
+          } else {
+            for (var e in list) {
+              this.searchDataProductCa5.add(e);
+            }
+          }
+        } catch (e) {
+          print(e);
+        }
+        break;
+      //카테고리 6
+      case 7:
+        print(page);
+        print(searchData);
+        print(category);
+        print('검색 조회 프로바이더 서비스');
+        if (page == 0) {
+          this.searchDataProductCa6 = [];
+        }
+        try {
+          final res = await productService.searchProduct(
+              page, searchData, la, lo, category);
+          Map<String, dynamic> jsonMap = json.decode(res.toString());
+          List<SearchDataProduct> list = (jsonMap['data'] as List)
+              .map((e) => SearchDataProduct.fromJson(e))
+              .toList();
+          print(list);
+          Paging paging = Paging.fromJson(jsonMap);
+          this.searchPagingCa6 = paging;
+          if (this.searchPagingCa6.currentPage == null ||
+              this.searchPagingCa6.currentPage == 0) {
+            this.searchDataProductCa6 = list;
+          } else {
+            for (var e in list) {
+              this.searchDataProductCa6.add(e);
+            }
+          }
+        } catch (e) {
+          print(e);
+        }
+        break;
+      //카테고리 7
+      case 8 :
+        print(page);
+        print(searchData);
+        print(category);
+        print('검색 조회 프로바이더 서비스');
+        if (page == 0) {
+          this.searchDataProductCa7 = [];
+        }
+        try {
+          final res = await productService.searchProduct(
+              page, searchData, la, lo, category);
+          Map<String, dynamic> jsonMap = json.decode(res.toString());
+          List<SearchDataProduct> list = (jsonMap['data'] as List)
+              .map((e) => SearchDataProduct.fromJson(e))
+              .toList();
+          print(list);
+          Paging paging = Paging.fromJson(jsonMap);
+          this.searchPagingCa7 = paging;
+          if (this.searchPagingCa7.currentPage == null ||
+              this.searchPagingCa7.currentPage == 0) {
+            this.searchDataProductCa7 = list;
+          } else {
+            for (var e in list) {
+              this.searchDataProductCa7.add(e);
+            }
+          }
+        } catch (e) {
+          print(e);
+        }
+        break;
+      //카테고리 8
+      case 9 :
+        print(page);
+        print(searchData);
+        print(category);
+        print('검색 조회 프로바이더 서비스');
+        if (page == 0) {
+          this.searchDataProductCa8 = [];
+        }
+        try {
+          final res = await productService.searchProduct(
+              page, searchData, la, lo, category);
+          Map<String, dynamic> jsonMap = json.decode(res.toString());
+          List<SearchDataProduct> list = (jsonMap['data'] as List)
+              .map((e) => SearchDataProduct.fromJson(e))
+              .toList();
+          print(list);
+          Paging paging = Paging.fromJson(jsonMap);
+          this.searchPagingCa8 = paging;
+          if (this.searchPagingCa8.currentPage == null ||
+              this.searchPagingCa8.currentPage == 0) {
+            this.searchDataProductCa8 = list;
+          } else {
+            for (var e in list) {
+              this.searchDataProductCa8.add(e);
+            }
+          }
+        } catch (e) {
+          print(e);
+        }
+        break;
+      //카테고리 9
+      case 10 :
+        print(page);
+        print(searchData);
+        print(category);
+        print('검색 조회 프로바이더 서비스');
+        if (page == 0) {
+          this.searchDataProductCa9 = [];
+        }
+        try {
+          final res = await productService.searchProduct(
+              page, searchData, la, lo, category);
+          Map<String, dynamic> jsonMap = json.decode(res.toString());
+          List<SearchDataProduct> list = (jsonMap['data'] as List)
+              .map((e) => SearchDataProduct.fromJson(e))
+              .toList();
+          print(list);
+          Paging paging = Paging.fromJson(jsonMap);
+          this.searchPagingCa9 = paging;
+          if (this.searchPagingCa9.currentPage == null ||
+              this.searchPagingCa9.currentPage == 0) {
+            this.searchDataProductCa9 = list;
+          } else {
+            for (var e in list) {
+              this.searchDataProductCa9.add(e);
+            }
+          }
+        } catch (e) {
+          print(e);
+        }
+        break;
+      //카테고리 10
+      case 11 :
+        print(page);
+        print(searchData);
+        print(category);
+        print('검색 조회 프로바이더 서비스');
+        if (page == 0) {
+          this.searchDataProductCa10 = [];
+        }
+        try {
+          final res = await productService.searchProduct(
+              page, searchData, la, lo, category);
+          Map<String, dynamic> jsonMap = json.decode(res.toString());
+          List<SearchDataProduct> list = (jsonMap['data'] as List)
+              .map((e) => SearchDataProduct.fromJson(e))
+              .toList();
+          print(list);
+          Paging paging = Paging.fromJson(jsonMap);
+          this.searchPagingCa10 = paging;
+          if (this.searchPagingCa10.currentPage == null ||
+              this.searchPagingCa10.currentPage == 0) {
+            this.searchDataProductCa10 = list;
+          } else {
+            for (var e in list) {
+              this.searchDataProductCa10.add(e);
+            }
+          }
+        } catch (e) {
+          print(e);
+        }
+        break;
     }
+
     notifyListeners();
   }
 
