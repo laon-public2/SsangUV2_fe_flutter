@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import "dart:io";
 import 'package:dio/dio.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:share_product_v2/models/default.dart';
@@ -381,6 +381,47 @@ class UserService {
       return res;
     }on DioError catch(e){
       print("유저 비밀번호 변경 오류");
+      print(e.response.statusCode);
+      print(e.response.data.toString());
+    }
+  }
+
+  // Future<Response> changeCompanyNum(String comNum, String token) async {
+  //   try{
+  //     print("유저 대여업체 사업자번호 변경");
+  //     dio.options.headers['x-access-token'] = token;
+  //     Response res = await dio.patch(
+  //       '/user/modiBussiness',
+  //       data: {
+  //
+  //       }
+  //     );
+  //     return res;
+  //   }on DioError catch(e) {
+  //     print("유저 대여업체 사업자번호 변경 에러");
+  //     print(e.response.statusCode);
+  //     print(e.response.data.toString());
+  //   }
+  // }
+
+  Future<Response> changeCompanyImg(File comImg, String token, int userIdx) async {
+    try{
+      print("유저 대여업체 사업자이미지 변경");
+      print(userIdx);
+      print(token);
+      dio.options.contentType = "multipart/form-data";
+      dio.options.headers['x-access-token'] = token;
+      var formData = FormData.fromMap({
+        'userIdx' : userIdx,
+        'businessIdentifyFile' : await MultipartFile.fromFile(comImg.path, filename: comImg.path.split("/").last)
+      });
+      Response res = await dio.patch(
+        "/user/modibusiness",
+        data: formData
+      );
+      return res;
+    }on DioError catch(e){
+      print("유저 대여업체 사업자이미지 변경 에러");
       print(e.response.statusCode);
       print(e.response.data.toString());
     }

@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import 'package:kopo/kopo.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/auth/changeAddress.dart';
+import 'package:share_product_v2/pages/mypage/MyComModified.dart';
 import 'package:share_product_v2/pages/mypage/MyPageModified.dart';
 import 'package:share_product_v2/providers/mapProvider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
@@ -131,7 +132,12 @@ class _MyInfo extends State<MyInfo> {
                         child: IconButton(
                           padding: new EdgeInsets.all(0.0),
                           icon: Image.asset('assets/icon/write.png'),
-                          onPressed: () => null,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => MyComModified(comName: myInfo.comIdentity, comNum: myInfo.comNum))
+                            );
+                          },
                         ),
                       ),
                     )

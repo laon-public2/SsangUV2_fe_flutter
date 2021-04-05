@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:share_product_v2/model/ProductDetailWant.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/CustomDatePicker.dart';
@@ -14,6 +17,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 
 class ProductModified extends StatefulWidget {
+  final productDetailWant originalInfo;
+  final String categoryString;
+
+  ProductModified({this.originalInfo, this.categoryString});
+
   @override
   _ProductRegState createState() => _ProductRegState();
 }
@@ -33,34 +41,42 @@ class _ProductRegState extends State<ProductModified> {
   ];
 
   String _selectedCategory = "";
-
-  // var maskComNumFomatter = new MaskTextInputFormatter(
-  //     mask: '###,###,###,###,###,###,###,###,###',
-  //     filter: {'#': RegExp(r'[0-9]')});
   TextEditingController _controller = TextEditingController();
   TextEditingController _productName = TextEditingController();
   TextEditingController _dateController = TextEditingController();
   TextEditingController _minMoneyController = TextEditingController();
-  TextEditingController _otherAddressDetail = TextEditingController();
-  final descriptionTextController = TextEditingController();
-
-  // String _minMoney;
-  // String _maxMoney;
   TextEditingController _maxMoneyController = TextEditingController();
+  TextEditingController _otherAddressDetail = TextEditingController();
+  TextEditingController descriptionTextController = TextEditingController();
+  TextEditingController _priceController = TextEditingController();
 
   bool _otherLocation = false;
-
-  List<RadioModel> LocationData = new List<RadioModel>(); //커스텀 라디오 버튼
   FocusNode descriptionFocus;
+
+  List<ProductFile> original_images = List<ProductFile>();
+  List<int> deleteImages = List<int>();
 
   @override
   void initState() {
-    //지금 위젯이 처음 시작할 때부터 2개 자동 추가
     super.initState();
-    LocationData.add(RadioModel(true, "OnlyMine", "현재 위치"));
-    LocationData.add(RadioModel(false, "NormalLocation", "기본 위치"));
-    LocationData.add(RadioModel(false, "OtherLocation", "다른 위치"));
-    Provider.of<ProductProvider>(context, listen: false).resetAddress();
+    setState(() {
+      _productName.text = this.widget.originalInfo.title;
+      _selectedCategory = this.widget.categoryString;
+      _priceController.text = "${this.widget.originalInfo.price}";
+      _dateController.text =
+          "${_dateFormat(this.widget.originalInfo.startDate)} ~ ${_dateFormat(this.widget.originalInfo.endDate)}";
+      _minMoneyController.text = "${this.widget.originalInfo.minPrice}";
+      _maxMoneyController.text = "${this.widget.originalInfo.maxPrice}";
+      descriptionTextController.text = this.widget.originalInfo.description;
+      original_images = this.widget.originalInfo.productFiles.toList();
+      _otherAddressDetail.text = this.widget.originalInfo.addressDetail;
+    });
+    Provider.of<ProductProvider>(context, listen: false).changeAddress(
+      "lend1",
+      this.widget.originalInfo.lati,
+      this.widget.originalInfo.longti,
+      this.widget.originalInfo.address,
+    );
   }
 
   String _isDialogText;
@@ -72,7 +88,7 @@ class _ProductRegState extends State<ProductModified> {
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 3,
+        maxImages: 3 - original_images.length,
         enableCamera: true,
         selectedAssets: images,
         cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
@@ -118,19 +134,51 @@ class _ProductRegState extends State<ProductModified> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
+          original_images.length == 3 ?
+          SizedBox() :
           Container(
             margin: const EdgeInsets.only(right: 15),
             width: 72,
             height: 72,
             decoration: BoxDecoration(
                 color: Color(0xffdddddd),
-                borderRadius: BorderRadius.all(Radius.circular(5))),
+                borderRadius: BorderRadius.all(Radius.circular(10))),
             child: InkWell(
               onTap: () async {
                 await loadAssets();
               },
               child: Center(child: Icon(Icons.camera_alt)),
             ),
+          ),
+          Row(
+            children: original_images.map((e) {
+              return Stack(children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      "http://192.168.100.232:5066/assets/images/product/${e.path}",
+                      fit: BoxFit.cover,
+                      width: 72,
+                      height: 72,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: -12,
+                  right: -6,
+                  child: IconButton(
+                      icon: Icon(Icons.remove_circle),
+                      onPressed: () {
+                        setState(() {
+                          original_images.remove(e);
+                          deleteImages.add(e.id);
+                        });
+                      }),
+                )
+              ]);
+            }).toList(),
           ),
           Row(
             children: images.map((e) {
@@ -228,6 +276,13 @@ class _ProductRegState extends State<ProductModified> {
                       controller: _dateController,
                     ),
                     SizedBox(height: 10),
+                    this.widget.originalInfo.type == "RENT" ?
+                    textField(
+                      "가격입력 (1일 기준)",
+                      _priceController,
+                      TextInputType.number,
+                      true,
+                    ) :
                     Container(
                       width: double.infinity,
                       height: 50,
@@ -312,68 +367,18 @@ class _ProductRegState extends State<ProductModified> {
                       ),
                     ),
                     SizedBox(height: 10),
-                    Container(
-                      width: double.infinity,
-                      height: 52,
-                      child: Row(
-                        children: [
-                          //현재 위치
-                          InkWell(
-                            splashColor: Color(0xffff0066),
-                            onTap: () {
-                              setState(() {
-                                LocationData.forEach(
-                                    (element) => element.isSelected = false);
-                                LocationData[0].isSelected = true;
-                              });
-                              this._otherLocation = false;
-                            },
-                            child: RadioItem(LocationData[0]),
-                          ),
-                          //기본 위치
-                          InkWell(
-                            splashColor: Color(0xffff0066),
-                            onTap: () {
-                              setState(() {
-                                LocationData.forEach(
-                                    (element) => element.isSelected = false);
-                                LocationData[1].isSelected = true;
-                              });
-                              this._otherLocation = false;
-                            },
-                            child: RadioItem(LocationData[1]),
-                          ),
-                          //다른 위치
-                          InkWell(
-                            splashColor: Color(0xffff0066),
-                            onTap: () {
-                              setState(() {
-                                LocationData.forEach(
-                                        (element) => element.isSelected = false);
-                                LocationData[2].isSelected = true;
-                              });
-                              this._otherLocation = true;
-                            },
-                            child: RadioItem(LocationData[2]),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    userAddress("lend2", LocationData[2].isSelected == true ? "true" : "false"),
+                    userAddress("lend1"),
                     SizedBox(height: 10),
                     Container(
-                      padding:
-                      const EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                        color: LocationData[2].isSelected == true ? Colors.white : Colors.grey[300],
+                        color: Colors.white,
                         border: Border.all(
                           color: Color(0xffdddddd),
                         ),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextField(
-                        readOnly: LocationData[2].isSelected != true ? true : false,
                         style: TextStyle(
                           fontSize: 14,
                           color: Color(0xffaaaaaa),
@@ -385,8 +390,8 @@ class _ProductRegState extends State<ProductModified> {
                           disabledBorder: InputBorder.none,
                           enabledBorder: InputBorder.none,
                           hintText: "기타 자세한 주소",
-                          hintStyle: TextStyle(
-                              fontSize: 14, color: Color(0xffaaaaaa)),
+                          hintStyle:
+                              TextStyle(fontSize: 14, color: Color(0xffaaaaaa)),
                         ),
                         keyboardType: TextInputType.number,
                       ),
@@ -427,7 +432,7 @@ class _ProductRegState extends State<ProductModified> {
                             ),
                           ),
                           Text(
-                            "대여 받으실 때 물품을 수령한 직후 물품의 사진을 촬영해 채팅방에 업로드 해야 합니다. 물품 상태를 확인받지 않을 시 불이익이 따를 수 있습니다.",
+                            "글을 수정 후 다시 이전 글로 되돌릴 수 없습니다. 수정 후 문제가 생기면 쌩유 고객센터로 문의 해주시기 바랍니다.",
                             style: TextStyle(
                               color: Color(0xff444444),
                             ),
@@ -441,195 +446,142 @@ class _ProductRegState extends State<ProductModified> {
             ),
           ),
           Positioned(
-            left: 0,
-            right: 0,
-            bottom: 20,
-            child: Consumer<UserProvider> (
-              builder: (_, _user, __) {
-                return Consumer<ProductProvider>(
-                  builder: (_, _myProduct, __) {
-                    return InkWell(
-                      onTap: () async{
-                        if (_productName.text == "") {
-                          setState(() {
-                            _isDialogText = "상품명이 입력되지 않았습니다.";
-                          });
-                          _showDialog();
-                        }else if (images.length == 0) {
-                          setState(() {
-                            _isDialogText = "사진이 비어있습니다.";
-                          });
-                          _showDialog();
-                        }else if (_dateController.text == "") {
-                          setState(() {
-                            _isDialogText = "기간이 설정되지 않았습니다.";
-                          });
-                          _showDialog();
-                        } else if (_minMoneyController.text == "") {
-                          setState(() {
-                            _isDialogText = "최저가격이 설정되지 않았습니다.";
-                          });
-                          _showDialog();
-                        } else if (_maxMoneyController.text == "") {
-                          setState(() {
-                            _isDialogText = "최대가격이 설정되지 않았습니다.";
-                          });
-                          _showDialog();
-                        } else if (_otherLocation == true) {
-                          if (_myProduct.secondAddress == "기타 주소 설정") {
+              left: 0,
+              right: 0,
+              bottom: 20,
+              child: Consumer<UserProvider>(
+                builder: (_, _user, __) {
+                  return Consumer<ProductProvider>(
+                    builder: (_, _myProduct, __) {
+                      return InkWell(
+                        onTap: () async {
+                          if (_productName.text == "") {
                             setState(() {
-                              _isDialogText = "기타주소가 비어 있습니다.";
+                              _isDialogText = "상품명이 입력되지 않았습니다.";
                             });
                             _showDialog();
-                          }else if(_otherAddressDetail.text == ""){
+                          } else if (images.length == 0 && original_images.length == 0) {
                             setState(() {
-                              _isDialogText = "기타 자세한 주소가 비어 있습니다.";
+                              _isDialogText = "사진이 비어있습니다.";
                             });
                             _showDialog();
+                          } else if (_dateController.text == "") {
+                            setState(() {
+                              _isDialogText = "기간이 설정되지 않았습니다.";
+                            });
+                            _showDialog();
+                          } else if (_minMoneyController.text == "") {
+                            setState(() {
+                              _isDialogText = "최저가격이 설정되지 않았습니다.";
+                            });
+                            _showDialog();
+                          } else if (_maxMoneyController.text == "") {
+                            setState(() {
+                              _isDialogText = "최대가격이 설정되지 않았습니다.";
+                            });
+                            _showDialog();
+                          } else if (_otherLocation == true) {
+                            if (_myProduct.secondAddress == "기타 주소 설정") {
+                              setState(() {
+                                _isDialogText = "기타주소가 비어 있습니다.";
+                              });
+                              _showDialog();
+                            } else if (_otherAddressDetail.text == "") {
+                              setState(() {
+                                _isDialogText = "기타 자세한 주소가 비어 있습니다.";
+                              });
+                              _showDialog();
+                            }
+                          } else if (_selectedCategory == "") {
+                            setState(() {
+                              _isDialogText = "카테고리가 선택되지 않았습니다.";
+                            });
+                            _showDialog();
+                          } else if (descriptionTextController.text == "") {
+                            setState(() {
+                              _isDialogText = "설명글이 비어 있습니다.";
+                            });
+                            _showDialog();
+                          } else {
+                            List<String> date = _dateController.text.split("~");
+                            await _myProduct.productModified(
+                                this.widget.originalInfo.id,
+                                _selectCategory(this.widget.categoryString),
+                                _productName.text,
+                                descriptionTextController.text,
+                                int.parse(_priceController.text),
+                                int.parse(_minMoneyController.text),
+                                int.parse(_maxMoneyController.text),
+                                images,
+                                deleteImages,
+                                date[0],
+                                date[1],
+                                _myProduct.firstAddress,
+                                this._otherAddressDetail.text,
+                                _myProduct.firstLa,
+                                _myProduct.firstLo,
+                                _user.accessToken,
+                            );
+                            _showDialogSuccess("글이 수정되었습니다.");
                           }
-                        } else if (_selectedCategory == "") {
-                          setState(() {
-                            _isDialogText = "카테고리가 선택되지 않았습니다.";
-                          });
-                          _showDialog();
-                        } else if (descriptionTextController.text == "") {
-                          setState(() {
-                            _isDialogText = "설명글이 비어 있습니다.";
-                          });
-                          _showDialog();
-                        } else {
-                          if(this.LocationData[0].isSelected == true){
-                            List<String> date = _dateController.text.split("~");
-                            await _myProduct.productApplyWant(
-                              _user.phNum,
-                              _user.userIdx,
-                              _selectCategory(_selectedCategory),
-                              _productName.text,
-                              descriptionTextController.text,
-                              int.parse(_minMoneyController.text),
-                              int.parse(_maxMoneyController.text),
-                              images,
-                              date[0],
-                              date[1],
-                              "${_myProduct.geoLocation[1].depth1} ${_myProduct.geoLocation[1].depth2}",
-                              "${_myProduct.geoLocation[1].depth3} ${_myProduct.geoLocation[1].depth4}",
-                              _myProduct.la,
-                              _myProduct.lo,
-                              _user.accessToken,
-                              _otherLocation,
-                            );
-                            _showDialogSuccess("글이 등록되었습니다.");
-                          }else if(this.LocationData[1].isSelected == true){
-                            List<String> date = _dateController.text.split("~");
-                            await _myProduct.productApplyWant(
-                              _user.phNum,
-                              _user.userIdx,
-                              _selectCategory(_selectedCategory),
-                              _productName.text,
-                              descriptionTextController.text,
-                              int.parse(_minMoneyController.text),
-                              int.parse(_maxMoneyController.text),
-                              images,
-                              date[0],
-                              date[1],
-                              "${_user.address}",
-                              "${_user.addressDetail}",
-                              _myProduct.laUser,
-                              _myProduct.loUser,
-                              _user.accessToken,
-                              _otherLocation,
-                            );
-                            _showDialogSuccess("글이 등록되었습니다.");
-                          }else{
-                            List<String> date = _dateController.text.split("~");
-                            await _myProduct.productApplyWant(
-                              _user.phNum,
-                              _user.userIdx,
-                              _selectCategory(_selectedCategory),
-                              _productName.text,
-                              descriptionTextController.text,
-                              int.parse(_maxMoneyController.text),
-                              int.parse(_minMoneyController.text),
-                              images,
-                              date[0],
-                              date[1],
-                              "${_myProduct.firstAddress}",
-                              "${this._otherAddressDetail.text}",
-                              _myProduct.secondLa,
-                              _myProduct.secondLo,
-                              _user.accessToken,
-                              _otherLocation,
-                            );
-                            _showDialogSuccess("글이 등록되었습니다.");
-                          }
-                        }
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.only(
-                          left: 16,
-                          right: 16,
-                        ),
+                        },
                         child: Container(
-                          width: double.infinity,
-                          height: 52,
-                          decoration: BoxDecoration(
-                            color: Color(0xffff0066),
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                offset: Offset(4, 4),
-                                blurRadius: 4,
-                                spreadRadius: 1,
-                                color: Colors.black.withOpacity(0.08),
-                              ),
-                            ],
+                          padding: const EdgeInsets.only(
+                            left: 16,
+                            right: 16,
                           ),
-                          child: Center(
-                            child: Text(
-                              '요청하기',
-                              style: TextStyle(color: Colors.white),
+                          child: Container(
+                            width: double.infinity,
+                            height: 52,
+                            decoration: BoxDecoration(
+                              color: Color(0xffff0066),
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  offset: Offset(4, 4),
+                                  blurRadius: 4,
+                                  spreadRadius: 1,
+                                  color: Colors.black.withOpacity(0.08),
+                                ),
+                              ],
+                            ),
+                            child: Center(
+                              child: Text(
+                                '수정하기',
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                );
-              },
-            )
-          ),
+                      );
+                    },
+                  );
+                },
+              )),
         ],
       ),
     );
   }
 
-  Widget userAddress(String type, String enabled) {
+  Widget userAddress(String type) {
     return Consumer<ProductProvider>(
       builder: (_, _product, __) {
         return InkWell(
           onTap: () {
-            if(enabled == "true"){
-              if(type == "lend2"){
-                setState(() {
-                  _otherLocation = true;
-                });
-                Navigator.of(context).pushNamed(
-                  "/address",
-                  arguments: {
-                    "type": type,
-                  },
-                );
-              }else{
-                return;
-              }
-            }else{
-             return;
-            }
+            setState(() {
+              _otherLocation = true;
+            });
+            Navigator.of(context).pushNamed(
+              "/address",
+              arguments: {
+                "type": type,
+              },
+            );
           },
           child: Container(
             alignment: Alignment.centerLeft,
             decoration: BoxDecoration(
-              color: enabled == "true" ? Colors.white : Colors.grey[300],
+              color: Colors.white,
               border: Border.all(
                 color: Color(0xffdddddd),
               ),
@@ -680,7 +632,7 @@ class _ProductRegState extends State<ProductModified> {
       // hack textfield height
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: TextField(
-        style: TextStyle(fontSize: 14, color: Color(0xff333333)),
+        style: TextStyle(fontSize: 14, color: Color(0xffaaaaaa)),
         maxLines: 15,
         controller: controller,
         focusNode: descriptionFocus,
@@ -718,6 +670,7 @@ class _ProductRegState extends State<ProductModified> {
     );
   }
 
+  //카테고리 선택 위젯
   Widget categorySelect() {
     return Container(
         decoration: BoxDecoration(
@@ -753,13 +706,10 @@ class _ProductRegState extends State<ProductModified> {
         });
   }
 
-  _moneyFormat(String price) {
-    if (price.length > 2) {
-      var value = price;
-      value = value.replaceAll(RegExp(r'\D'), '');
-      value = value.replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), ',');
-      return value;
-    }
+  _dateFormat(String date) {
+    String formatDate(DateTime date) =>
+        new DateFormat("yyyy-MM-dd").format(date);
+    return formatDate(DateTime.parse(date));
   }
 
   void _showDialogSuccess(String text) {
@@ -770,6 +720,7 @@ class _ProductRegState extends State<ProductModified> {
         });
   }
 
+  //카테고리 숫자 변환기
   _selectCategory(String category) {
     if (category == "생활용품") {
       return 2;
@@ -804,52 +755,34 @@ class _ProductRegState extends State<ProductModified> {
   }
 }
 
-//여기서부터는 커스텀 라디오 버튼
-class RadioItem extends StatelessWidget {
-  final RadioModel _item;
+Widget textField(String placeholder, TextEditingController controller,
+    TextInputType type, bool isNumber) {
+  final List<TextInputFormatter> formatters = <TextInputFormatter>[];
+  if (isNumber) formatters.add(FilteringTextInputFormatter.digitsOnly);
 
-  RadioItem(this._item);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(4.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                width: 6,
-                color: _item.isSelected ? Color(0xffff0066) : Color(0xff999999),
-              ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 10),
-            child: Text(_item.text),
-          ),
-        ],
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.white,
+      border: Border.all(
+        color: Color(0xffdddddd),
       ),
-    );
-  }
+      borderRadius: BorderRadius.circular(10),
+    ),
+    height: 48,
+    padding: EdgeInsets.symmetric(horizontal: 10),
+    child: TextField(
+      inputFormatters: formatters,
+      style: TextStyle(fontSize: 14, color: Color(0xffaaaaaa)),
+      controller: controller,
+      keyboardType: type,
+      decoration: InputDecoration(
+        hintText: placeholder,
+        hintStyle: TextStyle(fontSize: 14, color: Color(0xffaaaaaa)),
+        border: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
+        enabledBorder: InputBorder.none,
+      ),
+    ),
+  );
 }
-
-class RadioModel {
-  bool isSelected;
-  final String buttonText;
-  final String text;
-
-  RadioModel(this.isSelected, this.buttonText, this.text);
-}
-
-// class GeoLocatorService {
-//   Future<Position> getLocation() async {
-//     Position position =
-//         await getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
-//     return position;
-//   }
-// }

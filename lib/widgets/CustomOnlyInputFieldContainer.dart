@@ -29,7 +29,7 @@ class CustomTextFieldContainer extends StatelessWidget {
               controller: controller,
               style: TextStyle(
                 fontSize: 14,
-                color: Color(0xff333333),
+                color: Color(0xffaaaaaa),
               ),
               decoration: InputDecoration(
                 border: InputBorder.none,

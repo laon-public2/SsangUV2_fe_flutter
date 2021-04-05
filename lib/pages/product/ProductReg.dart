@@ -10,7 +10,6 @@ import 'package:share_product_v2/widgets/CustomOnlyInputFieldContainer.dart';
 import 'package:share_product_v2/consts/textStyle.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
 import "package:flutter_screenutil/flutter_screenutil.dart";
-import 'package:geolocator/geolocator.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 
 class ProductReg extends StatefulWidget {

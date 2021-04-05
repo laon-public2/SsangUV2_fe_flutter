@@ -13,6 +13,7 @@ import 'package:share_product_v2/widgets/customAppBar%20copy.dart';
 import 'dart:io';
 
 import 'package:share_product_v2/widgets/customdialog.dart';
+import 'package:share_product_v2/widgets/customdialogApply.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 
 class ProductApplyPage extends StatefulWidget {
@@ -244,7 +245,7 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
           height: 10,
         ),
         SizedBox(
-            height: 40.h,
+            height: 50.h,
             width: double.infinity,
             child: Consumer<UserProvider>(
               builder: (_, _user, __) {
@@ -312,7 +313,7 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
               },
             )),
         SizedBox(
-          height: 10,
+          height: 20,
         ),
       ],
     );
@@ -511,26 +512,7 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return CustomDialog(dialogChild(message), "확인", () {
-            Navigator.of(context).pop();
-
-            switch (type) {
-              case "title":
-                // FocusScope.of(context).unfocus();
-                // FocusScope.of(context).requestFocus(titleFocus);
-                break;
-              case "category":
-                showModalBottomSheet(
-                    context: context, builder: buildBottomSheet);
-                break;
-              case "price":
-                // FocusScope.of(context).requestFocus(priceFocus);
-                break;
-              case "description":
-                // FocusScope.of(context).requestFocus(descriptionFocus);
-                break;
-            }
-          });
+          return CustomDialogApply(Center(child: Text(message)), '확인');
         });
   }
 

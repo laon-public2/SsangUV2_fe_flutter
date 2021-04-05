@@ -151,53 +151,54 @@ class _ProductDetailState extends State<ProductDetailWant> {
                           ),
                         ),
                       ),
-                      InkWell(
-                        onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute() => ProductReg()
-                          // );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.only(
-                            left: 16,
-                            right: 16,
-                          ),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ProductModified())
-                              );
-                            },
-                            child: Container(
-                              //미디어쿼리는 키보드가 올라오면 전체 화면을 재정의 하기때문에 api가 무한 호출되거나 키보드가 올라갔다 내려갔다가 한다. 이건 플러터의 버그임.
-                              //결론 쓰지 마셈. 왠만하면...
-                              // width:
-                              //     MediaQuery.of(context).size.width * 0.4,
-                              width: 130.w,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Color(0xffff0066),
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    offset: Offset(4, 4),
-                                    blurRadius: 4,
-                                    spreadRadius: 1,
-                                    color: Colors.black.withOpacity(0.08),
+                      Consumer<ProductProvider>(
+                        builder: (_, _product, __){
+                        return InkWell(
+                          child: Container(
+                            padding: const EdgeInsets.only(
+                              left: 16,
+                              right: 16,
+                            ),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ProductModified(
+                                      originalInfo: _product.productDetail,
+                                      categoryString: this.widget.category,
+                                    )),
+                                );
+                              },
+                              child: Container(
+                                //미디어쿼리는 키보드가 올라오면 전체 화면을 재정의 하기때문에 api가 무한 호출되거나 키보드가 올라갔다 내려갔다가 한다. 이건 플러터의 버그임.
+                                //결론 쓰지 마셈. 왠만하면...
+                                // width:
+                                //     MediaQuery.of(context).size.width * 0.4,
+                                width: 130.w,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffff0066),
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      offset: Offset(4, 4),
+                                      blurRadius: 4,
+                                      spreadRadius: 1,
+                                      color: Colors.black.withOpacity(0.08),
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '수정',
+                                    style: TextStyle(color: Colors.white),
                                   ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '수정',
-                                  style: TextStyle(color: Colors.white),
                                 ),
                               ),
                             ),
                           ),
-                        ),
+                        );
+                      },
                       ),
                     ],
                   ),

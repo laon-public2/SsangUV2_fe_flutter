@@ -305,6 +305,14 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> userComChange(File images) async {
+    print("대여업체 유저 사업자등록증 사진변경");
+    final res = await userService.changeCompanyImg(images, this.accessToken, this.userIdx);
+    Map<String, dynamic> jsonMap = json.decode(res.toString());
+    print(jsonMap);
+    await getMyInfo();
+  }
+
   Future<void> userImgChange(List<Asset> files) async {
     print("유저 사진 변경");
     List<MultipartFile> fileList = [];

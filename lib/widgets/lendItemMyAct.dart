@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/product/ProductDetail.dart';
 import 'package:share_product_v2/pages/product/ProductDetailMyact.dart';
 import 'package:share_product_v2/pages/mypage/myActHistory.dart';
+import 'package:share_product_v2/pages/product/ProductDetailRent.dart';
 import 'package:share_product_v2/providers/myPageProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/categoryContainer.dart';
@@ -49,7 +50,7 @@ class _LendItemMyActState extends State<LendItemMyAct> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ProductDetailMyAct()),
+          MaterialPageRoute(builder: (context) => ProductDetailRent(this.widget.idx, this.widget.category)),
         );
       },
       child: Container(

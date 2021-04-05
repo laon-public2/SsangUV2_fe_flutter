@@ -1,12 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
-import 'package:share_product_v2/model/MainPageRent.dart';
-import 'package:share_product_v2/model/product.dart';
-import 'package:share_product_v2/model/productMyActRent.dart';
-import 'package:share_product_v2/models/default.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:share_product_v2/utils/APIUtil.dart';
 
 class ProductService {
@@ -45,16 +41,6 @@ class ProductService {
       "address_detail": "자세한 주소",
       "latitude": "위도",
       "longitude": "경도",
-      // for(int i=0; i<sendPic.length; i++){
-      //   "productImg" : await MultipartFile.fromFile(
-      //     sendPic[i].path,
-      //     filename: "MuJacWeeeee",
-      //   ),
-      // }
-      // "productImg": await MultipartFile.fromFile(
-      //   sendPic.path,
-      //   filename: "MuJacWeeeee",
-      // ),
     });
     dio.options.headers['x-access-token'] = token;
     Response res = await dio.post('/product/add', data: {});
@@ -448,6 +434,96 @@ class ProductService {
       print(e.response.statusCode);
       print(e.response.data.toString());
     }
+  }
+
+  Future<Response> productModifiedText(
+      int productIdx,
+      int categoryIdx,
+      String title,
+      String description,
+      int price,
+      int minPrice,
+      int maxPrice,
+      String startDate,
+      String endDate,
+      String address,
+      String addressDetail,
+      num la,
+      num lo,
+      String token,
+      ) async {
+    try {
+      print("상품 수정");
+      dio.options.contentType = "application/x-www-form-urlencoded";
+      dio.options.headers['x-access-token'] = token;
+      Response res = await dio.patch(
+        '/product/modi',
+        data: {
+          'productIdx' : productIdx,
+          'categoryIdx': categoryIdx,
+          'title': title,
+          'description': description,
+          'price': price,
+          'minPrice': minPrice,
+          'maxPrice': maxPrice,
+          "startDate": startDate,
+          "endDate": endDate,
+          "address": address,
+          "address_detail": addressDetail,
+          "latitude": la,
+          "longitude": lo,
+        },
+      );
+      return res;
+    } on DioError catch (e) {
+      print("상품 수정 오류 (텍스트)");
+      print(e.response.statusCode);
+      print(e.response.data.toString());
+    }
+  }
+
+  Future<Response> productModifiedDelPic(int imgIdx, String token) async {
+    print("$imgIdx");
+    print("$token");
+    print("상품 이미지 수정(삭제)");
+    try{
+      dio.options.headers['x-access-token'] = token;
+      Response res = await dio.delete(
+          '/product/image/delete',
+          data: {
+            'imgIdx' : imgIdx,
+          }
+      );
+      return res;
+    }on DioError catch(e){
+      print("상품 이미지 수정 에러 (삭제)");
+      print(e.response.statusCode);
+      print(e.response.data.toString());
+    }
+  }
+
+  Future<Response> productModifiedAddPic(int productIdx, dynamic file, String token)async{
+    print("상품 이미지 수정(추가)");
+    print(productIdx);
+    print(token);
+    try{
+      dio.options.headers['x-access-token'] = token;
+      dio.options.contentType = "multipart/form-data";
+      FormData fromData = FormData.fromMap({
+        'productIdx' : productIdx,
+        'productImg' : file,
+      });
+      Response res = await dio.post(
+        '/product/image/add',
+        data: fromData,
+      );
+      return res;
+    }on DioError catch(e){
+      print("상품 이미지 수정 추가 에러");
+      print(e.response.statusCode);
+      print(e.response.data.toString());
+    }
+
   }
 
   Future<Response> productAddpri(

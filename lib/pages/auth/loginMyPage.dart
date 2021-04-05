@@ -7,7 +7,7 @@ import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/CustomLinkTextContainer.dart';
 import 'package:share_product_v2/widgets/CustomOnlyTextContainer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:share_product_v2/widgets/bottomBar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginMyPage extends StatefulWidget {
   @override
@@ -18,7 +18,6 @@ class _LoginMyPageState extends State<LoginMyPage> {
   @override
   void initState() {
     super.initState();
-    // Provider.of<UserProvider>(context, listen: false).getMyInfo();
   }
 
   @override
@@ -105,6 +104,14 @@ class _LoginMyPageState extends State<LoginMyPage> {
                             value: _getMyinfo.userPush,
                             onChanged: (bool value) {
                               _getMyinfo.changePush();
+                              Fluttertoast.showToast(
+                                  msg: value ? "알림전송이 허용되었습니다." : "알림전송이 거부되었습니다.",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Color(0xffff0066),
+                                  textColor: Colors.white,
+                                  fontSize: 16.0
+                              );
                             },
                           ),
                         ],

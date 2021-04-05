@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:share_product_v2/pages/mypage/centerpage.dart';
-import 'package:share_product_v2/pages/product/ProductRegOner.dart';
 import 'package:share_product_v2/pages/product/ProductReg.dart';
 import 'package:share_product_v2/pages/auth/choiceUser.dart';
 import 'package:share_product_v2/pages/auth/login.dart';

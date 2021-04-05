@@ -548,6 +548,145 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> productModified(
+      int productIdx,
+      int categoryIdx,
+      String title,
+      String description,
+      int price,
+      int minPrice,
+      int maxPrice,
+      List<Asset> files,
+      List<int> delFiles,
+      String startDate,
+      String endDate,
+      String address,
+      String addressDetail,
+      num la,
+      num lo,
+      String token,
+      ) async {
+    print("상품수정하기");
+    try {
+      if(files.length == 0 && delFiles.length == 0) {
+        final res = await productService.productModifiedText(
+          productIdx,
+          categoryIdx,
+          title,
+          description,
+          price,
+          maxPrice,
+          minPrice,
+          startDate,
+          endDate,
+          address,
+          addressDetail,
+          la,
+          lo,
+          token,
+        );
+        Map<String, dynamic> jsonMap = json.decode(res.toString());
+        print(jsonMap);
+      }else if(files.length > 0 && delFiles.length > 0){
+        final res = await productService.productModifiedText(
+          productIdx,
+          categoryIdx,
+          title,
+          description,
+          price,
+          maxPrice,
+          minPrice,
+          startDate,
+          endDate,
+          address,
+          addressDetail,
+          la,
+          lo,
+          token,
+        );
+        for(var file in delFiles){
+          final resDelPic = await productService.productModifiedDelPic(file, token);
+          Map<String, dynamic> jsonMap = json.decode(resDelPic.toString());
+          print(jsonMap);
+        }
+        List<MultipartFile> fileList = [];
+        for (var file in files) {
+          ByteData byteData = await file.getByteData();
+          List<int> imageData = byteData.buffer.asUint8List();
+          MultipartFile multipartFile =
+          MultipartFile.fromBytes(imageData, filename: file.name);
+          fileList.add(multipartFile);
+        }
+        for(var file in fileList) {
+          final resAddPic = await productService.productModifiedAddPic(productIdx, file, token);
+          Map<String, dynamic> addPicMap = json.decode(resAddPic.toString());
+          print(addPicMap);
+        }
+        Map<String, dynamic> jsonMap = json.decode(res.toString());
+        print(jsonMap);
+      }else if(files.length > 0) {
+        final res = await productService.productModifiedText(
+          productIdx,
+          categoryIdx,
+          title,
+          description,
+          price,
+          maxPrice,
+          minPrice,
+          startDate,
+          endDate,
+          address,
+          addressDetail,
+          la,
+          lo,
+          token,
+        );
+        List<MultipartFile> fileList = [];
+        for (var file in files) {
+          ByteData byteData = await file.getByteData();
+          List<int> imageData = byteData.buffer.asUint8List();
+          MultipartFile multipartFile =
+          MultipartFile.fromBytes(imageData, filename: file.name);
+          fileList.add(multipartFile);
+        }
+        for(var file in fileList) {
+          final resAddPic = await productService.productModifiedAddPic(productIdx, file, token);
+          Map<String, dynamic> addPicMap = json.decode(resAddPic.toString());
+          print(addPicMap);
+        }
+        Map<String, dynamic> jsonMap = json.decode(res.toString());
+        print(jsonMap);
+
+      }else if(delFiles.length > 0){
+        final res = await productService.productModifiedText(
+          productIdx,
+          categoryIdx,
+          title,
+          description,
+          price,
+          maxPrice,
+          minPrice,
+          startDate,
+          endDate,
+          address,
+          addressDetail,
+          la,
+          lo,
+          token,
+        );
+        for(var file in delFiles){
+          final resDelPic = await productService.productModifiedDelPic(file, token);
+          Map<String, dynamic> jsonMap = json.decode(resDelPic.toString());
+          print(jsonMap);
+        }
+        Map<String, dynamic> jsonMap = json.decode(res.toString());
+        print(jsonMap);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   void putProduct(
       context,
       int id,

@@ -10,6 +10,7 @@ import 'package:share_product_v2/pages/product/writeReview.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/bannerProduct.dart';
+import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 import 'package:share_product_v2/widgets/loading.dart';
 import 'package:share_product_v2/widgets/reviewPage.dart';
 import 'package:share_product_v2/widgets/simpleMap.dart';
@@ -19,9 +20,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'ProductModified.dart';
+
 class ProductDetailRent extends StatefulWidget {
   final int productIdx;
   final String category;
+
   const ProductDetailRent(this.productIdx, this.category);
 
   @override
@@ -55,14 +59,13 @@ class _ProductDetailState extends State<ProductDetailRent> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SingleChildScrollView(
-            child: FutureBuilder(
+    return FutureBuilder(
                 future: _loadLocator(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분
                   if (snapshot.hasData == false) {
                     return Container(
+                      color: Colors.white,
                       height: 300.h,
                       child: Center(
                         child: CircularProgressIndicator(
@@ -82,72 +85,185 @@ class _ProductDetailState extends State<ProductDetailRent> {
                       ),
                     );
                   } else {
-                    return _body();
+                    return _scaffold();
                   }
-                })),
-        floatingActionButton: Consumer<ProductProvider>(
-          builder: (_, _product, __){
-            return InkWell(
-              onTap: () async{
-                String uuid = await Provider.of<ProductProvider>(context, listen: false).rentInit(
-                  Provider.of<UserProvider>(context, listen: false).userIdx,
-                  _product.productDetail.receiverIdx,
-                  this.widget.productIdx,
-                  Provider.of<UserProvider>(context, listen: false).accessToken,
-                );
-                print(uuid);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CustomerMessage(
-                      uuid,
-                      this.widget.productIdx,
-                      _product.productDetail.title,
-                      this.widget.category,
-                      _product.productDetail.name,
-                      _product.productDetail.price,
-                      _product.productDetail.productFiles[0].path,
-                      "INIT",
-                      _product.productDetail.receiverIdx,
-                  ))
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                ),
-                child: Consumer<UserProvider>(
-                  builder: (_, _user, __){
-                    return Container(
-                      width: double.infinity,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: _user.isLoggenIn ? Color(0xffff0066) : Colors.grey[400],
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            offset: Offset(4, 4),
-                            blurRadius: 4,
-                            spreadRadius: 1,
-                            color: Colors.black.withOpacity(0.08),
+                });
+  }
+
+  _scaffold(){
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: _body(),
+      ),
+        floatingActionButton: Consumer<UserProvider>(
+          builder: (_, _myUser, __) {
+            return Consumer<ProductProvider>(
+              builder: (__, _product, _) {
+                return _myUser.username == _product.productDetail.name
+                    ? Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () async {
+                          await _product.delProduct(
+                              _product.productDetail.id,
+                              _myUser.accessToken);
+                          await _product.getMainWant(0);
+                          await _product.getMainWant(0);
+                          _showDialogSuccess("삭제가 완료되었습니다.");
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.only(
+                            left: 16,
+                            right: 16,
                           ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          '대여문의하기',
-                          style: TextStyle(color: Colors.white),
+                          child: Container(
+                            width: 130.w,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[500],
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  offset: Offset(4, 4),
+                                  blurRadius: 4,
+                                  spreadRadius: 1,
+                                  color: Colors.black.withOpacity(0.08),
+                                ),
+                              ],
+                            ),
+                            child: Center(
+                              child: Text(
+                                '삭제',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
+                      Consumer<ProductProvider>(
+                        builder: (_, _product, __){
+                          return InkWell(
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                left: 16,
+                                right: 16,
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ProductModified(
+                                      originalInfo: _product.productDetail,
+                                      categoryString: this.widget.category,
+                                    )),
+                                  );
+                                },
+                                child: Container(
+                                  //미디어쿼리는 키보드가 올라오면 전체 화면을 재정의 하기때문에 api가 무한 호출되거나 키보드가 올라갔다 내려갔다가 한다. 이건 플러터의 버그임.
+                                  //결론 쓰지 마셈. 왠만하면...
+                                  width: 130.w,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffff0066),
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        offset: Offset(4, 4),
+                                        blurRadius: 4,
+                                        spreadRadius: 1,
+                                        color: Colors.black.withOpacity(0.08),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      '수정',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                )
+                    : InkWell(
+                  onTap: () async {
+                    String uuid = await Provider.of<ProductProvider>(
+                        context,
+                        listen: false)
+                        .rentInit(
+                      Provider.of<UserProvider>(context, listen: false)
+                          .userIdx,
+                      _product.productDetail.receiverIdx,
+                      this.widget.productIdx,
+                      Provider.of<UserProvider>(context, listen: false)
+                          .accessToken,
                     );
+                    print(uuid);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CustomerMessage(
+                              uuid,
+                              this.widget.productIdx,
+                              _product.productDetail.title,
+                              this.widget.category,
+                              _product.productDetail.name,
+                              _product.productDetail.price,
+                              _product
+                                  .productDetail.productFiles[0].path,
+                              "INIT",
+                              _product.productDetail.receiverIdx,
+                            )));
                   },
-                ),
-              ),
+                  child: Container(
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                    ),
+                    child: Consumer<UserProvider>(
+                      builder: (_, _user, __) {
+                        return Container(
+                          width: double.infinity,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: _user.isLoggenIn
+                                ? Color(0xffff0066)
+                                : Colors.grey[400],
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                offset: Offset(4, 4),
+                                blurRadius: 4,
+                                spreadRadius: 1,
+                                color: Colors.black.withOpacity(0.08),
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              '대여문의하기',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
             );
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat);
   }
+
   _body() {
     return Consumer<ProductProvider>(
       builder: (__, _myProduct, _) {
@@ -175,10 +291,8 @@ class _ProductDetailState extends State<ProductDetailRent> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ImageView(
-                                    _myProduct.productDetail.productFiles
-                                )
-                              ));
+                                  builder: (context) => ImageView(
+                                      _myProduct.productDetail.productFiles)));
                         },
                         child: Container(
                           width: double.infinity,
@@ -347,29 +461,29 @@ class _ProductDetailState extends State<ProductDetailRent> {
                             ),
                           ),
                           Container(
-                              padding: const EdgeInsets.only(top: 10),
-                              alignment: Alignment.topLeft,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${_myProduct.productDetail.title}',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
+                            padding: const EdgeInsets.only(top: 10),
+                            alignment: Alignment.topLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${_myProduct.productDetail.title}',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
                                   ),
-                                  Text(
-                                    '${_myProduct.productDetail.name}',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      color: Color(0xff999999),
-                                    ),
+                                ),
+                                Text(
+                                  '${_myProduct.productDetail.name}',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xff999999),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
+                            ),
                           ),
                           Container(
                             padding: const EdgeInsets.only(top: 10),
@@ -517,36 +631,38 @@ class _ProductDetailState extends State<ProductDetailRent> {
                                   )
                                 ],
                               ),
-                              _myProduct.productDetail.review != null ?
-                              _myProduct.productDetail.review
-                                  ? InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => WriteReview(
-                                                  this.widget.productIdx)),
-                                        );
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            '리뷰작성',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              color: Color(0xffff0066),
-                                              fontSize: 16.sp,
-                                            ),
+                              _myProduct.productDetail.review != null
+                                  ? _myProduct.productDetail.review
+                                      ? InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      WriteReview(this
+                                                          .widget
+                                                          .productIdx)),
+                                            );
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                '리뷰작성',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Color(0xffff0066),
+                                                  fontSize: 16.sp,
+                                                ),
+                                              ),
+                                              Icon(
+                                                Icons.arrow_forward_ios,
+                                                color: Color(0xffff0066),
+                                                size: 16.sp,
+                                              )
+                                            ],
                                           ),
-                                          Icon(
-                                            Icons.arrow_forward_ios,
-                                            color: Color(0xffff0066),
-                                            size: 16.sp,
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  : SizedBox()
+                                        )
+                                      : SizedBox()
                                   : SizedBox(),
                             ],
                           ),
@@ -701,6 +817,14 @@ class _ProductDetailState extends State<ProductDetailRent> {
   _reviewdateFormat(String date) {
     String formatDate(DateTime date) => new DateFormat("yy.MM.dd").format(date);
     return formatDate(DateTime.parse(date));
+  }
+
+  void _showDialogSuccess(String text) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomDialogApplyReg(Center(child: Text(text)), '확인');
+        });
   }
 
   _showLoading() {
