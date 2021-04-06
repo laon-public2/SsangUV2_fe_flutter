@@ -48,6 +48,12 @@ class BannerItem extends StatelessWidget {
                       // "http://192.168.100.232:5050/assets/images/banner/${e.bannerFile}",
                       "http://192.168.100.232:5066/assets/images/banner/${e.bannerFile}",
                       fit: BoxFit.cover,
+                      errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
+                        return Image.asset(
+                          'assets/loadingIcon.gif',
+                          fit: BoxFit.fill,
+                        );
+                      },
                     ),
                   ),
                 );
