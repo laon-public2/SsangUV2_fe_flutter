@@ -163,6 +163,12 @@ class UserProvider extends ChangeNotifier {
           this.userPush = false;
         }
         print('x == ${this.userLocationX} y == ${this.userLocationY}');
+        if (this.originalFBtoken == this.userFBtoken) {
+          return;
+        } else {
+          print("fcm토큰 수정");
+          fBToken();
+        }
       }
     } else {
       this.username = "정보없음";
@@ -237,6 +243,7 @@ class UserProvider extends ChangeNotifier {
         if (this.originalFBtoken == this.userFBtoken) {
           return;
         } else {
+          print("fcm토큰 수정");
           fBToken();
         }
       }

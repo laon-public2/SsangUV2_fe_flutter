@@ -169,18 +169,15 @@ class _ProductRegState extends State<ProductReg> {
       // resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: Transform.rotate(
-          angle: 180 * pi / 180,
-          child: IconButton(
-            icon: Icon(
-              Icons.arrow_forward,
-              color: Colors.black,
-              size: 30.0,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            size: 24,
+            color: Colors.black,
           ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
       body: _body(),
@@ -387,7 +384,6 @@ class _ProductRegState extends State<ProductReg> {
                           hintStyle: TextStyle(
                               fontSize: 14, color: Color(0xffaaaaaa)),
                         ),
-                        keyboardType: TextInputType.number,
                       ),
                     ),
                     SizedBox(height: 10),

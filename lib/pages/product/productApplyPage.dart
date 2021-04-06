@@ -15,6 +15,7 @@ import 'dart:io';
 import 'package:share_product_v2/widgets/customdialog.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
+import 'package:share_product_v2/widgets/loading.dart';
 
 class ProductApplyPage extends StatefulWidget {
   @override
@@ -234,7 +235,6 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
           height: 10,
         ),
         userAddress("rent"),
-
         SizedBox(
           height: 10,
         ),
@@ -527,6 +527,12 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
           height: 20.h,
         ),
       ],
+    );
+  }
+  Widget notBack(){
+    return WillPopScope(
+        child: Loading(),
+        onWillPop: () {},
     );
   }
 }

@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "39038634597",
-    "project_id": "ssangu-98c50",
-    "storage_bucket": "ssangu-98c50.appspot.com"
+    "project_number": "1056856329245",
+    "project_id": "ssangu-dc730",
+    "storage_bucket": "ssangu-dc730.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:39038634597:android:8402abea0018f976d5148c",
+        "mobilesdk_app_id": "1:1056856329245:android:308aeb2f74e1600d74caf4",
         "android_client_info": {
           "package_name": "com.example.share_product_v2"
         }
       },
       "oauth_client": [
         {
-          "client_id": "39038634597-cd3b8okla211bqibc90neeiphc29hpi2.apps.googleusercontent.com",
+          "client_id": "1056856329245-hoin2u7mhetk5h3efh7867amp8jh3qin.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBU2t2M3Pcvr6rADqqp402QWakgPRnGWgI"
+          "current_key": "AIzaSyAP1rJX70BsPDCnY0U2CIZCVY6vNiUv6EQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "39038634597-cd3b8okla211bqibc90neeiphc29hpi2.apps.googleusercontent.com",
+              "client_id": "1056856329245-hoin2u7mhetk5h3efh7867amp8jh3qin.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

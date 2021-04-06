@@ -54,12 +54,12 @@ class _SimpleGoogleMapsState extends State<SimpleGoogleMaps> {
     //   latitude = widget.latitude;
     //   longitude = widget.longitude;
     // });
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      CameraUpdate cameraUpdate = CameraUpdate.newCameraPosition(
-          CameraPosition(target: LatLng(widget.latitude, widget.longitude), zoom: 15 )
-      );
-      mapController.moveCamera(cameraUpdate);
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   CameraUpdate cameraUpdate = CameraUpdate.newCameraPosition(
+    //       CameraPosition(target: LatLng(widget.latitude, widget.longitude), zoom: 15 )
+    //   );
+    //   mapController.moveCamera(cameraUpdate);
+    // });
 
     print("map build");
     print("lat : $latitude, long : $longitude");

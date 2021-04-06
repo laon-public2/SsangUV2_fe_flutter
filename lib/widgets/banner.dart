@@ -51,7 +51,7 @@ class BannerItem extends StatelessWidget {
                       errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
                         return Image.asset(
                           'assets/loadingIcon.gif',
-                          fit: BoxFit.fill,
+                          fit: BoxFit.contain,
                         );
                       },
                     ),
