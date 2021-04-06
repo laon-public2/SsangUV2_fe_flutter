@@ -17,6 +17,8 @@ import 'package:share_product_v2/widgets/customdialogApply.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 import 'package:share_product_v2/widgets/loading.dart';
 
+import 'ProductReg.dart';
+
 class ProductApplyPage extends StatefulWidget {
   @override
   _ProductApplyPageState createState() => _ProductApplyPageState();
@@ -46,6 +48,7 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
   final titleTextController = TextEditingController();
   final priceTextController = TextEditingController();
   final descriptionTextController = TextEditingController();
+  TextEditingController _otherAddressDetail = TextEditingController();
   TextEditingController _dateController = TextEditingController();
 
   // TextField Focus
@@ -54,6 +57,7 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
   FocusNode descriptionFocus;
 
   List<Asset> images = List<Asset>();
+  List<RadioModel> LocationData = new List<RadioModel>();
 
   @override
   void initState() {
@@ -61,6 +65,9 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
     titleFocus = FocusNode();
     priceFocus = FocusNode();
     descriptionFocus = FocusNode();
+    LocationData.add(RadioModel(true, "OnlyMine", "현재 위치"));
+    LocationData.add(RadioModel(false, "NormalLocation", "기본 위치"));
+    LocationData.add(RadioModel(false, "OtherLocation", "다른 위치"));
     Provider.of<ProductProvider>(context, listen: false).resetAddress();
   }
 
@@ -234,10 +241,91 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
         SizedBox(
           height: 10,
         ),
-        userAddress("rent"),
-        SizedBox(
-          height: 10,
+        Container(
+          width: double.infinity,
+          height: 52,
+          child: Row(
+            children: [
+              //현재 위치
+              InkWell(
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                hoverColor:Colors.transparent,
+                onTap: () {
+                  setState(() {
+                    LocationData.forEach(
+                            (element) => element.isSelected = false);
+                    LocationData[0].isSelected = true;
+                  });
+                  this._otherLocation = false;
+                },
+                child: RadioItem(LocationData[0]),
+              ),
+              //기본 위치
+              InkWell(
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                hoverColor:Colors.transparent,
+                onTap: () {
+                  setState(() {
+                    LocationData.forEach(
+                            (element) => element.isSelected = false);
+                    LocationData[1].isSelected = true;
+                  });
+                  this._otherLocation = false;
+                },
+                child: RadioItem(LocationData[1]),
+              ),
+              //다른 위치
+              InkWell(
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                hoverColor:Colors.transparent,
+                onTap: () {
+                  setState(() {
+                    LocationData.forEach(
+                            (element) => element.isSelected = false);
+                    LocationData[2].isSelected = true;
+                  });
+                  this._otherLocation = true;
+                },
+                child: RadioItem(LocationData[2]),
+              ),
+            ],
+          ),
         ),
+        SizedBox(height: 10),
+        userAddress("lend2", LocationData[2].isSelected == true ? "true" : "false"),
+        SizedBox(height: 10),
+        Container(
+          padding:
+          const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: LocationData[2].isSelected == true ? Colors.white : Colors.grey[300],
+            border: Border.all(
+              color: Color(0xffdddddd),
+            ),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: TextField(
+            readOnly: LocationData[2].isSelected != true ? true : false,
+            style: TextStyle(
+              fontSize: 14,
+              color: Color(0xffaaaaaa),
+            ),
+            controller: _otherAddressDetail,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              hintText: "기타 자세한 주소",
+              hintStyle: TextStyle(
+                  fontSize: 14, color: Color(0xffaaaaaa)),
+            ),
+          ),
+        ),
+        SizedBox(height: 10),
         CustomDate(controller: _dateController),
         SizedBox(height: 10),
         description(descriptionTextController),
@@ -276,29 +364,71 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
                           _showDialog(context, "설명을 입력해주세요.", "description");
                           return;
                         }
-                        if (_otherLocation == true) {
-                          if (_product.firstAddress == "기본 주소 설정") {
-                            _showDialog(
-                                context, "주소가 설정되지 않았습니다.", "description");
-                          }
+                        if(this.LocationData[2].isSelected && _product.secondAddress == "기타 주소 설정"){
+                          _showDialog(context, "기타 주소가 설정되지 않았습니다.", "description");
+                        }
+                        if(this.LocationData[2].isSelected && _otherAddressDetail.text == ""){
+                          _showDialog(context, "기타 자세한 주소가 설정되지 않았습니다.", "description");
                         }
                         List<String> date = _dateController.text.split("~");
-                        await _product.productApplyRent(
-                          _user.phNum,
-                          _user.userIdx,
-                          _selectCategory(_selectedCategory),
-                          titleTextController.text,
-                          descriptionTextController.text,
-                          int.parse(priceTextController.text),
-                          images,
-                          date[0],
-                          date[1],
-                          "${_product.firstAddress}",
-                          "",
-                          _user.accessToken,
-                          _otherLocation,
-                        );
-                        _showDialogSuccess("글이 등록되었습니다.");
+                        if(this.LocationData[0].isSelected){
+                          await _product.productApplyRent(
+                            _user.phNum,
+                            _user.userIdx,
+                            _selectCategory(_selectedCategory),
+                            titleTextController.text,
+                            descriptionTextController.text,
+                            int.parse(priceTextController.text),
+                            images,
+                            date[0],
+                            date[1],
+                            "${_product.geoLocation[1].depth1} ${_product.geoLocation[1].depth2}",
+                            "${_product.geoLocation[1].depth3} ${_product.geoLocation[1].depth4}",
+                            _product.la,
+                            _product.lo,
+                            _user.accessToken,
+                            _otherLocation,
+                          );
+                          _showDialogSuccess("글이 등록되었습니다.");
+                        }else if(this.LocationData[1].isSelected){
+                          await _product.productApplyRent(
+                            _user.phNum,
+                            _user.userIdx,
+                            _selectCategory(_selectedCategory),
+                            titleTextController.text,
+                            descriptionTextController.text,
+                            int.parse(priceTextController.text),
+                            images,
+                            date[0],
+                            date[1],
+                            "${_user.address}",
+                            "${_user.addressDetail}",
+                            _product.laUser,
+                            _product.loUser,
+                            _user.accessToken,
+                            _otherLocation,
+                          );
+                          _showDialogSuccess("글이 등록되었습니다.");
+                        }else{
+                          await _product.productApplyRent(
+                            _user.phNum,
+                            _user.userIdx,
+                            _selectCategory(_selectedCategory),
+                            titleTextController.text,
+                            descriptionTextController.text,
+                            int.parse(priceTextController.text),
+                            images,
+                            date[0],
+                            date[1],
+                            "${_product.secondAddress}",
+                            "${this._otherAddressDetail.text}",
+                            _product.secondLa,
+                            _product.secondLo,
+                            _user.accessToken,
+                            _otherLocation,
+                          );
+                          _showDialogSuccess("글이 등록되었습니다.");
+                        }
                       },
                       child: Text(
                         "완료",
@@ -407,42 +537,59 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
     );
   }
 
-  Widget userAddress(String type) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _otherLocation = true;
-        });
-        Navigator.of(context).pushNamed(
-          '/address',
-          arguments: {
-            "type": type,
+  Widget userAddress(String type, String enabled) {
+    return Consumer<ProductProvider>(
+      builder: (_, _product, __) {
+        return InkWell(
+          onTap: () {
+            if(enabled == "true"){
+              if(type == "lend2"){
+                setState(() {
+                  _otherLocation = true;
+                });
+                Navigator.of(context).pushNamed(
+                  "/address",
+                  arguments: {
+                    "type": type,
+                  },
+                );
+              }else{
+                return;
+              }
+            }else{
+              return;
+            }
           },
+          child: Container(
+            alignment: Alignment.centerLeft,
+            decoration: BoxDecoration(
+              color: enabled == "true" ? Colors.white : Colors.grey[300],
+              border: Border.all(
+                color: Color(0xffdddddd),
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            height: 48,
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Text(
+              _otherLocation == false
+                  ? "${_otherLoc(type)}"
+                  : "${_otherLoc(type)}",
+              style: TextStyle(fontSize: 14, color: Color(0xffaaaaaa)),
+            ),
+          ),
         );
       },
-      child: Container(
-        alignment: Alignment.centerLeft,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Color(0xffdddddd)),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        height: 48,
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Consumer<ProductProvider>(
-          builder: (_, _product, __) {
-            return Text(
-              _otherLocation == false
-                  ? "${_product.geoLocation[1].depth1} ${_product.geoLocation[1].depth2} ${_product.geoLocation[1].depth3} ${_product.geoLocation[1].depth4}"
-                  : "${_product.firstAddress}",
-              style: TextStyle(fontSize: 14, color: Color(0xff999999)),
-            );
-          },
-        ),
-      ),
     );
-    //테스트 전용 입니다. 사용하지 말아주세요.
+  }
+
+  _otherLoc(String type) {
+    if (type == "lend1") {
+      return Provider.of<ProductProvider>(context, listen: false).firstAddress;
+    } else {
+      return Provider.of<ProductProvider>(context, listen: false).secondAddress;
+    }
   }
 
   void _showDialogSuccess(String text) {
@@ -533,6 +680,39 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
     return WillPopScope(
         child: Loading(),
         onWillPop: () {},
+    );
+  }
+}
+
+class RadioItem extends StatelessWidget {
+  final RadioModel _item;
+
+  RadioItem(this._item);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(4.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                width: 6,
+                color: _item.isSelected ? Color(0xffff0066) : Color(0xff999999),
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 10),
+            child: Text(_item.text),
+          ),
+        ],
+      ),
     );
   }
 }

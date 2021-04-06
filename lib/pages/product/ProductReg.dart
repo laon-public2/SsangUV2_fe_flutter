@@ -470,23 +470,21 @@ class _ProductRegState extends State<ProductReg> {
                             _isDialogText = "최대가격이 설정되지 않았습니다.";
                           });
                           _showDialog();
-                        } else if (_otherLocation == true) {
-                          if (_myProduct.secondAddress == "기타 주소 설정") {
-                            setState(() {
-                              _isDialogText = "기타주소가 비어 있습니다.";
-                            });
-                            _showDialog();
-                          }else if(_otherAddressDetail.text == ""){
-                            setState(() {
-                              _isDialogText = "기타 자세한 주소가 비어 있습니다.";
-                            });
-                            _showDialog();
-                          }
-                        } else if (_selectedCategory == "") {
+                        }else if (_selectedCategory == "") {
                           setState(() {
                             _isDialogText = "카테고리가 선택되지 않았습니다.";
                           });
                           _showDialog();
+                        } else if (this.LocationData[2].isSelected && _myProduct.secondAddress == "기타 주소 설정") {
+                            setState(() {
+                              _isDialogText = "기타주소가 비어 있습니다.";
+                            });
+                            _showDialog();
+                        } else if(this.LocationData[2].isSelected && _otherAddressDetail.text == ""){
+                            setState(() {
+                              _isDialogText = "기타 자세한 주소가 비어 있습니다.";
+                            });
+                            _showDialog();
                         } else if (descriptionTextController.text == "") {
                           setState(() {
                             _isDialogText = "설명글이 비어 있습니다.";
@@ -535,7 +533,7 @@ class _ProductRegState extends State<ProductReg> {
                               _otherLocation,
                             );
                             _showDialogSuccess("글이 등록되었습니다.");
-                          }else{
+                          }else if(this.LocationData[2].isSelected == true){
                             List<String> date = _dateController.text.split("~");
                             await _myProduct.productApplyWant(
                               _user.phNum,
@@ -548,7 +546,7 @@ class _ProductRegState extends State<ProductReg> {
                               images,
                               date[0],
                               date[1],
-                              "${_myProduct.firstAddress}",
+                              "${_myProduct.secondAddress}",
                               "${this._otherAddressDetail.text}",
                               _myProduct.secondLa,
                               _myProduct.secondLo,

@@ -158,7 +158,6 @@ class _HomePageState extends State<HomePage> {
                       height: 160.h,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12.0),
-                        color: Colors.grey,
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
@@ -399,6 +398,8 @@ _moneyFormat(String price) {
     value = value.replaceAll(RegExp(r'\D'), '');
     value = value.replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), ',');
     return value;
+  }else {
+    return price;
   }
 }
 

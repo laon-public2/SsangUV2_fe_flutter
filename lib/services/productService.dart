@@ -348,6 +348,8 @@ class ProductService {
     List<dynamic> productImg,
   ) async {
     try {
+      print(address);
+      print(addressDetail);
       print(title);
       print("상품 빌려주기 등록");
       dio.options.contentType = "multipart/form-data";

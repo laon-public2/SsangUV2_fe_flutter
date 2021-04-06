@@ -380,34 +380,33 @@ class ProductProvider extends ChangeNotifier {
   }
 
   Future<void> productApplyRent(
-    String userPh,
-    int userIdx,
-    int categoryIdx,
-    String title,
-    String description,
-    int price,
-    List<Asset> files,
-    String startDate,
-    String endDate,
-    String address,
-    String addressDetail,
-    String token,
-    bool otherLocation,
+      String userPh,
+      int userIdx,
+      int categoryIdx,
+      String title,
+      String description,
+      int price,
+      List<Asset> files,
+      String startDate,
+      String endDate,
+      String address,
+      String addressDetail,
+      num la,
+      num lo,
+      String token,
+      bool otherLocation,
   ) async {
     print("상품등록하기 빌려주기");
+    print(address);
+    print(addressDetail);
     try {
-      FormData formData;
       List<MultipartFile> fileList = [];
-      formData = FormData.fromMap({});
       for (var file in files) {
         ByteData byteData = await file.getByteData();
         List<int> imageData = byteData.buffer.asUint8List();
         MultipartFile multipartFile =
             MultipartFile.fromBytes(imageData, filename: file.name);
         fileList.add(multipartFile);
-        // MapEntry<String, MultipartFile> entry =
-        // new MapEntry("files", multipartFile);
-        // formData.files.add(entry);
       }
       final res = await productService.productAddRent(
         userPh,
@@ -418,12 +417,10 @@ class ProductProvider extends ChangeNotifier {
         price,
         startDate,
         endDate,
-        otherLocation == false
-            ? "${this.geoLocation[1].depth1} ${this.geoLocation[1].depth2} ${this.geoLocation[1].depth3} ${this.geoLocation[1].depth4}"
-            : address,
+        address,
         addressDetail,
-        otherLocation == false ? this.la : this.firstLa,
-        otherLocation == false ? this.lo : this.firstLo,
+        la,
+        lo,
         token,
         fileList,
       );
@@ -509,19 +506,15 @@ class ProductProvider extends ChangeNotifier {
     bool otherLocation,
   ) async {
     print("상품등록하기 빌려주세요.");
+    print("$address     $addressDetail");
     try {
-      FormData formData;
       List<MultipartFile> fileList = [];
-      formData = FormData.fromMap({});
       for (var file in files) {
         ByteData byteData = await file.getByteData();
         List<int> imageData = byteData.buffer.asUint8List();
         MultipartFile multipartFile =
             MultipartFile.fromBytes(imageData, filename: file.name);
         fileList.add(multipartFile);
-        // MapEntry<String, MultipartFile> entry =
-        // new MapEntry("files", multipartFile);
-        // formData.files.add(entry);
       }
       final res = await productService.productAddWant(
         userPh,
