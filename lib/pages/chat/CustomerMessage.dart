@@ -232,6 +232,7 @@ class _CustomerMessage extends State<CustomerMessage>
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     switch (result) {
       case ConnectivityResult.wifi:
+        print("와이파이 $result");
         _talking();
         _loadChat();
         Fluttertoast.showToast(
@@ -244,6 +245,7 @@ class _CustomerMessage extends State<CustomerMessage>
         );
         break;
       case ConnectivityResult.mobile:
+        print("모바일데이터 $result");
         _talking();
         _loadChat();
         Fluttertoast.showToast(
@@ -256,6 +258,8 @@ class _CustomerMessage extends State<CustomerMessage>
         );
         break;
       case ConnectivityResult.none:
+        if (client != null) client.deactivate();
+        print("인터넷연결이 안됨 $result");
         Fluttertoast.showToast(
             msg: "네트워크 상태가 원할하지 않습니다.",
             toastLength: Toast.LENGTH_SHORT,
@@ -266,6 +270,8 @@ class _CustomerMessage extends State<CustomerMessage>
         );
         break;
       default:
+        if (client != null) client.deactivate();
+        print("기본 $result");
         Fluttertoast.showToast(
             msg: "네트워크 상태가 원할하지 않습니다.",
             toastLength: Toast.LENGTH_SHORT,

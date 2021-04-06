@@ -155,20 +155,20 @@ class ProductService {
   }
 
   //
-  Future<Response> rentingProduct(int id) async {
-    Response response = await dio.patch("/products/renting/$id");
-    return response;
-  }
-
-  Future<Response> rentableProduct(int id) async {
-    Response response = await dio.patch("/products/rentable/$id");
-    return response;
-  }
-
-  Future<Response> stopProduct(int id) async {
-    Response response = await dio.patch("/products/stop/$id");
-    return response;
-  }
+  // Future<Response> rentingProduct(int id) async {
+  //   Response response = await dio.patch("/products/renting/$id");
+  //   return response;
+  // }
+  //
+  // Future<Response> rentableProduct(int id) async {
+  //   Response response = await dio.patch("/products/rentable/$id");
+  //   return response;
+  // }
+  //
+  // Future<Response> stopProduct(int id) async {
+  //   Response response = await dio.patch("/products/stop/$id");
+  //   return response;
+  // }
 
   Future<Response> getProRent(int userIdx, int page, int category, String type) async {
     try {
@@ -676,7 +676,7 @@ class ProductService {
     }
   }
 
-  Future<Response> rentHistory(int userIdx, int page, String token) async {
+  Future<Response> rentHistory(int userIdx, int page, String token, String type) async {
     print('대여 물품 접속');
     try{
       dio.options.headers['x-access-token'] = token;
@@ -684,6 +684,7 @@ class ProductService {
         '/history',
         queryParameters: {
           'userIdx' : userIdx,
+          'type' : type,
           'page' : page,
         }
       );

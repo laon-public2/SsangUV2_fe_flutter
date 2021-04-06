@@ -61,6 +61,7 @@ class ProductProvider extends ChangeNotifier {
   List<ChatListModel> chatListItem = [];
   Paging chatListCounter;
   List<ChatListModel> rentListItem = [];
+  List<ChatListModel> rentListItemWant = [];
   Paging rentListCounter;
   String productStart;
 
@@ -791,23 +792,23 @@ class ProductProvider extends ChangeNotifier {
     Provider.of<MainProvider>(context, listen: false).notify();
   }
 
-  renting(int id) async {
-    await productService.rentingProduct(id);
-    getMyProduct(0);
-    notifyListeners();
-  }
-
-  rentable(int id) async {
-    await productService.rentableProduct(id);
-    getMyProduct(0);
-    notifyListeners();
-  }
-
-  stop(int id) async {
-    await productService.stopProduct(id);
-    getMyProduct(0);
-    notifyListeners();
-  }
+  // renting(int id) async {
+  //   await productService.rentingProduct(id);
+  //   getMyProduct(0);
+  //   notifyListeners();
+  // }
+  //
+  // rentable(int id) async {
+  //   await productService.rentableProduct(id);
+  //   getMyProduct(0);
+  //   notifyListeners();
+  // }
+  //
+  // stop(int id) async {
+  //   await productService.stopProduct(id);
+  //   getMyProduct(0);
+  //   notifyListeners();
+  // }
 
   Future<void> getMainRent(int page) async {
     if (page == 0) {
@@ -1444,9 +1445,9 @@ class ProductProvider extends ChangeNotifier {
   }
 
   Future<void> rentHistory(int userIdx, int page, String token) async{
-    print("렌트 히스토리");
+    print("렌트 히스토리 빌린내역");
     try{
-      final res = await productService.rentHistory(userIdx, page, token);
+      final res = await productService.rentHistory(userIdx, page, token, "WANT");
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       List<ChatListModel> list = (jsonMap['data'] as List)
           .map((e) => ChatListModel.fromJson(e))
@@ -1459,6 +1460,29 @@ class ProductProvider extends ChangeNotifier {
       }else {
         for(var e in list) {
           this.rentListItem.add(e);
+        }
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+
+  Future<void> rentHistoryWant(int userIdx, int page, String token) async{
+    print("렌트 히스토리 빌려준내역");
+    try{
+      final res = await productService.rentHistory(userIdx, page, token, "RENT");
+      Map<String, dynamic> jsonMap = json.decode(res.toString());
+      List<ChatListModel> list = (jsonMap['data'] as List)
+          .map((e) => ChatListModel.fromJson(e))
+          .toList();
+      print(list);
+      Paging paging = Paging.fromJson(jsonMap);
+      this.rentListCounter = paging;
+      if(this.rentListCounter.currentPage == null || this.rentListCounter.currentPage == 0) {
+        this.rentListItemWant = list;
+      }else {
+        for(var e in list) {
+          this.rentListItemWant.add(e);
         }
       }
     }catch(e){

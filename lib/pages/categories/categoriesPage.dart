@@ -32,19 +32,47 @@ class _CategoryProductListState extends State<CategoryProductList> {
   Paging paging;
   var categoryIdx = "";
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
-      _getProduct();
-      print("배열 갯수 === ${Provider.of<ProductProvider>(context, listen: false).categoryProducts.length}");
-    });
+  ScrollController categoryScroll = ScrollController();
+
+  categoryScrollerListener() async {
+    final pvm = Provider.of<ProductProvider>(context, listen: false);
+    if(categoryScroll.position.pixels == categoryScroll.position.maxScrollExtent){
+      print("스크롤이 가장 아래입니다.");
+      if(this.userType == "Rent"){
+        if(pvm.paging.totalCount != pvm.categoryProducts.length){
+          this.page++;
+          pvm.categoryRent(categoryIdx, page, userType);
+        }
+      }else{
+        if(pvm.paging.totalCount != pvm.categoryProducts.length){
+          this.page++;
+          pvm.categoryWant(categoryIdx, page, userType);
+        }
+      }
+    }
   }
 
   _getProduct() async {
     Provider.of<ProductProvider>(context, listen: false)
         .categoryRent(categoryIdx, page, userType);
   }
+
+  @override
+  void initState() {
+    super.initState();
+    categoryScroll.addListener(categoryScrollerListener);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
+      _getProduct();
+      print("배열 갯수 === ${Provider.of<ProductProvider>(context, listen: false).categoryProducts.length}");
+    });
+  }
+
+  void dispose() {
+    categoryScroll.dispose();
+    super.dispose();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +144,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
 
   _body() {
     return SingleChildScrollView(
+      controller: categoryScroll,
       child: Consumer<ProductProvider>(builder: (_, product, __) {
         this.paging = product.paging;
         return Container(
@@ -198,15 +227,6 @@ class _CategoryProductListState extends State<CategoryProductList> {
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, idx) {
             if (!_want) {
-              if (idx == _myList.categoryProducts.length) {
-                if (idx == _myList.paging.totalCount) {
-                  return Container();
-                } else {
-                  this.page++;
-                  Provider.of<ProductProvider>(context, listen: false)
-                      .categoryRent(categoryIdx, this.page, userType);
-                }
-              }
               return LendItemMainPage(
                 category:
                     "${_category(_myList.categoryProducts[idx].category)}",
@@ -221,16 +241,6 @@ class _CategoryProductListState extends State<CategoryProductList> {
 
               );
             } else {
-              if (idx == _myList.categoryProducts.length) {
-                if (idx == _myList.paging.totalCount) {
-                  return Container();
-                } else {
-                  this.page++;
-                  Provider.of<ProductProvider>(context, listen: false)
-                      .getMainWant(
-                          this.page);
-                }
-              }
               return WantItemMainPage(
                 idx: _myList.categoryProductsWant[idx].id,
                 category:

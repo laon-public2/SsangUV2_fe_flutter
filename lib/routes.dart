@@ -46,7 +46,7 @@ final routes = {
   // "/center": (context) => CenterPage(),
   "/policy": (context) => PolicyPage(),
   "/policy/detail": (context) => PolicyDetailPage(),
-  "/user/product": (context) => MyProductPage(),
+  // "/user/product": (context) => MyProductPage(),
   // "/withdraw" : (context) => WithdrawPage(),
   // "/loginPage": (context) => LoginPage(),
   // //계약

@@ -39,7 +39,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   CarouselController buttonCarouselController = CarouselController();
 
-  int page;
+  int page = 0;
   final List<String> itemKind = [
     "빌려드려요",
     "빌려주세요",
@@ -51,10 +51,38 @@ class _HomePageState extends State<HomePage> {
 
   List<String> address;
 
+  ScrollController homeScroller = ScrollController();
+
+  homeScrollerListener() async{
+    final pvm = Provider.of<ProductProvider>(context, listen: false);
+    if(homeScroller.position.pixels == homeScroller.position.maxScrollExtent){
+      print("스크롤이 가장 아래입니다.");
+      if(this._currentItem == "빌려드려요"){
+        if(pvm.paging.totalCount != pvm.mainProducts.length){
+          this.page++;
+          Provider.of<ProductProvider>(context, listen: false)
+              .getMainRent(this.page);
+        }
+      }else{
+        if(pvm.paging.totalCount != pvm.mainProductsWant.length){
+          this.page++;
+          Provider.of<ProductProvider>(context, listen: false)
+              .getMainWant(this.page);
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     _currentItem = itemKind.first;
+    homeScroller.addListener(homeScrollerListener);
     super.initState();
+  }
+
+  void dispose() {
+    homeScroller.dispose();
+    super.dispose();
   }
 
   @override
@@ -119,6 +147,7 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               padding: const EdgeInsets.only(left: 16, right: 16, bottom: 0),
               child: SingleChildScrollView(
+                controller: homeScroller,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,15 +215,15 @@ class ToItem extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, idx) {
             if (value == "빌려드려요") {
-              if (idx == _myList.mainProducts.length) {
-                if (idx == _myList.paging.totalCount) {
-                  return Container();
-                } else {
-                  this.page++;
-                  Provider.of<ProductProvider>(context, listen: false)
-                      .getMainRent(this.page);
-                }
-              }
+              // if (idx == _myList.mainProducts.length) {
+              //   if (idx == _myList.paging.totalCount) {
+              //     return Container();
+              //   } else {
+              //     this.page++;
+              //     Provider.of<ProductProvider>(context, listen: false)
+              //         .getMainRent(this.page);
+              //   }
+              // }
               return LendItemMainPage(
                 category: "${_category(_myList.mainProducts[idx].category)}",
                 idx: _myList.mainProducts[idx].id,
@@ -207,15 +236,15 @@ class ToItem extends StatelessWidget {
                 receiverIdx: _myList.mainProducts[idx].receiverIdx,
               );
             } else {
-              if (idx == _myList.mainProductsWant.length) {
-                if (idx == _myList.paging.totalCount) {
-                  return Container();
-                } else {
-                  this.page++;
-                  Provider.of<ProductProvider>(context, listen: false)
-                      .getMainWant(this.page);
-                }
-              }
+              // if (idx == _myList.mainProductsWant.length) {
+              //   if (idx == _myList.paging.totalCount) {
+              //     return Container();
+              //   } else {
+              //     this.page++;
+              //     Provider.of<ProductProvider>(context, listen: false)
+              //         .getMainWant(this.page);
+              //   }
+              // }
               return WantItemMainPage(
                 idx: _myList.mainProductsWant[idx].id,
                 category:
