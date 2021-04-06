@@ -1,14 +1,16 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:provider/provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/model/StompSendDTO.dart';
 import 'package:share_product_v2/pages/product/ProductDetailRent.dart';
@@ -20,10 +22,9 @@ import 'package:share_product_v2/widgets/loading.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
-
 import '../../providers/userProvider.dart';
-import '../product/ProductDetail.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:connectivity/connectivity.dart';
 
 const String _name = "SampleName";
 const String _date = "02/02 02:02";
@@ -168,6 +169,14 @@ class _CustomerMessage extends State<CustomerMessage>
         },
         onStompError: (error) {
           print("stompError : ${error.body.toString()}");
+          // Fluttertoast.showToast(
+          //     msg: "네트워크 연결이 원할하지 않습니다.",
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.BOTTOM,
+          //     backgroundColor: Color(0xffff0066),
+          //     textColor: Colors.white,
+          //     fontSize: 16.0
+          // );
         },
         onWebSocketError: (error) => print("error : ${error.toString()}"),
       ),
@@ -203,14 +212,84 @@ class _CustomerMessage extends State<CustomerMessage>
      }
    }
   }
+  //인터넷 연결 상태 작업
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription<ConnectivityResult> _connSub;
+
+  Future<void> initConnectivity() async {
+    ConnectivityResult result;
+    try{
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch(e) {
+      print(e.toString());
+    }
+    if(!mounted) {
+      return Future.value(null);
+    }
+    return _updateConnectionStatus(result);
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    switch (result) {
+      case ConnectivityResult.wifi:
+        _talking();
+        _loadChat();
+        Fluttertoast.showToast(
+            msg: "대여하실때 물품상태를 확인해주세요!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Color(0xffff0066),
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+        break;
+      case ConnectivityResult.mobile:
+        _talking();
+        _loadChat();
+        Fluttertoast.showToast(
+            msg: "대여하실때 물품상태를 확인해주세요!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Color(0xffff0066),
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+        break;
+      case ConnectivityResult.none:
+        Fluttertoast.showToast(
+            msg: "네트워크 상태가 원할하지 않습니다.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Color(0xffff0066),
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+        break;
+      default:
+        Fluttertoast.showToast(
+            msg: "네트워크 상태가 원할하지 않습니다.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Color(0xffff0066),
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+        break;
+    }
+  }
+  //여기까지
 
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
+    //인터넷 연결 상태
+    initConnectivity();
+    _connSub =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+    //
     print("채팅방 입장");
     print("uuid : ${this.widget.uuid}");
-    _talking();
     bottomScrollController.addListener(_scrollerListener);
     bottomScrollController.addListener(chatScroller);
     KeyboardVisibility.onChange.listen((bool visible) {
@@ -232,8 +311,11 @@ class _CustomerMessage extends State<CustomerMessage>
   void dispose() {
     _textController.dispose();
     bottomScrollController.dispose();
+    //채팅방 연결 해제
     if (client != null) client.deactivate();
     WidgetsBinding.instance.addObserver(this);
+    //연결 해제
+    _connSub.cancel();
     super.dispose();
   }
 
