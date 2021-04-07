@@ -95,8 +95,8 @@ class _ChangeAddressState extends State<ChangeAddress> {
                       );
                       await Provider.of<ProductProvider>(context, listen: false)
                           .changeUserPosition(
-                        Provider.of<UserProvider>(context, listen: false).userLocationY,
                         Provider.of<UserProvider>(context, listen: false).userLocationX,
+                        Provider.of<UserProvider>(context, listen: false).userLocationY,
                       );
                       await Provider.of<ProductProvider>(context, listen: false).getGeolocator();
                       Navigator.pop(context);

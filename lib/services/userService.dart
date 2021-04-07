@@ -66,6 +66,7 @@ class UserService {
           "longitude": lo,
         }
       );
+      print(res.statusCode);
       return res;
     }on DioError catch(e){
       print(e.response.statusCode);

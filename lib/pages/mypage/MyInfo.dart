@@ -209,8 +209,8 @@ class _MyInfo extends State<MyInfo> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ChangeAddress(
-                                double.parse(positionSplit[1]),
                                 double.parse(positionSplit[0]),
+                                double.parse(positionSplit[1]),
                                 "${model.sido} ${model.sigungu} ${model.bname}",
                                 "${model.buildingName}${model.apartment}"),
                           ));

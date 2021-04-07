@@ -1,34 +1,41 @@
 {
   "project_info": {
-    "project_number": "1056856329245",
-    "project_id": "ssangu-dc730",
-    "storage_bucket": "ssangu-dc730.appspot.com"
+    "project_number": "64299765976",
+    "project_id": "shareproductv2",
+    "storage_bucket": "shareproductv2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1056856329245:android:308aeb2f74e1600d74caf4",
+        "mobilesdk_app_id": "1:64299765976:android:db711f1dd53f17be7f87ad",
         "android_client_info": {
-          "package_name": "com.example.share_product_v2"
+          "package_name": "com.laonstory.shareProductV2"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1056856329245-hoin2u7mhetk5h3efh7867amp8jh3qin.apps.googleusercontent.com",
+          "client_id": "64299765976-844bnk64f5m43n3pah3ibcu9c6j5q36s.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAP1rJX70BsPDCnY0U2CIZCVY6vNiUv6EQ"
+          "current_key": "AIzaSyDRHij_Q4DH4AgcGu5gcXsw6gtsbFtk1Rk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1056856329245-hoin2u7mhetk5h3efh7867amp8jh3qin.apps.googleusercontent.com",
+              "client_id": "64299765976-844bnk64f5m43n3pah3ibcu9c6j5q36s.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "64299765976-3fjpi7ibak6o594689nlr247rouguckc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.laonstory.shareProductV2"
+              }
             }
           ]
         }
