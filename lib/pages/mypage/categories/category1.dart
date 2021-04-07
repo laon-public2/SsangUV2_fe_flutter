@@ -135,7 +135,7 @@ class _Category1State extends State<Category1> {
               itemBuilder: (context, idx) {
                 if (_currentItem == "빌려드려요") {
                   return LendItemMyAct(
-                    category: '전체',
+                    category: '생활용품',
                     title: '${_myActHistory.proRentCa1[idx].title}',
                     name: _myActHistory.proRentCa1[idx].name,
                     price: _moneyFormat("${_myActHistory.proRentCa1[idx].price}"),
@@ -149,7 +149,7 @@ class _Category1State extends State<Category1> {
                   return WantItemMyAct(
                     idx: _myActHistory.proWantCa1[idx].id,
                     category:
-                    "전체",
+                    "생활용품",
                     title: "${_myActHistory.proWantCa1[idx].title}",
                     name: "${_myActHistory.proWantCa1[idx].name}",
                     minPrice: "${_moneyFormat("${_myActHistory.proWantCa1[idx].minPrice}")}원",

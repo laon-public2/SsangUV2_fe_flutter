@@ -146,19 +146,19 @@ class _LendItemMyActState extends State<LendItemMyAct> {
                       ),
                       InkWell(
                         onTap: () {
-                          MyPageProvider pr = Provider.of<MyPageProvider>(
-                              context,
-                              listen: false);
+                          print("${this.widget.category}");
+                          MyPageProvider pr = Provider.of<MyPageProvider>(context, listen: false);
                           if (this.widget.status == "IMPOSSIBLE"){
                             pr.rentStatus(this.widget.token, this.widget.idx);
                             pr.rentStatusModified(
-                                this.widget.arrayNum, this.widget.status);
+                                this.widget.arrayNum, this.widget.status, this.widget.category);
                           }
                           if (this.widget.status == "POSSIBLE"){
                             pr.rentStatus(this.widget.token, this.widget.idx);
                             pr.rentStatusModified(
-                                this.widget.arrayNum, this.widget.status);
+                                this.widget.arrayNum, this.widget.status, this.widget.category);
                           }
+
                         },
                         child: Container(
                           width: 110.w,

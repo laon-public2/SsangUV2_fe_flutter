@@ -87,110 +87,113 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          AppBar(
-            elevation: 1.0,
-            title: Container(
-              width: double.infinity,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Consumer<ProductProvider>(
-                    builder: (__, _myProduct, _) {
-                      return CustomDropdownMain(
-                        items: _myProduct.myLocation,
-                        value: _myProduct.currentLocation,
-                        onChange: (value) async {
-                          if (value == "다른 위치 설정") {
-                            KopoModel model = await Navigator.of(context)
-                                .push(PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) =>
-                                      Kopo(),
-                            ));
-                            String position = await Provider.of<MapProvider>(
-                                    context,
-                                    listen: false)
-                                .getPosition(model.address);
-                            print("설정 주소 $position");
-                            List<String> positionSplit = position.split(',');
-                            await Provider.of<ProductProvider>(context,
-                                    listen: false)
-                                .getGeoSearch(double.parse(positionSplit[0]),
-                                    double.parse(positionSplit[1]));
-                          }else{
-                            _myProduct.getGeoChange(value);
-                          }
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              Container(
-                padding: const EdgeInsets.only(right: 16),
-                child: IconButton(
-                  icon: Image.asset('assets/icon/newSearch.png'),
-                  onPressed: () => Navigator.pushNamed(context, '/search'),
-                ),
-              )
-            ],
-          ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 0),
-              child: SingleChildScrollView(
-                controller: homeScroller,
+    return ScrollConfiguration(
+      behavior: MyBehavior(),
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AppBar(
+              elevation: 1.0,
+              title: Container(
+                width: double.infinity,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 20),
-                      width: double.infinity,
-                      height: 160.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: BannerItem(false),
-                      ),
-                    ), // 배너 구간
-                    MainCategory(), // 카테고리 구간
-                    Container(
-                      margin: const EdgeInsets.only(top: 0, bottom: 16),
-                      child: CustomDropdown(
-                        items: itemKind,
-                        value: _currentItem,
-                        onChange: (value) {
-                          setState(() {
-                            _currentItem = value;
-                            this.page = 0;
-                          });
-                        },
-                      ),
-                    ), // 빌려드려요 / 빌려주세요 드랍박스
-                    ToItem(
-                      value: _currentItem,
-                      page: this.page,
+                    Consumer<ProductProvider>(
+                      builder: (__, _myProduct, _) {
+                        return CustomDropdownMain(
+                          items: _myProduct.myLocation,
+                          value: _myProduct.currentLocation,
+                          onChange: (value) async {
+                            if (value == "다른 위치 설정") {
+                              KopoModel model = await Navigator.of(context)
+                                  .push(PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        Kopo(),
+                              ));
+                              String position = await Provider.of<MapProvider>(
+                                      context,
+                                      listen: false)
+                                  .getPosition(model.address);
+                              print("설정 주소 $position");
+                              List<String> positionSplit = position.split(',');
+                              await Provider.of<ProductProvider>(context,
+                                      listen: false)
+                                  .getGeoSearch(double.parse(positionSplit[0]),
+                                      double.parse(positionSplit[1]));
+                            }else{
+                              _myProduct.getGeoChange(value);
+                            }
+                          },
+                        );
+                      },
                     ),
                   ],
                 ),
               ),
+              actions: [
+                Container(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: IconButton(
+                    icon: Image.asset('assets/icon/newSearch.png'),
+                    onPressed: () => Navigator.pushNamed(context, '/search'),
+                  ),
+                )
+              ],
             ),
-          ),
-          // Container(
-          //   child: BottomBar(),
-          // ),
-        ],
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 0),
+                child: SingleChildScrollView(
+                  controller: homeScroller,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
+                        width: double.infinity,
+                        height: 160.h,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: BannerItem(false),
+                        ),
+                      ), // 배너 구간
+                      MainCategory(), // 카테고리 구간
+                      Container(
+                        margin: const EdgeInsets.only(top: 0, bottom: 16),
+                        child: CustomDropdown(
+                          items: itemKind,
+                          value: _currentItem,
+                          onChange: (value) {
+                            setState(() {
+                              _currentItem = value;
+                              this.page = 0;
+                            });
+                          },
+                        ),
+                      ), // 빌려드려요 / 빌려주세요 드랍박스
+                      ToItem(
+                        value: _currentItem,
+                        page: this.page,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Container(
+            //   child: BottomBar(),
+            // ),
+          ],
+        ),
       ),
     );
   }
@@ -439,5 +442,13 @@ _category(int categoryNum) {
   } else {
     String value = '여행';
     return value;
+  }
+}
+
+class MyBehavior extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
   }
 }

@@ -318,12 +318,65 @@ class MyPageProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> rentStatusModified(int arrayNum, String status) async {
+  Future<void> rentStatusModified(int arrayNum, String status, String category) async {
     print("물건 상태 변경");
-    if (status == "IMPOSSIBLE")
-      this.proRent[arrayNum].status = "POSSIBLE";
-    else
-      this.proRent[arrayNum].status = "IMPOSSIBLE";
+    print(category);
+    if(category == "전체"){
+      if (status == "IMPOSSIBLE")
+        this.proRent[arrayNum].status = "POSSIBLE";
+      else
+        this.proRent[arrayNum].status = "IMPOSSIBLE";
+    }else if(category == "생활용품"){
+      if (status == "IMPOSSIBLE")
+        this.proRentCa1[arrayNum].status = "POSSIBLE";
+      else
+        this.proRentCa1[arrayNum].status = "IMPOSSIBLE";
+    }else if(category == "여행"){
+      if (status == "IMPOSSIBLE")
+        this.proRentCa2[arrayNum].status = "POSSIBLE";
+      else
+        this.proRentCa2[arrayNum].status = "IMPOSSIBLE";
+    }else if(category == "스포츠/레저"){
+      if (status == "IMPOSSIBLE")
+        this.proRentCa3[arrayNum].status = "POSSIBLE";
+      else
+        this.proRentCa3[arrayNum].status = "IMPOSSIBLE";
+    }else if(category == "육아"){
+      if (status == "IMPOSSIBLE")
+        this.proRentCa4[arrayNum].status = "POSSIBLE";
+      else
+        this.proRentCa4[arrayNum].status = "IMPOSSIBLE";
+    }else if(category == "반려동물"){
+      if (status == "IMPOSSIBLE")
+        this.proRentCa5[arrayNum].status = "POSSIBLE";
+      else
+        this.proRentCa5[arrayNum].status = "IMPOSSIBLE";
+    }else if(category == "가전제품"){
+      if (status == "IMPOSSIBLE")
+        this.proRentCa6[arrayNum].status = "POSSIBLE";
+      else
+        this.proRentCa6[arrayNum].status = "IMPOSSIBLE";
+    }else if(category == "의류/잡화"){
+      if (status == "IMPOSSIBLE")
+        this.proRentCa7[arrayNum].status = "POSSIBLE";
+      else
+        this.proRentCa7[arrayNum].status = "IMPOSSIBLE";
+    }else if(category == "가구/인테리어"){
+      if (status == "IMPOSSIBLE")
+        this.proRentCa8[arrayNum].status = "POSSIBLE";
+      else
+        this.proRentCa8[arrayNum].status = "IMPOSSIBLE";
+    }else if(category== "자동차용품"){
+      if (status == "IMPOSSIBLE")
+        this.proRentCa9[arrayNum].status = "POSSIBLE";
+      else
+        this.proRentCa9[arrayNum].status = "IMPOSSIBLE";
+    }else if(category == "기타"){
+      if (status == "IMPOSSIBLE")
+        this.proRentCa10[arrayNum].status = "POSSIBLE";
+      else
+        this.proRentCa10[arrayNum].status = "IMPOSSIBLE";
+    }
     notifyListeners();
   }
 }
