@@ -805,8 +805,11 @@ class _CustomerMessage extends State<CustomerMessage>
     return IconTheme(
       data: IconThemeData(color: Theme.of(context).accentColor),
       child: Container(
-        height: defaultTargetPlatform == TargetPlatform.iOS ? 70 : null,
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        // height: defaultTargetPlatform == TargetPlatform.iOS ? 70 : null,
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        constraints: BoxConstraints(
+          maxHeight: 300.0,
+        ),
         child: Row(
           children: <Widget>[
             Container(
@@ -834,13 +837,19 @@ class _CustomerMessage extends State<CustomerMessage>
             ),
             Flexible(
               child: Container(
-                height: defaultTargetPlatform == TargetPlatform.iOS ? 60 : 50,
-                padding: const EdgeInsets.only(left: 7, bottom: 6, top: 7),
+                height: defaultTargetPlatform == TargetPlatform.iOS ? 55 : 50,
+                padding: const EdgeInsets.only(left: 7, bottom: 7, top: 7),
+                constraints: BoxConstraints(
+                  maxHeight: 300.0,
+                ),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Color(0xffebebeb),
                     border: Border.all(color: Color(0xffdddddd)),
                     borderRadius: BorderRadius.circular(50),
+                  ),
+                  constraints: BoxConstraints(
+                    maxHeight: 300.0,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -849,15 +858,11 @@ class _CustomerMessage extends State<CustomerMessage>
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: TextField(
+
                             controller: _textController,
                             keyboardType: TextInputType.multiline,
                             maxLines: 3,
                             minLines: 1,
-                            // onChanged: (String text) {
-                            //   setState(() {
-                            //     _isComposing = text.length > 0;
-                            //   });
-                            // },
                             onSubmitted: _handleSubmitted,
                             decoration: InputDecoration.collapsed(
                               hintText: "",

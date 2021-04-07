@@ -2,7 +2,7 @@ import UIKit
 import Flutter
 import GoogleMaps
 import Firebase
-import UserNotifications
+//import UserNotifications
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -20,7 +20,7 @@ import UserNotifications
 //        .current()
 //        .requestAuthorization(options: authOption, completionHandler: {(_, _) in })
 //    application.registerForRemoteNotifications()
-    GMSServices.provideAPIKey("AIzaSyBjgQbGm_I6g--z3cWK_tTINr5ayDzXdtU")
+    GMSServices.provideAPIKey("AIzaSyB1fGTkELSe_FGtwbzpTY8J7kKJZrio3fk")
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }

@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
 
 class FCMModel with ChangeNotifier {
   String mbToken;
@@ -34,6 +36,21 @@ class FCMModel with ChangeNotifier {
       onBackgroundMessage: Platform.isIOS ? null : myBackgroundMessageHandler,
       onResume: (Map<String, dynamic> message) async {
         print('on resume $message');
+        // SchedulerBinding.instance.addPostFrameCallback((_) {
+        //   Navigator.push(context, MaterialPageRoute(
+        //       builder: (context) => CustomerMessage(
+        //           uuid,
+        //           productIdx,
+        //           title,
+        //           category,
+        //           productOwner,
+        //           price,
+        //           pic,
+        //           status,
+        //           receiverIdx
+        //       )
+        //   ));
+        // });
       },
       onLaunch: (Map<String, dynamic> message) async {
         print('on launch $message');
