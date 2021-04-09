@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
@@ -9,6 +11,8 @@ import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/utils/SharedPref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'chat/CustomerMessage.dart';
 
 class SplashScreen extends StatefulWidget {
   @override

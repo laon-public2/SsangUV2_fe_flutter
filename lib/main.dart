@@ -1,12 +1,10 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/screenutil_init.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/models/member.dart';
-import 'package:share_product_v2/pages/mainpage.dart';
+import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
 import 'package:share_product_v2/providers/bannerProvider.dart';
 import 'package:share_product_v2/providers/contractProvider.dart';
 import 'package:share_product_v2/providers/fcm_model.dart';
@@ -18,8 +16,6 @@ import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/regUserProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/routes.dart';
-import 'package:share_product_v2/utils/APIUtil.dart';
-import 'package:share_product_v2/utils/pushMsg.dart';
 
 void main() => runApp(MyApp());
 
@@ -71,7 +67,7 @@ class _MyAppState extends State<MyApp> {
             create: (_) => MainProvider(),
           ),
           ChangeNotifierProvider<FCMModel>(
-            create: (_) => FCMModel(context),
+            create: (_) => FCMModel(),
           ),
         ],
         child: ScreenUtilInit(

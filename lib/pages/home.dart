@@ -1,30 +1,21 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:kopo/kopo.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/model/UserLocationModel.dart';
-import 'package:share_product_v2/model/product.dart';
-import 'package:share_product_v2/providers/bannerProvider.dart';
-import 'package:share_product_v2/providers/fcm_model.dart';
 import 'package:share_product_v2/providers/mapProvider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
-import 'package:share_product_v2/utils/SharedPref.dart';
-import 'package:share_product_v2/utils/pushMsg.dart';
 import 'package:share_product_v2/widgets/CustomDropdown.dart';
 import 'package:share_product_v2/widgets/CustomDropdownMain.dart';
 import 'package:share_product_v2/widgets/WantItemMainPage.dart';
 import 'package:share_product_v2/widgets/banner.dart';
-import 'package:share_product_v2/widgets/bottomBar.dart';
 import 'package:share_product_v2/widgets/categoryItem.dart';
-import 'package:share_product_v2/widgets/lendItem.dart';
 import 'package:share_product_v2/widgets/lendItemMainPage.dart';
-import 'package:share_product_v2/widgets/rentItem.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import 'chat/CustomerMessage.dart';
 
 class HomePage extends StatefulWidget {
   double lati;
@@ -78,6 +69,51 @@ class _HomePageState extends State<HomePage> {
     _currentItem = itemKind.first;
     homeScroller.addListener(homeScrollerListener);
     super.initState();
+    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print('on message $message');
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('on resume $message');
+        Platform.isIOS ?
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => CustomerMessage(
+              message['uuid'],
+              int.parse(message['productIdx']),
+              message['title'],
+              message['category'],
+              message['productOwner'],
+              int.parse(message['price']),
+              message['pic'],
+              message['status'],
+              int.parse(message['receiverIdx']),
+              message['senderFcm'],
+              message['receiverFcm'],
+              int.parse(message['senderIdx']),
+            )
+        )):
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => CustomerMessage(
+              message['data']['uuid'],
+              int.parse(message['data']['productIdx']),
+              message['data']['title'],
+              message['data']['category'],
+              message['data']['productOwner'],
+              int.parse(message['data']['price']),
+              message['data']['pic'],
+              message['data']['status'],
+              int.parse(message['data']['receiverIdx']),
+              message['data']['senderFcm'],
+              message['data']['receiverFcm'],
+              int.parse(message['data']['senderIdx']),
+            )
+        ));
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('on launch $message');
+      },
+    );
   }
 
   void dispose() {

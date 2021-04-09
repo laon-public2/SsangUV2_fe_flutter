@@ -5,6 +5,7 @@ import 'package:share_product_v2/providers/regUserProvider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
+import 'package:share_product_v2/widgets/loading.dart';
 
 class LoginPageNode extends StatefulWidget {
   @override
@@ -98,6 +99,7 @@ class _LoginPageNodeState extends State<LoginPageNode> {
                 } else if (_password.text == "") {
                   _showDialog('비밀번호가 입력되지 않았습니다.');
                 } else {
+                  _showDialogLoading();
                   await Provider.of<UserProvider>(context, listen: false)
                       .getAccessToken(_phNum.text, _password.text);
                   if (Provider.of<UserProvider>(context, listen: false)
@@ -138,6 +140,14 @@ class _LoginPageNodeState extends State<LoginPageNode> {
         context: context,
         builder: (BuildContext context) {
           return CustomDialogApply(Center(child: Text(text)), '확인');
+        });
+  }
+
+  void _showDialogLoading() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Loading();
         });
   }
 }
