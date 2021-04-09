@@ -99,11 +99,11 @@ class _LoginPageNodeState extends State<LoginPageNode> {
                 } else if (_password.text == "") {
                   _showDialog('비밀번호가 입력되지 않았습니다.');
                 } else {
-                  _showDialogLoading();
                   await Provider.of<UserProvider>(context, listen: false)
                       .getAccessToken(_phNum.text, _password.text);
                   if (Provider.of<UserProvider>(context, listen: false)
                       .isLoggenIn) {
+                    _showDialogLoading();
                     await Provider.of<ProductProvider>(context, listen: false).getGeolocator();
                     Navigator.of(context).popUntil((route) => route.isFirst);
                   } else {

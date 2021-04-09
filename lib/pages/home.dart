@@ -296,6 +296,7 @@ class ToItem extends StatelessWidget {
                 distance:
                     "${(_myList.mainProductsWant[idx].distance).toStringAsFixed(2)}",
                 startDate: _dateFormat(_myList.mainProductsWant[idx].startDate),
+                picture: "${_myList.mainProductsWant[idx].productFiles[0].path}",
                 endDate: _dateFormat(_myList.mainProductsWant[idx].endDate),
               );
             }

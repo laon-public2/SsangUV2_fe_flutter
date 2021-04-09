@@ -23,6 +23,7 @@ class _ChangeAddressState extends State<ChangeAddressReg> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(
@@ -100,6 +101,7 @@ class _ChangeAddressState extends State<ChangeAddressReg> {
                         Provider.of<UserProvider>(context, listen: false).userLocationY,
                       );
                       await Provider.of<ProductProvider>(context, listen: false).getGeolocator();
+                      await Provider.of<UserProvider>(context, listen: false).getMyInfo();
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => SuccessReg()),

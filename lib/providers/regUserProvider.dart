@@ -75,8 +75,6 @@ class RegUserProvider with ChangeNotifier {
       }
     }
     // print('회원가입상태 = ${regUser['message']}');
-
-
     notifyListeners();
   }
 
