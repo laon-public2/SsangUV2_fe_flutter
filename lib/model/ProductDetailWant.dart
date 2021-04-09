@@ -17,6 +17,7 @@ class productDetailWant {
   num lati;
   num longti;
   num distance;
+  String fcmToken;
   List<ProductFile> productFiles;
   // String productFiles;
 
@@ -39,6 +40,7 @@ class productDetailWant {
         review = json['review_possible'],
         lati = json['location']['y'],
         longti = json['location']['x'],
+        fcmToken = json['fcm_token'] == null ? "none" : json['fcm_token'],
         productFiles = json['image'] != null
             ? (json['image'] as List)
             .map((e) => ProductFile.fromJson(e))

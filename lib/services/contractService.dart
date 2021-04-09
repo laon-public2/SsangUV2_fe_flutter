@@ -48,6 +48,47 @@ class ContractService {
     }
   }
 
+  Future<String> sendFcmContent(
+      String title, String body, int productIdx,
+      String uuid, int category,
+      String productOwner, int price,
+      String status, int receiverIdx, String token,
+      String pic, String senderFcm, String receiverFcm,
+      int sendIdx,
+      )async{
+        print("fcm토큰알림 전송");
+        var fcmInfo = jsonEncode({
+          "notification" : {
+            "token" : token,
+            "title" : title,
+            "body" : body,
+          },
+          "data" : {
+            "title" : title,
+            "productIdx" : productIdx,
+            "uuid" : uuid,
+            "category" : category,
+            "productOwner" : productOwner,
+            "price" : price,
+            "status" : status,
+            "receiverIdx" : receiverIdx,
+            "pic" : pic,
+            "senderFcm" : senderFcm,
+            "receiverFcm" : receiverFcm,
+            "senderIdx" : sendIdx,
+          }
+        });
+        HttpClient httpClient = new HttpClient();
+        HttpClientRequest request = await httpClient.postUrl(Uri.parse("http://192.168.100.216:11111/push"));
+        request.headers.set('content-type', 'application/json');
+        request.add(utf8.encode(fcmInfo));
+        HttpClientResponse response = await request.close();
+        String reply = await response.transform(utf8.decoder).join();
+        httpClient.close();
+        print(reply.toString());
+        return reply;
+  }
+
   Future<Response> contractUUID(String uuid) async {
     Response response = await dio.get("/contracts/${uuid}");
 

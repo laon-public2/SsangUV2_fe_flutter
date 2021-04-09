@@ -148,6 +148,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   Future<void> changeUserPosition(num la, num lo) {
+    print("$la, $lo");
     this.laUser = la;
     this.loUser = lo;
     notifyListeners();
@@ -179,7 +180,7 @@ class ProductProvider extends ChangeNotifier {
         desiredAccuracy: LocationAccuracy.bestForNavigation);
     await getGeo(currentPosition.latitude, currentPosition.longitude);
     if (this.laUser != null) {
-      await getUserGeo( this.loUser, this.laUser);
+      await getUserGeo( this.laUser, this.loUser);
     }
     print("la 좌표${currentPosition.latitude}");
     print("lo 좌표${currentPosition.longitude}");
@@ -1051,7 +1052,7 @@ class ProductProvider extends ChangeNotifier {
 
   Future<void> getUserGeo(num la, num long) async {
     print('유저 위치 정보 조회');
-    final res = await productService.getGeo(la, long);
+    final res = await productService.getGeo(long, la);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap);
     List<Geolocation> list = (jsonMap['documents'] as List)

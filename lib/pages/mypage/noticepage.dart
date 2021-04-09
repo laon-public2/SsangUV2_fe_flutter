@@ -65,11 +65,11 @@ class _NoticePageState extends State<NoticePage> {
               }
             }
             if(_user.userNoticeList[idx].status == "START"){
-              return Item("${_user.userNoticeList[idx].receiver}님이 DSLR카메라 대여를 시작하였습니다.", "${_timeCompare(_user.userNoticeList[idx].createAt)}", idx == 0);
+              return Item("${_user.userNoticeList[idx].receiver}님이 ${_user.userNoticeList[idx].title} 대여를 시작하였습니다.", "${_timeCompare(_user.userNoticeList[idx].createAt)}", idx == 0, _user.userNoticeList[idx].productFiles[0].path);
             }else if(_user.userNoticeList[idx].status == "END"){
-              return Item("${_user.userNoticeList[idx].receiver}님이 DSLR카메라 대여를 종료하였습니다.", "${_timeCompare(_user.userNoticeList[idx].createAt)}", idx == 0);
+              return Item("${_user.userNoticeList[idx].receiver}님이 ${_user.userNoticeList[idx].title} 대여를 종료하였습니다.", "${_timeCompare(_user.userNoticeList[idx].createAt)}", idx == 0, _user.userNoticeList[idx].productFiles[0].path);
             }else{
-              return Item("${_user.userNoticeList[idx].receiver}님이 DSLR카메라에 대해 답글을 하였습니다.", "${_timeCompare(_user.userNoticeList[idx].createAt)}", idx == 0);
+              return Item("${_user.userNoticeList[idx].receiver}님이 ${_user.userNoticeList[idx].title} 대해 답글을 하였습니다.", "${_timeCompare(_user.userNoticeList[idx].createAt)}", idx == 0, _user.userNoticeList[idx].productFiles[0].path);
             }
           },
           itemCount: _user.userNoticeList.length,
@@ -89,8 +89,9 @@ class Item extends StatelessWidget {
   final String content;
   final String time;
   final bool isNew;
+  final String pic;
 
-  Item(this.content, this.time, this.isNew);
+  Item(this.content, this.time, this.isNew, this.pic);
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +108,9 @@ class Item extends StatelessWidget {
                 padding: EdgeInsets.only(left: 16, right: 20),
                 child: CircleAvatar(
                   radius: 17.h,
-                  backgroundImage: AssetImage('assets/tmp.png'),
+                  backgroundImage: NetworkImage(
+                    "http://192.168.100.232:5066/assets/images/product/$pic",
+                  ),
                 ),
               ),
               // Positioned(

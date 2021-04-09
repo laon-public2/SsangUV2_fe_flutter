@@ -39,11 +39,14 @@ class CustomerMessage extends StatefulWidget {
   final String pic;
   String status;
   final int receiverIdx;
+  final String senderFcm;
+  final String receiverFcm;
+  final int senderIdx;
 
   // final String status; 이건 왜넣었는지 나도 모르겠음.. 필요하면
   //여기 아래에 필요한 파리미터 적어서 필요한 곳에 넣어서 잘 쓰면 됨.
   CustomerMessage(this.uuid, this.productIdx, this.title, this.category,
-      this.productOwner, this.price, this.pic, this.status, this.receiverIdx);
+      this.productOwner, this.price, this.pic, this.status, this.receiverIdx, this.senderFcm, this.receiverFcm, this.senderIdx);
 
   @override
   _CustomerMessage createState() => _CustomerMessage();
@@ -186,6 +189,7 @@ class _CustomerMessage extends State<CustomerMessage>
   }
 
   _sendMsg(String text) {
+    var user = Provider.of<UserProvider>(context, listen: false);
     StompSendDTO data = StompSendDTO(
       orderId: "${this.widget.uuid}",
       sender: Provider.of<UserProvider>(context, listen: false).username,
@@ -196,10 +200,79 @@ class _CustomerMessage extends State<CustomerMessage>
       destination: '/pub/chat/message',
       body: json.encode(data.toJson()),
     );
+    if(this.widget.senderIdx == user.userIdx){
+      Provider.of<ContractProvider>(context, listen: false).sendFcm(
+        this.widget.title,
+        text,
+        this.widget.productIdx,
+        this.widget.uuid,
+        _selectCategory(this.widget.category),
+        this.widget.productOwner,
+        this.widget.price,
+        this.widget.status,
+        this.widget.receiverIdx,
+        this.widget.receiverFcm,
+        this.widget.pic,
+        this.widget.senderFcm,
+        this.widget.receiverFcm,
+        this.widget.senderIdx,
+      );
+    }else{
+      Provider.of<ContractProvider>(context, listen: false).sendFcm(
+        this.widget.title,
+        text,
+        this.widget.productIdx,
+        this.widget.uuid,
+        _selectCategory(this.widget.category),
+        this.widget.productOwner,
+        this.widget.price,
+        this.widget.status,
+        this.widget.receiverIdx,
+        this.widget.senderFcm,
+        this.widget.pic,
+        this.widget.senderFcm,
+        this.widget.receiverFcm,
+        this.widget.senderIdx,
+      );
+    }
+
   }
 
   _talking() async {
     await setClient();
+  }
+
+  _selectCategory(String category) {
+    if (category == "생활용품") {
+      return 2;
+    }
+    if (category == "여행") {
+      return 3;
+    }
+    if (category == "스포츠/레저") {
+      return 4;
+    }
+    if (category == "육아") {
+      return 5;
+    }
+    if (category == "반려동물") {
+      return 6;
+    }
+    if (category == "가전제품") {
+      return 7;
+    }
+    if (category == "의류/잡화") {
+      return 8;
+    }
+    if (category == "가구/인테리어") {
+      return 9;
+    }
+    if (category == "자동차용품") {
+      return 10;
+    }
+    if (category == "기타") {
+      return 11;
+    }
   }
 
   chatScroller() async{
@@ -233,8 +306,8 @@ class _CustomerMessage extends State<CustomerMessage>
     switch (result) {
       case ConnectivityResult.wifi:
         print("와이파이 $result");
-        _talking();
-        _loadChat();
+        // _talking();
+        // _loadChat();
         Fluttertoast.showToast(
             msg: "대여하실때 물품상태를 확인해주세요!",
             toastLength: Toast.LENGTH_SHORT,
@@ -246,8 +319,8 @@ class _CustomerMessage extends State<CustomerMessage>
         break;
       case ConnectivityResult.mobile:
         print("모바일데이터 $result");
-        _talking();
-        _loadChat();
+        // _talking();
+        // _loadChat();
         Fluttertoast.showToast(
             msg: "대여하실때 물품상태를 확인해주세요!",
             toastLength: Toast.LENGTH_SHORT,
@@ -296,6 +369,7 @@ class _CustomerMessage extends State<CustomerMessage>
     //
     print("채팅방 입장");
     print("uuid : ${this.widget.uuid}");
+    _talking();
     bottomScrollController.addListener(_scrollerListener);
     bottomScrollController.addListener(chatScroller);
     KeyboardVisibility.onChange.listen((bool visible) {
@@ -858,7 +932,6 @@ class _CustomerMessage extends State<CustomerMessage>
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: TextField(
-
                             controller: _textController,
                             keyboardType: TextInputType.multiline,
                             maxLines: 3,

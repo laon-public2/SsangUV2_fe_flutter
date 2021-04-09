@@ -220,6 +220,9 @@ class _ProductDetailState extends State<ProductDetailRent> {
                                   .productDetail.productFiles[0].path,
                               "INIT",
                               _product.productDetail.receiverIdx,
+                              _product.productDetail.fcmToken,
+                              Provider.of<UserProvider>(context, listen: false).userFBtoken,
+                              Provider.of<UserProvider>(context, listen: false).userIdx,
                             )));
                   },
                   child: Container(

@@ -26,7 +26,7 @@ class FCMModel with ChangeNotifier {
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
-  FCMModel() {
+  FCMModel(BuildContext context) {
     if (Platform.isIOS) _iosPermission();
 
     _firebaseMessaging.configure(
@@ -34,23 +34,48 @@ class FCMModel with ChangeNotifier {
         print('on message $message');
       },
       onBackgroundMessage: Platform.isIOS ? null : myBackgroundMessageHandler,
+      // onBackgroundMessage: Platform.isIOS ? null : (Map<String, dynamic> message)async {
+      //   print('on background $message');
+      // },
       onResume: (Map<String, dynamic> message) async {
         print('on resume $message');
-        // SchedulerBinding.instance.addPostFrameCallback((_) {
-        //   Navigator.push(context, MaterialPageRoute(
-        //       builder: (context) => CustomerMessage(
-        //           uuid,
-        //           productIdx,
-        //           title,
-        //           category,
-        //           productOwner,
-        //           price,
-        //           pic,
-        //           status,
-        //           receiverIdx
-        //       )
-        //   ));
-        // });
+        Platform.isIOS ?
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => CustomerMessage(
+                  message['uuid'],
+                  message['productIdx'],
+                  message['title'],
+                  message['category'],
+                  message['productOwner'],
+                  message['price'],
+                  message['pic'],
+                  message['status'],
+                  message['receiverIdx'],
+                  message['senderFcm'],
+                  message['receiverFcm'],
+                  message['senderIdx'],
+              )
+          ));
+        }):
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => CustomerMessage(
+                message['data']['uuid'],
+                message['data']['productIdx'],
+                message['data']['title'],
+                message['data']['category'],
+                message['data']['productOwner'],
+                message['data']['price'],
+                message['data']['pic'],
+                message['data']['status'],
+                message['data']['receiverIdx'],
+                message['data']['senderFcm'],
+                message['data']['receiverFcm'],
+                message['data']['senderIdx'],
+              )
+          ));
+        });
       },
       onLaunch: (Map<String, dynamic> message) async {
         print('on launch $message');

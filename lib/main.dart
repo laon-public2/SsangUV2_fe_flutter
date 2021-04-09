@@ -30,7 +30,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var tokens;
-  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: "Main Navigator");
   @override
   void initState() {
     super.initState();
@@ -71,13 +71,14 @@ class _MyAppState extends State<MyApp> {
             create: (_) => MainProvider(),
           ),
           ChangeNotifierProvider<FCMModel>(
-            create: (_) => FCMModel(),
+            create: (_) => FCMModel(context),
           ),
         ],
         child: ScreenUtilInit(
           designSize: Size(360, 680),
           allowFontScaling: false,
           builder: () => MaterialApp(
+            navigatorKey: navigatorKey,
             title: '쌩유',
             debugShowCheckedModeBanner: false,
             localizationsDelegates: [

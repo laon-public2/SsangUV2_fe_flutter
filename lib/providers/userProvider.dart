@@ -109,8 +109,8 @@ class UserProvider extends ChangeNotifier {
     if (jsonMap['success'] == true) {
       this.address = address;
       this.addressDetail = addressDetail;
-      this.userLocationX = la;
-      this.userLocationY = lo;
+      this.userLocationY = la;
+      this.userLocationX = lo;
     }
     notifyListeners();
   }

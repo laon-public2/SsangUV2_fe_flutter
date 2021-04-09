@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share_product_v2/widgets/loading.dart';
 
 class ChangeAddress extends StatefulWidget {
   final num la;
@@ -87,6 +88,7 @@ class _ChangeAddressState extends State<ChangeAddress> {
                     if (_addressDetail.text == "") {
                       return;
                     } else {
+                      _showLoading();
                       await _myInfo.changeAddress(
                         this.widget.address,
                         "${this.widget.addressDetail} ${this._addressDetail.text}",
@@ -99,7 +101,7 @@ class _ChangeAddressState extends State<ChangeAddress> {
                         Provider.of<UserProvider>(context, listen: false).userLocationY,
                       );
                       await Provider.of<ProductProvider>(context, listen: false).getGeolocator();
-                      Navigator.pop(context);
+                      Navigator.of(context).popUntil((route) => route.isFirst);
                     }
                   },
                   child: Container(
@@ -126,5 +128,12 @@ class _ChangeAddressState extends State<ChangeAddress> {
             ));
       },
     );
+  }
+  void _showLoading() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Loading();
+        });
   }
 }

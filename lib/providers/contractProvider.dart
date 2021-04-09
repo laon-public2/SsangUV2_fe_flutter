@@ -71,4 +71,24 @@ class ContractProvider extends ChangeNotifier {
     this.chatHistories.insert(0, dto);
     notifyListeners();
   }
+
+  Future<void> sendFcm(String title, String body, int productIdx, String uuid, int category, String productOwner, int price, String status, int receiverIdx, String token, String pic, String senderFcm, String receiverFcm, int senderIdx) async {
+    print("fcm알림 프로바이더");
+    final res = await contractService.sendFcmContent(
+      title,
+      body,
+      productIdx,
+      uuid,
+      category,
+      productOwner,
+      price,
+      status,
+      receiverIdx,
+      token,
+      pic,
+      senderFcm,
+      receiverFcm,
+      senderIdx,
+    );
+  }
 }

@@ -183,6 +183,8 @@ class _Category1State extends State<Category9> {
       value = value.replaceAll(RegExp(r'\D'), '');
       value = value.replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), ',');
       return value;
+    }else{
+      return price;
     }
   }
 
