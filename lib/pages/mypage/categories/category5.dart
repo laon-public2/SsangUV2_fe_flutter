@@ -127,35 +127,35 @@ class _Category1State extends State<Category5> {
           builder: (_, _myActHistory, __) {
             return ListView.separated(
               itemCount: _currentItem == '빌려드려요'
-                  ? _myActHistory.proRent.length
-                  : _myActHistory.proWant.length,
+                  ? _myActHistory.proRentCa5.length
+                  : _myActHistory.proWantCa5.length,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, idx) {
                 if (_currentItem == "빌려드려요") {
                   return LendItemMyAct(
                     category: '반려동물',
-                    title: '${_myActHistory.proRent[idx].title}',
-                    name: _myActHistory.proRent[idx].name,
-                    price: _moneyFormat("${_myActHistory.proRent[idx].price}"),
-                    status: _myActHistory.proRent[idx].status,
-                    idx: _myActHistory.proRent[idx].id,
-                    picFile: _myActHistory.proRent[idx].productFiles[0].path,
+                    title: '${_myActHistory.proRentCa5[idx].title}',
+                    name: _myActHistory.proRentCa5[idx].name,
+                    price: _moneyFormat("${_myActHistory.proRentCa5[idx].price}"),
+                    status: _myActHistory.proRentCa5[idx].status,
+                    idx: _myActHistory.proRentCa5[idx].id,
+                    picFile: _myActHistory.proRentCa5[idx].productFiles[0].path,
                     arrayNum: idx,
                     token: _myInfo.accessToken,
                   );
                 } else if (_currentItem == '빌려주세요') {
                   return WantItemMyAct(
-                    idx: _myActHistory.proWant[idx].id,
+                    idx: _myActHistory.proWantCa5[idx].id,
                     category:
                     "반려동물",
-                    title: "${_myActHistory.proWant[idx].title}",
-                    name: "${_myActHistory.proWant[idx].name}",
-                    minPrice: "${_moneyFormat("${_myActHistory.proWant[idx].minPrice}")}원",
-                    maxPrice: "${_moneyFormat("${_myActHistory.proWant[idx].maxPrice}")}원",
-                    startDate: _dateFormat(_myActHistory.proWant[idx].startDate),
-                    endDate: _dateFormat(_myActHistory.proWant[idx].endDate),
-                    picture: _myActHistory.proWant[idx].productFiles[0].path,
+                    title: "${_myActHistory.proWantCa5[idx].title}",
+                    name: "${_myActHistory.proWantCa5[idx].name}",
+                    minPrice: "${_moneyFormat("${_myActHistory.proWantCa5[idx].minPrice}")}원",
+                    maxPrice: "${_moneyFormat("${_myActHistory.proWantCa5[idx].maxPrice}")}원",
+                    startDate: _dateFormat(_myActHistory.proWantCa5[idx].startDate),
+                    endDate: _dateFormat(_myActHistory.proWantCa5[idx].endDate),
+                    picture: _myActHistory.proWantCa5[idx].productFiles[0].path,
                   );
                 } else {
                   Navigator.push(
