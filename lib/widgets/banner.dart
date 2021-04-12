@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -44,15 +45,33 @@ class BannerItem extends StatelessWidget {
                     height: 150,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(5))),
-                    child: Image.network(
-                      // "http://192.168.100.232:5050/assets/images/banner/${e.bannerFile}",
+                    child: ExtendedImage.network(
                       "http://192.168.100.232:5066/assets/images/banner/${e.bannerFile}",
                       fit: BoxFit.cover,
-                      errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
-                        return Image.asset(
-                          'assets/loadingIcon.gif',
-                          fit: BoxFit.contain,
-                        );
+                      cache: true,
+                      borderRadius: BorderRadius.circular(5),
+                      loadStateChanged: (ExtendedImageState state) {
+                        switch(state.extendedImageLoadState) {
+                          case LoadState.loading :
+                            return Image.asset(
+                              "assets/loadingIcon.gif",
+                              fit: BoxFit.contain,
+                            );
+                            break;
+                          case LoadState.completed :
+                            break;
+                          case LoadState.failed :
+                            return GestureDetector(
+                              child: Image.asset(
+                                "assets/icon/icons8-cloud-refresh-96.png",
+                                fit: BoxFit.contain,
+                              ),
+                              onTap: () {
+                                state.reLoadImage();
+                              },
+                            );
+                            break;
+                        }
                       },
                     ),
                   ),
