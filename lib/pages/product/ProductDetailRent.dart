@@ -7,6 +7,7 @@ import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
 import 'package:share_product_v2/pages/product/ImageView.dart';
 import 'package:share_product_v2/pages/product/detailMapPage.dart';
 import 'package:share_product_v2/pages/product/writeReview.dart';
+import 'package:share_product_v2/providers/contractProvider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/bannerProduct.dart';
@@ -205,6 +206,7 @@ class _ProductDetailState extends State<ProductDetailRent> {
                       Provider.of<UserProvider>(context, listen: false)
                           .accessToken,
                     );
+                    print("에러체크");
                     print(uuid);
                     Navigator.push(
                         context,

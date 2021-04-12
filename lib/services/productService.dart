@@ -47,14 +47,14 @@ class ProductService {
   }
 
   Future<Response> searchProduct(
-      int page, String searchData, num lati, num longti, num category) async {
+      int page, String searchData, num lati, num longti, num category, String type) async {
     print("검색 조회 서비스");
     try {
       dio.options.contentType = "application/x-www-form-urlencoded";
       Response res = await dio.get('/product/list', queryParameters: {
         'category': category,
         'page': page,
-        'type': "Rent",
+        'type': type,
         'search': searchData,
         'latitude': lati,
         'longitude': longti,

@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
@@ -991,15 +992,26 @@ class ProductProvider extends ChangeNotifier {
     List<Geolocation> list = (jsonMap['documents'] as List)
         .map((e) => Geolocation.fromJson(e))
         .toList();
-    if (this.myLocation[2] == "다른 위치 설정") {
-      this.myLocation.add('다른 위치 설정');
+    if(this.myLocation[1] == "${list[1].depth3}"){
+      Fluttertoast.showToast(
+          msg: "기본으로 설정된 주소와 동일합니다.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Color(0xffff0066),
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    }else{
+      if (this.myLocation[2] == "다른 위치 설정") {
+        this.myLocation.add('다른 위치 설정');
+      }
+      this.myLocation[2] = "${list[1].depth3}";
+      this.currentLocation = "${list[1].depth3}";
+      this.la = la;
+      this.lo = long;
+      await getMainRent(page);
+      await getMainWant(page);
     }
-    this.myLocation[2] = "${list[1].depth3}";
-    this.currentLocation = "${list[1].depth3}";
-    this.la = la;
-    this.lo = long;
-    await getMainRent(page);
-    await getMainWant(page);
     notifyListeners();
   }
 
@@ -1015,8 +1027,8 @@ class ProductProvider extends ChangeNotifier {
       } else if (this.myLocation[1] == value) {
         this.myLocation[1] = value;
         this.currentLocation = value;
-        this.la = this.laUser;
-        this.lo = this.loUser;
+        this.la = this.loUser;
+        this.lo = this.laUser;
         await getMainRent(page);
         await getMainWant(page);
       } else {
@@ -1063,37 +1075,64 @@ class ProductProvider extends ChangeNotifier {
   }
 
   Future<void> SearchingDataProduct(
-      int page, String searchData, int category) async {
+      int page, String searchData, int category, String type) async {
     switch(category){
       //카테고리 1
       case 2 :
         print(page);
         print(searchData);
         print(category);
+        print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
           this.searchDataProduct = [];
+          this.searchDataProductWant = [];
         }
-        try {
-          final res = await productService.searchProduct(
-              page, searchData, la, lo, category);
-          Map<String, dynamic> jsonMap = json.decode(res.toString());
-          List<SearchDataProduct> list = (jsonMap['data'] as List)
-              .map((e) => SearchDataProduct.fromJson(e))
-              .toList();
-          print(list);
-          Paging paging = Paging.fromJson(jsonMap);
-          this.searchPaging = paging;
-          if (this.searchPaging.currentPage == null ||
-              this.searchPaging.currentPage == 0) {
-            this.searchDataProduct = list;
-          } else {
-            for (var e in list) {
-              this.searchDataProduct.add(e);
+        if(type == "RENT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPaging = paging;
+            if (this.searchPaging.currentPage == null ||
+                this.searchPaging.currentPage == 0) {
+              this.searchDataProduct = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProduct.add(e);
+              }
             }
+          } catch (e) {
+            print(e);
           }
-        } catch (e) {
-          print(e);
+        }
+        else if(type == "WANT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPaging = paging;
+            if (this.searchPaging.currentPage == null ||
+                this.searchPaging.currentPage == 0) {
+              this.searchDataProductWant = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductWant.add(e);
+              }
+            }
+          } catch (e) {
+            print(e);
+          }
         }
         break;
        //카테고리 2
@@ -1101,30 +1140,57 @@ class ProductProvider extends ChangeNotifier {
         print(page);
         print(searchData);
         print(category);
+        print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
           this.searchDataProductCa2 = [];
+          this.searchDataProductWantCa2 = [];
         }
-        try {
-          final res = await productService.searchProduct(
-              page, searchData, la, lo, category);
-          Map<String, dynamic> jsonMap = json.decode(res.toString());
-          List<SearchDataProduct> list = (jsonMap['data'] as List)
-              .map((e) => SearchDataProduct.fromJson(e))
-              .toList();
-          print(list);
-          Paging paging = Paging.fromJson(jsonMap);
-          this.searchPagingCa2 = paging;
-          if (this.searchPagingCa2.currentPage == null ||
-              this.searchPagingCa2.currentPage == 0) {
-            this.searchDataProductCa2 = list;
-          } else {
-            for (var e in list) {
-              this.searchDataProductCa2.add(e);
+        if(type == "RENT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa2 = paging;
+            if (this.searchPagingCa2.currentPage == null ||
+                this.searchPagingCa2.currentPage == 0) {
+              this.searchDataProductCa2 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductCa2.add(e);
+              }
             }
+          } catch (e) {
+            print(e);
           }
-        } catch (e) {
-          print(e);
+        }
+        else if(type == "WANT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa2 = paging;
+            if (this.searchPagingCa2.currentPage == null ||
+                this.searchPagingCa2.currentPage == 0) {
+              this.searchDataProductWantCa2 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductWantCa2.add(e);
+              }
+            }
+          } catch (e) {
+            print(e);
+          }
         }
         break;
       //카테고리 3
@@ -1132,30 +1198,57 @@ class ProductProvider extends ChangeNotifier {
         print(page);
         print(searchData);
         print(category);
+        print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
           this.searchDataProductCa3 = [];
+          this.searchDataProductWantCa3 = [];
         }
-        try {
-          final res = await productService.searchProduct(
-              page, searchData, la, lo, category);
-          Map<String, dynamic> jsonMap = json.decode(res.toString());
-          List<SearchDataProduct> list = (jsonMap['data'] as List)
-              .map((e) => SearchDataProduct.fromJson(e))
-              .toList();
-          print(list);
-          Paging paging = Paging.fromJson(jsonMap);
-          this.searchPagingCa3 = paging;
-          if (this.searchPagingCa3.currentPage == null ||
-              this.searchPagingCa3.currentPage == 0) {
-            this.searchDataProductCa3 = list;
-          } else {
-            for (var e in list) {
-              this.searchDataProductCa3.add(e);
+        if(type == "RENT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa3 = paging;
+            if (this.searchPagingCa3.currentPage == null ||
+                this.searchPagingCa3.currentPage == 0) {
+              this.searchDataProductCa3 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductCa3.add(e);
+              }
             }
+          } catch (e) {
+            print(e);
           }
-        } catch (e) {
-          print(e);
+        }
+        else if(type == "WANT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa3 = paging;
+            if (this.searchPagingCa3.currentPage == null ||
+                this.searchPagingCa3.currentPage == 0) {
+              this.searchDataProductWantCa3 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductWantCa3.add(e);
+              }
+            }
+          } catch (e) {
+            print(e);
+          }
         }
         break;
       //카테고리 4
@@ -1163,30 +1256,57 @@ class ProductProvider extends ChangeNotifier {
         print(page);
         print(searchData);
         print(category);
+        print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
           this.searchDataProductCa4 = [];
+          this.searchDataProductWantCa4 = [];
         }
-        try {
-          final res = await productService.searchProduct(
-              page, searchData, la, lo, category);
-          Map<String, dynamic> jsonMap = json.decode(res.toString());
-          List<SearchDataProduct> list = (jsonMap['data'] as List)
-              .map((e) => SearchDataProduct.fromJson(e))
-              .toList();
-          print(list);
-          Paging paging = Paging.fromJson(jsonMap);
-          this.searchPaging = paging;
-          if (this.searchPagingCa4.currentPage == null ||
-              this.searchPagingCa4.currentPage == 0) {
-            this.searchDataProductCa4 = list;
-          } else {
-            for (var e in list) {
-              this.searchDataProductCa4.add(e);
+        if(type == "RENT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa4 = paging;
+            if (this.searchPagingCa4.currentPage == null ||
+                this.searchPagingCa4.currentPage == 0) {
+              this.searchDataProductCa4 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductCa4.add(e);
+              }
             }
+          } catch (e) {
+            print(e);
           }
-        } catch (e) {
-          print(e);
+        }
+        else if(type == "WANT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa4 = paging;
+            if (this.searchPagingCa4.currentPage == null ||
+                this.searchPagingCa4.currentPage == 0) {
+              this.searchDataProductWantCa4 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductWantCa4.add(e);
+              }
+            }
+          } catch (e) {
+            print(e);
+          }
         }
         break;
       //카테고리 5
@@ -1194,30 +1314,57 @@ class ProductProvider extends ChangeNotifier {
         print(page);
         print(searchData);
         print(category);
+        print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
           this.searchDataProductCa5 = [];
+          this.searchDataProductWantCa5 = [];
         }
-        try {
-          final res = await productService.searchProduct(
-              page, searchData, la, lo, category);
-          Map<String, dynamic> jsonMap = json.decode(res.toString());
-          List<SearchDataProduct> list = (jsonMap['data'] as List)
-              .map((e) => SearchDataProduct.fromJson(e))
-              .toList();
-          print(list);
-          Paging paging = Paging.fromJson(jsonMap);
-          this.searchPaging = paging;
-          if (this.searchPagingCa5.currentPage == null ||
-              this.searchPagingCa5.currentPage == 0) {
-            this.searchDataProductCa5 = list;
-          } else {
-            for (var e in list) {
-              this.searchDataProductCa5.add(e);
+        if(type == "RENT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa5 = paging;
+            if (this.searchPagingCa5.currentPage == null ||
+                this.searchPagingCa5.currentPage == 0) {
+              this.searchDataProductCa5 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductCa5.add(e);
+              }
             }
+          } catch (e) {
+            print(e);
           }
-        } catch (e) {
-          print(e);
+        }
+        else if(type == "WANT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa5 = paging;
+            if (this.searchPagingCa5.currentPage == null ||
+                this.searchPagingCa5.currentPage == 0) {
+              this.searchDataProductWantCa5 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductWantCa5.add(e);
+              }
+            }
+          } catch (e) {
+            print(e);
+          }
         }
         break;
       //카테고리 6
@@ -1225,30 +1372,57 @@ class ProductProvider extends ChangeNotifier {
         print(page);
         print(searchData);
         print(category);
+        print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
           this.searchDataProductCa6 = [];
+          this.searchDataProductWantCa6 = [];
         }
-        try {
-          final res = await productService.searchProduct(
-              page, searchData, la, lo, category);
-          Map<String, dynamic> jsonMap = json.decode(res.toString());
-          List<SearchDataProduct> list = (jsonMap['data'] as List)
-              .map((e) => SearchDataProduct.fromJson(e))
-              .toList();
-          print(list);
-          Paging paging = Paging.fromJson(jsonMap);
-          this.searchPagingCa6 = paging;
-          if (this.searchPagingCa6.currentPage == null ||
-              this.searchPagingCa6.currentPage == 0) {
-            this.searchDataProductCa6 = list;
-          } else {
-            for (var e in list) {
-              this.searchDataProductCa6.add(e);
+        if(type == "RENT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa6 = paging;
+            if (this.searchPagingCa6.currentPage == null ||
+                this.searchPagingCa6.currentPage == 0) {
+              this.searchDataProductCa6 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductCa6.add(e);
+              }
             }
+          } catch (e) {
+            print(e);
           }
-        } catch (e) {
-          print(e);
+        }
+        else if(type == "WANT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa6 = paging;
+            if (this.searchPagingCa6.currentPage == null ||
+                this.searchPagingCa6.currentPage == 0) {
+              this.searchDataProductWantCa6 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductWantCa6.add(e);
+              }
+            }
+          } catch (e) {
+            print(e);
+          }
         }
         break;
       //카테고리 7
@@ -1256,30 +1430,57 @@ class ProductProvider extends ChangeNotifier {
         print(page);
         print(searchData);
         print(category);
+        print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
           this.searchDataProductCa7 = [];
+          this.searchDataProductWantCa7 = [];
         }
-        try {
-          final res = await productService.searchProduct(
-              page, searchData, la, lo, category);
-          Map<String, dynamic> jsonMap = json.decode(res.toString());
-          List<SearchDataProduct> list = (jsonMap['data'] as List)
-              .map((e) => SearchDataProduct.fromJson(e))
-              .toList();
-          print(list);
-          Paging paging = Paging.fromJson(jsonMap);
-          this.searchPagingCa7 = paging;
-          if (this.searchPagingCa7.currentPage == null ||
-              this.searchPagingCa7.currentPage == 0) {
-            this.searchDataProductCa7 = list;
-          } else {
-            for (var e in list) {
-              this.searchDataProductCa7.add(e);
+        if(type == "RENT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa7 = paging;
+            if (this.searchPagingCa7.currentPage == null ||
+                this.searchPagingCa7.currentPage == 0) {
+              this.searchDataProductCa7 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductCa7.add(e);
+              }
             }
+          } catch (e) {
+            print(e);
           }
-        } catch (e) {
-          print(e);
+        }
+        else if (type == "WANT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa7 = paging;
+            if (this.searchPagingCa7.currentPage == null ||
+                this.searchPagingCa7.currentPage == 0) {
+              this.searchDataProductWantCa7 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductWantCa7.add(e);
+              }
+            }
+          } catch (e) {
+            print(e);
+          }
         }
         break;
       //카테고리 8
@@ -1287,30 +1488,57 @@ class ProductProvider extends ChangeNotifier {
         print(page);
         print(searchData);
         print(category);
+        print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
           this.searchDataProductCa8 = [];
+          this.searchDataProductWantCa8 = [];
         }
-        try {
-          final res = await productService.searchProduct(
-              page, searchData, la, lo, category);
-          Map<String, dynamic> jsonMap = json.decode(res.toString());
-          List<SearchDataProduct> list = (jsonMap['data'] as List)
-              .map((e) => SearchDataProduct.fromJson(e))
-              .toList();
-          print(list);
-          Paging paging = Paging.fromJson(jsonMap);
-          this.searchPagingCa8 = paging;
-          if (this.searchPagingCa8.currentPage == null ||
-              this.searchPagingCa8.currentPage == 0) {
-            this.searchDataProductCa8 = list;
-          } else {
-            for (var e in list) {
-              this.searchDataProductCa8.add(e);
+        if(type == "RENT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa8 = paging;
+            if (this.searchPagingCa8.currentPage == null ||
+                this.searchPagingCa8.currentPage == 0) {
+              this.searchDataProductCa8 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductCa8.add(e);
+              }
             }
+          } catch (e) {
+            print(e);
           }
-        } catch (e) {
-          print(e);
+        }
+        else if(type == "WANT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa8 = paging;
+            if (this.searchPagingCa8.currentPage == null ||
+                this.searchPagingCa8.currentPage == 0) {
+              this.searchDataProductWantCa8 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductWantCa8.add(e);
+              }
+            }
+          } catch (e) {
+            print(e);
+          }
         }
         break;
       //카테고리 9
@@ -1318,30 +1546,57 @@ class ProductProvider extends ChangeNotifier {
         print(page);
         print(searchData);
         print(category);
+        print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
           this.searchDataProductCa9 = [];
+          this.searchDataProductWantCa9 = [];
         }
-        try {
-          final res = await productService.searchProduct(
-              page, searchData, la, lo, category);
-          Map<String, dynamic> jsonMap = json.decode(res.toString());
-          List<SearchDataProduct> list = (jsonMap['data'] as List)
-              .map((e) => SearchDataProduct.fromJson(e))
-              .toList();
-          print(list);
-          Paging paging = Paging.fromJson(jsonMap);
-          this.searchPagingCa9 = paging;
-          if (this.searchPagingCa9.currentPage == null ||
-              this.searchPagingCa9.currentPage == 0) {
-            this.searchDataProductCa9 = list;
-          } else {
-            for (var e in list) {
-              this.searchDataProductCa9.add(e);
+        if(type == "RENT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa9 = paging;
+            if (this.searchPagingCa9.currentPage == null ||
+                this.searchPagingCa9.currentPage == 0) {
+              this.searchDataProductCa9 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductCa9.add(e);
+              }
             }
+          } catch (e) {
+            print(e);
           }
-        } catch (e) {
-          print(e);
+        }
+        if(type == "WANT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa9 = paging;
+            if (this.searchPagingCa9.currentPage == null ||
+                this.searchPagingCa9.currentPage == 0) {
+              this.searchDataProductWantCa9 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductWantCa9.add(e);
+              }
+            }
+          } catch (e) {
+            print(e);
+          }
         }
         break;
       //카테고리 10
@@ -1349,34 +1604,60 @@ class ProductProvider extends ChangeNotifier {
         print(page);
         print(searchData);
         print(category);
+        print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
           this.searchDataProductCa10 = [];
+          this.searchDataProductWantCa10 = [];
         }
-        try {
-          final res = await productService.searchProduct(
-              page, searchData, la, lo, category);
-          Map<String, dynamic> jsonMap = json.decode(res.toString());
-          List<SearchDataProduct> list = (jsonMap['data'] as List)
-              .map((e) => SearchDataProduct.fromJson(e))
-              .toList();
-          print(list);
-          Paging paging = Paging.fromJson(jsonMap);
-          this.searchPagingCa10 = paging;
-          if (this.searchPagingCa10.currentPage == null ||
-              this.searchPagingCa10.currentPage == 0) {
-            this.searchDataProductCa10 = list;
-          } else {
-            for (var e in list) {
-              this.searchDataProductCa10.add(e);
+        if(type == "RENT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa10 = paging;
+            if (this.searchPagingCa10.currentPage == null ||
+                this.searchPagingCa10.currentPage == 0) {
+              this.searchDataProductCa10 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductCa10.add(e);
+              }
             }
+          } catch (e) {
+            print(e);
           }
-        } catch (e) {
-          print(e);
+        }
+        else if(type == "WANT"){
+          try {
+            final res = await productService.searchProduct(
+                page, searchData, la, lo, category, type);
+            Map<String, dynamic> jsonMap = json.decode(res.toString());
+            List<SearchDataProduct> list = (jsonMap['data'] as List)
+                .map((e) => SearchDataProduct.fromJson(e))
+                .toList();
+            print(list);
+            Paging paging = Paging.fromJson(jsonMap);
+            this.searchPagingCa10 = paging;
+            if (this.searchPagingCa10.currentPage == null ||
+                this.searchPagingCa10.currentPage == 0) {
+              this.searchDataProductWantCa10 = list;
+            } else {
+              for (var e in list) {
+                this.searchDataProductWantCa10.add(e);
+              }
+            }
+          } catch (e) {
+            print(e);
+          }
         }
         break;
     }
-
     notifyListeners();
   }
 
@@ -1425,6 +1706,7 @@ class ProductProvider extends ChangeNotifier {
           .map((e) => ChatListModel.fromJson(e))
           .toList();
       Paging paging = Paging.fromJson(jsonMap);
+      print(list);
       this.chatListCounter = paging;
       if(this.chatListCounter.currentPage == null || this.chatListCounter.currentPage == 0) {
         this.chatListItem = list;
