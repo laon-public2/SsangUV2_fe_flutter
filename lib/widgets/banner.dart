@@ -46,7 +46,7 @@ class BannerItem extends StatelessWidget {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(5))),
                     child: ExtendedImage.network(
-                      "http://192.168.100.232:5066/assets/images/banner/${e.bannerFile}",
+                      "http://115.91.73.66:15066/assets/images/banner/${e.bannerFile}",
                       fit: BoxFit.cover,
                       cache: true,
                       borderRadius: BorderRadius.circular(5),

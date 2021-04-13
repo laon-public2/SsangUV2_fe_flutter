@@ -347,11 +347,12 @@ class UserProvider extends ChangeNotifier {
       final res = await userService.changeUserName(name, phNum, accessToken);
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
-      await getMyInfo();
+      this.username = name;
       return jsonMap['success'];
     } catch (e) {
       print(e);
     }
+    notifyListeners();
   }
 
   Future<String> userChangePwd(String currentPwd, String newPwd) async {

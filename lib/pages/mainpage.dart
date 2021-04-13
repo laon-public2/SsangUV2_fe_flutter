@@ -130,6 +130,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           return Future(() => true);
         },
         child: Scaffold(
+          backgroundColor: Colors.white,
           key: globalKey,
           body: Container(
             width: double.infinity,

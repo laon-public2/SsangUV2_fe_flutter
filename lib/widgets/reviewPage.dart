@@ -23,7 +23,7 @@ class reviewPage extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(100),
           child: Image.network(
-            "http://192.168.100.232:5066/assets/images/user/${this.picture}",
+            "http://115.91.73.66:15066/assets/images/user/${this.picture}",
             height: 100.h,
             width: double.infinity,
             fit: BoxFit.cover,

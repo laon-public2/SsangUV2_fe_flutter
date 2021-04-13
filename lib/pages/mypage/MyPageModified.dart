@@ -131,7 +131,7 @@ class _MyPageModifiedState extends State<MyPageModified> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(200),
                                     child: Image.network(
-                                      "http://192.168.100.232:5066/assets/images/user/${_user.userProfileImg}",
+                                      "http://115.91.73.66:15066/assets/images/user/${_user.userProfileImg}",
                                       height: 120.h,
                                       width: double.infinity,
                                       fit: BoxFit.cover,
@@ -187,7 +187,7 @@ class _MyPageModifiedState extends State<MyPageModified> {
                             focusedBorder: InputBorder.none,
                             disabledBorder: InputBorder.none,
                             enabledBorder: InputBorder.none,
-                            hintText: "유저 이름 입력",
+                            hintText: "${_user.username}",
                             hintStyle: TextStyle(
                                 fontSize: 14, color: Color(0xffaaaaaa)),
                           ),

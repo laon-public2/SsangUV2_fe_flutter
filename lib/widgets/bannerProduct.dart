@@ -42,7 +42,7 @@ class BannerItemProduct extends StatelessWidget {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(5))),
                   child: Image.network(
-                    "http://192.168.100.232:5066/assets/images/product/${e.path}",
+                    "http://115.91.73.66:15066/assets/images/product/${e.path}",
                     fit: BoxFit.cover,
                   ),
                 );

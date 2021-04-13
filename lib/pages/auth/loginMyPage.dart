@@ -23,6 +23,7 @@ class _LoginMyPageState extends State<LoginMyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Consumer<UserProvider>(
         builder: (_, _getMyinfo, __) {
           return Column(
@@ -46,6 +47,7 @@ class _LoginMyPageState extends State<LoginMyPage> {
                       //   title: "나의 대여상품",
                       //   link: '/user/product',
                       // ),
+                      SizedBox(height: 10.h),
                       CustomLinkTextContainer(
                         title: "나의 활동",
                         link: '/myActHistory',
@@ -85,54 +87,63 @@ class _LoginMyPageState extends State<LoginMyPage> {
                   ),
                 ),
               ),
-              Container(
-                color: Color(0xffFAFAFA),
-                height: 120,
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      height: 52,
-                      child: Row(
-                        children: [
-                          Text("알림설정", style: normal_16_000),
-                          Spacer(),
-                          Switch(
-                            value: _getMyinfo.userPush,
-                            onChanged: (bool value) {
-                              _getMyinfo.changePush();
-                              Fluttertoast.showToast(
-                                  msg: value ? "알림전송이 허용되었습니다." : "알림전송이 거부되었습니다.",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  backgroundColor: Color(0xffff0066),
-                                  textColor: Colors.white,
-                                  fontSize: 16.0
-                              );
-                            },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width*0.92,
+                    height: 120,
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    decoration: BoxDecoration(
+                      color: Color(0xfffff7fa),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          height: 52,
+                          child: Row(
+                            children: [
+                              Text("알림설정", style: normal_16_000),
+                              Spacer(),
+                              Switch(
+                                value: _getMyinfo.userPush,
+                                onChanged: (bool value) {
+                                  _getMyinfo.changePush();
+                                  Fluttertoast.showToast(
+                                      msg: value ? "알림전송이 허용되었습니다." : "알림전송이 거부되었습니다.",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      backgroundColor: Color(0xffff0066),
+                                      textColor: Colors.white,
+                                      fontSize: 16.0
+                                  );
+                                },
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 235.w),
-                      child: Text(
-                        "알림 설정 시 푸시 알림이 전송됩니다. 알림을 해제 시 푸시 알림이 보내지지 않습니다.",
-                        style: TextStyle(
-                          fontSize: 10.sp,
-                          color: Color(0xff999999),
                         ),
-                      ),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: 235.w),
+                          child: Text(
+                            "알림 설정 시 푸시 알림이 전송됩니다. 알림을 해제 시 푸시 알림이 보내지지 않습니다.",
+                            style: TextStyle(
+                              fontSize: 10.sp,
+                              color: Color(0xff999999),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              // Container(
-              //   child: BottomBar(),
-              // ),
             ],
           );
         },
@@ -162,8 +173,21 @@ class MyInfoContainer extends StatelessWidget {
       },
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.only(top: 10, bottom: 10),
+        padding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
         height: 70,
+        decoration: BoxDecoration(
+          color: Color(0xfffff2f7),
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end:
+              Alignment(0.8, 0.0), // 10% of the width, so there are ten blinds.
+              colors: <Color>[
+                Color(0xfffff2f7),
+                Color(0xffffedf5)
+              ],
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -182,7 +206,7 @@ class MyInfoContainer extends StatelessWidget {
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(100),
                           child: Image.network(
-                            "http://192.168.100.232:5066/assets/images/user/${_getMyinfo.userProfileImg}",
+                            "http://115.91.73.66:15066/assets/images/user/${_getMyinfo.userProfileImg}",
                             height: 100.h,
                             width: double.infinity,
                             fit: BoxFit.cover,
@@ -198,9 +222,17 @@ class MyInfoContainer extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    this.username,
-                    style: bold_16_000,
+                  Row(
+                    children: [
+                      Text(
+                        "${this.username}님",
+                        style: bold_16_000,
+                      ),
+                      Text(
+                        " 반가워요!",
+                        style: normal_16_000,
+                      ),
+                    ],
                   ),
                   Text(
                     this.phone,

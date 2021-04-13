@@ -9,19 +9,19 @@ class CustomLinkTextContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 52,
-      child: Align(
-        alignment: AlignmentDirectional.centerStart,
-        child: InkWell(
+    return InkWell(
+      child: Container(
+        height: 52,
+        width: double.infinity,
+        child: Align(
+          alignment: Alignment.centerLeft,
           child: Text(
             "$title",
             style: normal_16_000,
           ),
-          onTap: () => Navigator.pushNamed(context, '$link'),
         ),
       ),
+      onTap: () => Navigator.pushNamed(context, '$link'),
     );
   }
 }

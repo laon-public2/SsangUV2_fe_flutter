@@ -79,7 +79,7 @@ class ContractService {
           }
         });
         HttpClient httpClient = new HttpClient();
-        HttpClientRequest request = await httpClient.postUrl(Uri.parse("http://192.168.100.216:11111/push"));
+        HttpClientRequest request = await httpClient.postUrl(Uri.parse("http://115.91.73.66:11111/push"));
         request.headers.set('content-type', 'application/json');
         request.add(utf8.encode(fcmInfo));
         HttpClientResponse response = await request.close();

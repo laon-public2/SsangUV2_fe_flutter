@@ -5,11 +5,11 @@ import 'package:share_product_v2/widgets/loading.dart';
 import 'package:http/http.dart' as http;
 
 // final String SERVER_ADDRESS = "ssangu.oig.kr"; 오리지널
-// final String SERVER_ADDRESS = "115.91.73.66"; 외부 서버
-final String SERVER_ADDRESS = "192.168.100.232";
+final String SERVER_ADDRESS = "115.91.73.66";
+// final String SERVER_ADDRESS = "192.168.100.232";
 final String chat_address = "115.91.73.66";
 
-final String SERVERURL = "http://${SERVER_ADDRESS}:5000/api";
+final String SERVERURL = "http://${SERVER_ADDRESS}:15000/api";
 final String CHATSERVERURL = "http://${chat_address}:11111";
 final String AUTHSERVERURL = "http://${SERVER_ADDRESS}:15000/api";
 

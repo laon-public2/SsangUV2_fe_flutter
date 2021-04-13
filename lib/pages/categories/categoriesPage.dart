@@ -138,7 +138,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
         //   )
         // ),
       ),
-      body: Container(color: Color(0xfffafafa), child: _body()),
+      body: Container(color: Colors.white, child: _body()),
     );
   }
 

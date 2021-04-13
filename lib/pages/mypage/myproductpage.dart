@@ -96,7 +96,7 @@
 //                       width: 72.h,
 //                       height: 72.h,
 //                       child: Image.network(
-//                         "http://192.168.100.232:5066/assets/images/$path",
+//                         "http://115.91.73.66:15066/assets/images/$path",
 //                         height: 72.h,
 //                         width: double.infinity,
 //                         fit: BoxFit.cover,

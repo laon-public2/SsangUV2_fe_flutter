@@ -13,13 +13,10 @@ import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/bannerProduct.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 import 'package:share_product_v2/widgets/loading.dart';
-import 'package:share_product_v2/widgets/reviewPage.dart';
 import 'package:share_product_v2/widgets/simpleMap.dart';
 import 'dart:math';
 import 'dart:async';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductDetailWant extends StatefulWidget {
   final int productIdx;
@@ -106,7 +103,8 @@ class _ProductDetailState extends State<ProductDetailWant> {
           builder: (_, _myUser, __) {
             return Consumer<ProductProvider>(
               builder: (__, _myProduct, _) {
-                return _myUser.username == _myProduct.productDetail.name
+                return _myUser.isLoggenIn ?
+                _myUser.username == _myProduct.productDetail.name
                     ? Container(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -153,52 +151,52 @@ class _ProductDetailState extends State<ProductDetailWant> {
                       ),
                       Consumer<ProductProvider>(
                         builder: (_, _product, __){
-                        return InkWell(
-                          child: Container(
-                            padding: const EdgeInsets.only(
-                              left: 16,
-                              right: 16,
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(
+                          return InkWell(
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                left: 16,
+                                right: 16,
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) => ProductModified(
                                       originalInfo: _product.productDetail,
                                       categoryString: this.widget.category,
                                     )),
-                                );
-                              },
-                              child: Container(
-                                //미디어쿼리는 키보드가 올라오면 전체 화면을 재정의 하기때문에 api가 무한 호출되거나 키보드가 올라갔다 내려갔다가 한다. 이건 플러터의 버그임.
-                                //결론 쓰지 마셈. 왠만하면...
-                                // width:
-                                //     MediaQuery.of(context).size.width * 0.4,
-                                width: 130.w,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffff0066),
-                                  borderRadius: BorderRadius.circular(10),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      offset: Offset(4, 4),
-                                      blurRadius: 4,
-                                      spreadRadius: 1,
-                                      color: Colors.black.withOpacity(0.08),
+                                  );
+                                },
+                                child: Container(
+                                  //미디어쿼리는 키보드가 올라오면 전체 화면을 재정의 하기때문에 api가 무한 호출되거나 키보드가 올라갔다 내려갔다가 한다. 이건 플러터의 버그임.
+                                  //결론 쓰지 마셈. 왠만하면...
+                                  // width:
+                                  //     MediaQuery.of(context).size.width * 0.4,
+                                  width: 130.w,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffff0066),
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        offset: Offset(4, 4),
+                                        blurRadius: 4,
+                                        spreadRadius: 1,
+                                        color: Colors.black.withOpacity(0.08),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      '수정',
+                                      style: TextStyle(color: Colors.white),
                                     ),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    '수정',
-                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -226,6 +224,39 @@ class _ProductDetailState extends State<ProductDetailWant> {
                       ),
                     );
                   },
+                  child: Container(
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                    ),
+                    child: Container(
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: _myUser.isLoggenIn
+                            ? Color(0xffff0066)
+                            : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            offset: Offset(4, 4),
+                            blurRadius: 4,
+                            spreadRadius: 1,
+                            color: Colors.black.withOpacity(0.08),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          '대여등록하기',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ) :
+                InkWell(
+                  onTap: () {},
                   child: Container(
                     padding: const EdgeInsets.only(
                       left: 16,

@@ -109,7 +109,7 @@ class Item extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 17.h,
                   backgroundImage: NetworkImage(
-                    "http://192.168.100.232:5066/assets/images/product/$pic",
+                    "http://115.91.73.66:15066/assets/images/product/$pic",
                   ),
                 ),
               ),

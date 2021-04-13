@@ -116,7 +116,7 @@ class _MyPageModifiedState extends State<MyComModified> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(200),
                                     child: Image.network(
-                                      "http://192.168.100.232:5066/assets/images/business/${_user.comIdentity}",
+                                      "http://115.91.73.66:15066/assets/images/business/${_user.comIdentity}",
                                       height: 120.h,
                                       width: double.infinity,
                                       fit: BoxFit.cover,

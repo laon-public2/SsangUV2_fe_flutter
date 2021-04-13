@@ -77,7 +77,7 @@ class _MyActHistoryState extends State<MyActHistory> with SingleTickerProviderSt
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(30),
                     child: Image.network(
-                      "http://192.168.100.232:5066/assets/images/user/${myact.userProfileImg}",
+                      "http://115.91.73.66:15066/assets/images/user/${myact.userProfileImg}",
                       height: 27.h,
                       width: double.infinity,
                       fit: BoxFit.cover,

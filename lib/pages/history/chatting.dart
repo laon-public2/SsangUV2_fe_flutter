@@ -103,7 +103,7 @@ class Chatting extends StatelessWidget {
                             width: 48.w,
                             height: 48.h,
                             child: Image.network(
-                              "http://192.168.100.232:5066/assets/images/product/${contracts.chatListItem[idx].productFiles[0].path}",
+                              "http://115.91.73.66:15066/assets/images/product/${contracts.chatListItem[idx].productFiles[0].path}",
                               fit: BoxFit.cover,
                             ),
                           ),

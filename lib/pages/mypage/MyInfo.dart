@@ -61,7 +61,7 @@ class _MyInfo extends State<MyInfo> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(100),
                           child: Image.network(
-                            "http://192.168.100.232:5066/assets/images/user/${myInfo.userProfileImg}",
+                            "http://115.91.73.66:15066/assets/images/user/${myInfo.userProfileImg}",
                             height: 100.h,
                             width: double.infinity,
                             fit: BoxFit.cover,
@@ -101,9 +101,9 @@ class _MyInfo extends State<MyInfo> {
                   ),
                 ),
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 5.h),
               Divider(height: 1.0),
-              SizedBox(height: 15),
+              SizedBox(height: 5.h),
               myInfo.comNum != null
                   ? ListTile(
                       title: Text(
@@ -284,7 +284,7 @@ class _MyInfo extends State<MyInfo> {
             width: 300,
             height: 300,
             child: Image.network(
-              "http://192.168.100.232:5066/assets/images/business/$text",
+              "http://115.91.73.66:15066/assets/images/business/$text",
               height: 300.h,
               width: double.infinity,
               fit: BoxFit.cover,

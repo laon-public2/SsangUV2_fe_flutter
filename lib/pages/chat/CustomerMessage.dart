@@ -566,7 +566,7 @@ class _CustomerMessage extends State<CustomerMessage>
                                     width: 50,
                                     height: 50,
                                     child: ExtendedImage.network(
-                                      "http://192.168.100.232:5066/assets/images/product/${this.widget.pic}",
+                                      "http://115.91.73.66:15066/assets/images/product/${this.widget.pic}",
                                       fit: BoxFit.cover,
                                       cache: true,
                                       borderRadius: BorderRadius.circular(5),

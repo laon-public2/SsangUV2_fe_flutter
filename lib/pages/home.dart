@@ -253,15 +253,6 @@ class ToItem extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, idx) {
             if (value == "빌려드려요") {
-              // if (idx == _myList.mainProducts.length) {
-              //   if (idx == _myList.paging.totalCount) {
-              //     return Container();
-              //   } else {
-              //     this.page++;
-              //     Provider.of<ProductProvider>(context, listen: false)
-              //         .getMainRent(this.page);
-              //   }
-              // }
               return LendItemMainPage(
                 category: "${_category(_myList.mainProducts[idx].category)}",
                 idx: _myList.mainProducts[idx].id,
@@ -274,15 +265,6 @@ class ToItem extends StatelessWidget {
                 receiverIdx: _myList.mainProducts[idx].receiverIdx,
               );
             } else {
-              // if (idx == _myList.mainProductsWant.length) {
-              //   if (idx == _myList.paging.totalCount) {
-              //     return Container();
-              //   } else {
-              //     this.page++;
-              //     Provider.of<ProductProvider>(context, listen: false)
-              //         .getMainWant(this.page);
-              //   }
-              // }
               return WantItemMainPage(
                 idx: _myList.mainProductsWant[idx].id,
                 category:

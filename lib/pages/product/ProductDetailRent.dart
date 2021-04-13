@@ -93,6 +93,7 @@ class _ProductDetailState extends State<ProductDetailRent> {
 
   _scaffold(){
     return Scaffold(
+      backgroundColor: Color(0xffebebeb),
       body: SingleChildScrollView(
         child: _body(),
       ),
@@ -100,7 +101,8 @@ class _ProductDetailState extends State<ProductDetailRent> {
           builder: (_, _myUser, __) {
             return Consumer<ProductProvider>(
               builder: (__, _product, _) {
-                return _myUser.username == _product.productDetail.name
+                return _myUser.isLoggenIn ?
+                _myUser.username == _product.productDetail.name
                     ? Container(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -195,37 +197,112 @@ class _ProductDetailState extends State<ProductDetailRent> {
                 )
                     : InkWell(
                   onTap: () async {
-                    String uuid = await Provider.of<ProductProvider>(
-                        context,
-                        listen: false)
-                        .rentInit(
-                      Provider.of<UserProvider>(context, listen: false)
-                          .userIdx,
-                      _product.productDetail.receiverIdx,
-                      this.widget.productIdx,
-                      Provider.of<UserProvider>(context, listen: false)
-                          .accessToken,
-                    );
-                    print("에러체크");
-                    print(uuid);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CustomerMessage(
-                              uuid,
-                              this.widget.productIdx,
-                              _product.productDetail.title,
-                              this.widget.category,
-                              _product.productDetail.name,
-                              _product.productDetail.price,
-                              _product
-                                  .productDetail.productFiles[0].path,
-                              "INIT",
-                              _product.productDetail.receiverIdx,
-                              _product.productDetail.fcmToken,
-                              Provider.of<UserProvider>(context, listen: false).userFBtoken,
-                              Provider.of<UserProvider>(context, listen: false).userIdx,
-                            )));
+                    final uvm = Provider.of<UserProvider>(context, listen: false);
+                    if(uvm.isLoggenIn){
+                      String uuid = await Provider.of<ProductProvider>(
+                          context,
+                          listen: false)
+                          .rentInit(
+                        Provider.of<UserProvider>(context, listen: false)
+                            .userIdx,
+                        _product.productDetail.receiverIdx,
+                        this.widget.productIdx,
+                        Provider.of<UserProvider>(context, listen: false)
+                            .accessToken,
+                      );
+                      print("에러체크");
+                      print(uuid);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CustomerMessage(
+                                uuid,
+                                this.widget.productIdx,
+                                _product.productDetail.title,
+                                this.widget.category,
+                                _product.productDetail.name,
+                                _product.productDetail.price,
+                                _product
+                                    .productDetail.productFiles[0].path,
+                                "INIT",
+                                _product.productDetail.receiverIdx,
+                                _product.productDetail.fcmToken,
+                                Provider.of<UserProvider>(context, listen: false).userFBtoken,
+                                Provider.of<UserProvider>(context, listen: false).userIdx,
+                              )));
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                    ),
+                    child: Consumer<UserProvider>(
+                      builder: (_, _user, __) {
+                        return Container(
+                          width: double.infinity,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: _user.isLoggenIn
+                                ? Color(0xffff0066)
+                                : Colors.grey[400],
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                offset: Offset(4, 4),
+                                blurRadius: 4,
+                                spreadRadius: 1,
+                                color: Colors.black.withOpacity(0.08),
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              '대여문의하기',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ):
+                InkWell(
+                  onTap: () async {
+                    final uvm = Provider.of<UserProvider>(context, listen: false);
+                    if(uvm.isLoggenIn){
+                      String uuid = await Provider.of<ProductProvider>(
+                          context,
+                          listen: false)
+                          .rentInit(
+                        Provider.of<UserProvider>(context, listen: false)
+                            .userIdx,
+                        _product.productDetail.receiverIdx,
+                        this.widget.productIdx,
+                        Provider.of<UserProvider>(context, listen: false)
+                            .accessToken,
+                      );
+                      print("에러체크");
+                      print(uuid);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CustomerMessage(
+                                uuid,
+                                this.widget.productIdx,
+                                _product.productDetail.title,
+                                this.widget.category,
+                                _product.productDetail.name,
+                                _product.productDetail.price,
+                                _product
+                                    .productDetail.productFiles[0].path,
+                                "INIT",
+                                _product.productDetail.receiverIdx,
+                                _product.productDetail.fcmToken,
+                                Provider.of<UserProvider>(context, listen: false).userFBtoken,
+                                Provider.of<UserProvider>(context, listen: false).userIdx,
+                              )));
+                    }
                   },
                   child: Container(
                     padding: const EdgeInsets.only(
