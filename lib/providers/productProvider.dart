@@ -433,6 +433,58 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> productApplyHelp(
+      String userPh,
+      int userIdx,
+      int categoryIdx,
+      String title,
+      String description,
+      int price,
+      List<Asset> files,
+      String startDate,
+      String endDate,
+      String address,
+      String addressDetail,
+      num la,
+      num lo,
+      String token,
+      bool otherLocation,
+      ) async {
+    print("도와드려요 글 등록");
+    print(address);
+    print(addressDetail);
+    try {
+      List<MultipartFile> fileList = [];
+      for (var file in files) {
+        ByteData byteData = await file.getByteData();
+        List<int> imageData = byteData.buffer.asUint8List();
+        MultipartFile multipartFile =
+        MultipartFile.fromBytes(imageData, filename: file.name);
+        fileList.add(multipartFile);
+      }
+      final res = await productService.productAddHelp(
+        userPh,
+        userIdx,
+        categoryIdx,
+        title,
+        description,
+        price,
+        startDate,
+        endDate,
+        address,
+        addressDetail,
+        la,
+        lo,
+        token,
+        fileList,
+      );
+      Map<String, dynamic> jsonMap = json.decode(res.toString());
+      print(jsonMap);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<void> productApplyPrivate(
     String userPh,
     int userIdx,

@@ -216,7 +216,7 @@ class _ProductRegState extends State<ProductReg> {
                       child: categorySelect(),
                       onTap: () {
                         showModalBottomSheet(
-                            context: context, builder: buildBottomSheet);
+                            context: context, builder: buildBottomSheet, backgroundColor: Colors.transparent);
                       },
                     ),
                     SizedBox(height: 10),
@@ -653,6 +653,13 @@ class _ProductRegState extends State<ProductReg> {
 
   Widget buildBottomSheet(BuildContext context) {
     return Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(20),
+              topLeft: Radius.circular(20),
+            )
+        ),
         child: SafeArea(
             child: ListView.builder(
       itemBuilder: (context, idx) {

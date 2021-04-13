@@ -385,6 +385,60 @@ class ProductService {
     }
   }
 
+  Future<Response> productAddHelp(
+      String userPh,
+      int userIdx,
+      int categoryIdx,
+      String title,
+      String description,
+      int price,
+      String startDate,
+      String endDate,
+      String address,
+      String addressDetail,
+      num la,
+      num lo,
+      String token,
+      List<dynamic> productImg,
+      ) async {
+    try {
+      print(address);
+      print(addressDetail);
+      print(title);
+      print("상품 빌려주기 등록");
+      dio.options.contentType = "multipart/form-data";
+      dio.options.headers['x-access-token'] = token;
+      FormData formData = FormData.fromMap({
+        "username": userPh,
+        'userIdx': userIdx,
+        'categoryIdx': categoryIdx,
+        'title': title,
+        'description': description,
+        'price': price,
+        'minPrice': 0,
+        'maxPrice': 0,
+        "count": 1,
+        "type": "HELP",
+        "startDate": startDate,
+        "endDate": endDate,
+        "address": address,
+        "address_detail": addressDetail,
+        "latitude": la,
+        "longitude": lo,
+        "productImg": productImg,
+      });
+      Response res = await dio.post(
+        '/product/add',
+        data: formData,
+      );
+      return res;
+    } on DioError catch (e) {
+      print("상품 등록 에러 빌려주기");
+      print(e.response.statusCode);
+      print(e.response.data.toString());
+    }
+  }
+
   Future<Response> productAddWant(
       String userPh,
       int userIdx,

@@ -143,6 +143,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
   }
 
   _body() {
+    final Map<String, String> args = ModalRoute.of(context).settings.arguments;
     return SingleChildScrollView(
       controller: categoryScroll,
       child: Consumer<ProductProvider>(builder: (_, product, __) {
@@ -155,7 +156,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
             children: [
               Container(
                 color: Colors.white,
-                width: 211.w,
+                width: args['category'] == "기타" ? double.infinity : 211.w,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -203,6 +204,36 @@ class _CategoryProductListState extends State<CategoryProductList> {
                         ),
                       ),
                     ),
+                    args["category"] == "기타" ?
+                        Text(
+                          '|',
+                          style: TextStyle(
+                            color: Color(0xff999999),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w200,
+                          ),
+                        ):
+                    SizedBox(),
+                    args["category"] == "기타" ?
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          _want = true;
+                          userType = "Want";
+                        });
+                        Provider.of<ProductProvider>(context, listen: false)
+                            .categoryWant(categoryIdx, page, userType);
+                      },
+                      child: Text(
+                        '도와드려요',
+                        style: TextStyle(
+                          color: _want ? Colors.black : Color(0xff999999),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ):
+                        SizedBox(),
                   ],
                 ),
               ),

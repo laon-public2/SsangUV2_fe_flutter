@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/auth/changeAddress.dart';
 import 'package:share_product_v2/pages/mypage/MyComModified.dart';
 import 'package:share_product_v2/pages/mypage/MyPageModified.dart';
+import 'package:share_product_v2/pages/mypage/RemoveAccount.dart';
 import 'package:share_product_v2/providers/mapProvider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
@@ -53,51 +54,61 @@ class _MyInfo extends State<MyInfo> {
           color: Colors.white,
           child: Column(
             children: [
-              ListTile(
-                leading: myInfo.userProfileImg != null
-                    ? Container(
-                        width: 50.w,
-                        height: 50.h,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: Image.network(
-                            "http://115.91.73.66:15066/assets/images/user/${myInfo.userProfileImg}",
-                            height: 100.h,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          MyPageModified()
+                      )
+                  );
+                },
+                child: ListTile(
+                  leading: myInfo.userProfileImg != null
+                      ? Container(
+                          width: 50.w,
+                          height: 50.h,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Image.network(
+                              "http://115.91.73.66:15066/assets/images/user/${myInfo.userProfileImg}",
+                              height: 100.h,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        )
+                      : Icon(Icons.account_circle,
+                          color: Colors.grey, size: 50.0),
+                  title: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          '${myInfo.username}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.black,
                           ),
                         ),
-                      )
-                    : Icon(Icons.account_circle,
-                        color: Colors.grey, size: 50.0),
-                title: Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        '${myInfo.username}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.black,
+                        Text(
+                          myInfo.userType == "BUSINESS" ? "대여업체" : "",
+                          style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 16,
+                            color: Color(0xffff0066),
+                          ),
                         ),
-                      ),
-                      Text(
-                        myInfo.userType == "BUSINESS" ? "대여업체" : "",
-                        style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 16,
-                          color: Color(0xffff0066),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                subtitle: Text(
-                  _numberFormat(myInfo.phNum),
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Color(0xff666666),
+                  subtitle: Text(
+                    _numberFormat(myInfo.phNum),
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Color(0xff666666),
+                    ),
                   ),
                 ),
               ),
@@ -226,8 +237,10 @@ class _MyInfo extends State<MyInfo> {
                   children: <Widget>[
                     InkWell(
                       onTap: () async{
-                        await myInfo.DeleteUser(myInfo.phNum);
-                        Navigator.of(context).popUntil((route) => route.isFirst);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => RemoveAccount(phNum: myInfo.phNum))
+                        );
                       },
                       child: Center(
                         child: Text(
@@ -239,25 +252,25 @@ class _MyInfo extends State<MyInfo> {
                         ),
                       ),
                     ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) =>
-                              MyPageModified()
-                          )
-                        );
-                      },
-                      child: Center(
-                        child: Text(
-                          '회원정보 수정',
-                          style: TextStyle(
-                            color: Color(0xff28527a),
-                            fontSize: 15.sp,
-                          ),
-                        ),
-                      ),
-                    ),
+                    // InkWell(
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(builder: (context) =>
+                    //           MyPageModified()
+                    //       )
+                    //     );
+                    //   },
+                    //   child: Center(
+                    //     child: Text(
+                    //       '회원정보 수정',
+                    //       style: TextStyle(
+                    //         color: Color(0xff28527a),
+                    //         fontSize: 15.sp,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

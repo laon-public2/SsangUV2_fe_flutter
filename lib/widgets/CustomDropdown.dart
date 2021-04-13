@@ -33,7 +33,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
     }
     return DropdownButtonHideUnderline(
       child: DropdownButton<String>(
-        elevation: 0,
+        elevation: 2,
         value: widget.value,
         dropdownColor: Colors.white,
         items: items,

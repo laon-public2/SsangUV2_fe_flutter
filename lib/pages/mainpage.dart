@@ -5,6 +5,7 @@ import 'package:share_product_v2/pages/history/history.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_product_v2/pages/home.dart';
 import 'package:share_product_v2/pages/auth/myPage.dart';
+import 'package:share_product_v2/pages/product/productHelpReg.dart';
 import 'package:share_product_v2/providers/bannerProvider.dart';
 import 'package:share_product_v2/providers/fcm_model.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
@@ -71,13 +72,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     if (token != null && token != "" && reToken != null && reToken != "") {
       await Provider.of<UserProvider>(context, listen: false)
           .refreshToken(reToken);
-      await Provider.of<UserProvider>(context, listen: false).setAccessToken(token);
+      await Provider.of<UserProvider>(context, listen: false)
+          .setAccessToken(token);
       await Provider.of<BannerProvider>(context, listen: false).getBanners();
       await Provider.of<ProductProvider>(context, listen: false)
           .changeUserPosition(
         Provider.of<UserProvider>(context, listen: false).userLocationY,
         Provider.of<UserProvider>(context, listen: false).userLocationX,
-
       );
     } else {
       return;
@@ -94,7 +95,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         if (!Provider.of<UserProvider>(context, listen: false).isLoggenIn) {
           _showDialog(context);
         } else {
-          showModalBottomSheet(context: context, builder: buildBottomSheet);
+          showModalBottomSheet(context: context, builder: buildBottomSheet, backgroundColor: Colors.transparent);
         }
       }
       if (index == 2) {
@@ -182,6 +183,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             unselectedItemColor: Color(0xff888888),
             onTap: _onItemTapped,
             type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.white,
           ),
         ),
       );
@@ -190,7 +192,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   Widget buildBottomSheet(BuildContext context) {
     return Container(
-        height: 150.h,
+        height: 200.h,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(20),
+              topLeft: Radius.circular(20),
+          )
+        ),
         child: SafeArea(
             child: Column(
           children: [
@@ -276,6 +285,50 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 ),
               ),
             ),
+            InkWell(
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProductHelpReg())
+                );
+              },
+              child: SizedBox(
+                height: 72.h,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      Icon(Icons.note_add),
+                      SizedBox(
+                        width: 16,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "도와드려요",
+                            style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.normal,
+                                color: Color(0xff333333)),
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Text(
+                            "도와주고 싶다면 여기서 신청해보세요!",
+                            style: TextStyle(
+                                fontSize: 12.sp, color: Color(0xff999999)),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ],
         )));
   }
@@ -338,11 +391,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () async{
+    Future.delayed(Duration.zero, () async {
       await Provider.of<FCMModel>(context, listen: false).getMbToken();
-      await Provider.of<UserProvider>(context, listen: false).AddFCMtoken(
-          Provider.of<FCMModel>(context, listen: false).mbToken
-      );
+      await Provider.of<UserProvider>(context, listen: false)
+          .AddFCMtoken(Provider.of<FCMModel>(context, listen: false).mbToken);
       await Provider.of<BannerProvider>(context, listen: false).getBanners();
     });
     Provider.of<ProductProvider>(context, listen: false).getGeolocator();
@@ -420,9 +472,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 width: double.infinity,
                 height: 40,
                 child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     color: Theme.of(context).primaryColor,
                     child: Text(
                       "위치등록 하러가기",
@@ -438,11 +490,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       //     .then((Position position) {
                       //   print("${position.latitude}, ${position.longitude}");
 
-                        // pref.setString("address",
-                        //     "${position.latitude}, ${position.longitude}");
-                        print("===================================");
-                        Navigator.pop(context);
-                        print("===================================");
+                      // pref.setString("address",
+                      //     "${position.latitude}, ${position.longitude}");
+                      print("===================================");
+                      Navigator.pop(context);
+                      print("===================================");
                       // }).catchError((e) {
                       //   print('위치 저장 에러');
                       //   print("location exception: $e");

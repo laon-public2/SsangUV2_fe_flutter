@@ -19,12 +19,12 @@ import 'package:share_product_v2/widgets/loading.dart';
 
 import 'ProductReg.dart';
 
-class ProductApplyPage extends StatefulWidget {
+class ProductHelpReg extends StatefulWidget {
   @override
   _ProductApplyPageState createState() => _ProductApplyPageState();
 }
 
-class _ProductApplyPageState extends State<ProductApplyPage> {
+class _ProductApplyPageState extends State<ProductHelpReg> {
   List<String> categories = [
     "생활용품",
     "여행",
@@ -38,7 +38,7 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
     "기타"
   ];
 
-  String _selectedCategory = "";
+  String _selectedCategory = "기타";
 
   bool _otherLocation = false;
 
@@ -193,7 +193,7 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
         child: Row(
           children: [
             Text(
-              _selectedCategory != "" ? _selectedCategory : "카테고리 선택",
+              _selectedCategory != "" ? "$_selectedCategory (기타만 가능합니다.)" : "카테고리 선택",
               style: TextStyle(
                   fontSize: 14,
                   color:
@@ -210,7 +210,7 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '공유상품 등록',
+          '도와드려요!',
           style: TextStyle(
             color: Colors.black,
             fontSize: 25,
@@ -222,7 +222,7 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
         SizedBox(
           height: 10,
         ),
-        textField("상품명 입력", titleTextController, TextInputType.text, titleFocus,
+        textField("무엇을 돕고 싶나요?", titleTextController, TextInputType.text, titleFocus,
             false),
         SizedBox(
           height: 10,
@@ -230,7 +230,7 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
         InkWell(
           child: categorySelect(),
           onTap: () {
-            showModalBottomSheet(context: context, builder: buildBottomSheet, backgroundColor: Colors.transparent);
+            // showModalBottomSheet(context: context, builder: buildBottomSheet, backgroundColor: Colors.transparent);
           },
         ),
         SizedBox(
@@ -372,7 +372,7 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
                         }
                         List<String> date = _dateController.text.split("~");
                         if(this.LocationData[0].isSelected){
-                          await _product.productApplyRent(
+                          await _product.productApplyHelp(
                             _user.phNum,
                             _user.userIdx,
                             _selectCategory(_selectedCategory),
