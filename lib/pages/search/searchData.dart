@@ -115,7 +115,7 @@ class _SearchDataState extends State<SearchData> {
           ],
         ),
       ),
-      leadingWidth: 25.w,
+      leadingWidth: 30.w,
       leading: IconButton(
         icon: Icon(
           Icons.arrow_back_sharp,
@@ -125,16 +125,19 @@ class _SearchDataState extends State<SearchData> {
         onPressed: () => Navigator.pop(context),
       ),
       actions: <Widget>[
-        Center(
-          child: InkWell(
-            onTap: () {
-              setState(() {
-                _searchWord.text = "";
-              });
-            },
-            child: Text(
-              '취소',
-              style: TextStyle(color: Color(0xff666666), fontSize: 16),
+        Container(
+          margin: const EdgeInsets.only(right: 12),
+          child: Center(
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _searchWord.text = "";
+                });
+              },
+              child: Text(
+                '취소',
+                style: TextStyle(color: Color(0xff666666), fontSize: 16),
+              ),
             ),
           ),
         ),
