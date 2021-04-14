@@ -122,6 +122,11 @@ class _UsePhoneState extends State<UsePhone> {
                               .phoneActive) {
                             print('비동기 처리');
                             Navigator.pushNamed(context, '/chioceUser');
+                          }else{
+                            setState(() {
+                              _isDialogText = "인증번호가 틀립니다.\n다시 요청해주세요.";
+                            });
+                            _showDialog();
                           }
                         }
                       },
@@ -168,7 +173,7 @@ class _UsePhoneState extends State<UsePhone> {
                       },
                       child: Container(
                         width: double.infinity,
-                        height: 40.h,
+                        height: 50.h,
                         decoration: BoxDecoration(
                           color: Color(0xffff0066),
                           borderRadius: BorderRadius.circular(10),

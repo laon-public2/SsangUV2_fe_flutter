@@ -18,7 +18,7 @@ class RegUserProvider with ChangeNotifier {
   RegUserPhModel regPh;
 
   void phoneAct(String phoneAct) async {
-    print("phone인증");
+    print("phone인증 $phoneAct");
     this.phNum = phoneAct;
     Map<String, dynamic> phoneActivation =
         await regUserService.phone_act(phoneAct);

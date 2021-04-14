@@ -34,6 +34,7 @@ class CustomDialogApply extends StatelessWidget {
                     },
                     child: Text(
                       acceptText,
+                      textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white, fontSize: 16.sp),
                     ),
                   ),

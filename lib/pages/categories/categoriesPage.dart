@@ -213,7 +213,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                             fontWeight: FontWeight.w200,
                           ),
                         ):
-                    SizedBox(),
+                    Container(width: 0, height: 0),
                     args["category"] == "기타" ?
                     InkWell(
                       onTap: () {
@@ -233,7 +233,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                         ),
                       ),
                     ):
-                        SizedBox(),
+                    Container(width: 0, height: 0),
                   ],
                 ),
               ),

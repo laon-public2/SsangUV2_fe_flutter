@@ -10,6 +10,7 @@ final String SERVER_ADDRESS = "115.91.73.66";
 final String chat_address = "115.91.73.66";
 
 final String SERVERURL = "http://${SERVER_ADDRESS}:15000/api";
+// final String SERVERURL = "http://${SERVER_ADDRESS}:5000/api";
 final String CHATSERVERURL = "http://${chat_address}:11111";
 final String AUTHSERVERURL = "http://${SERVER_ADDRESS}:15000/api";
 
