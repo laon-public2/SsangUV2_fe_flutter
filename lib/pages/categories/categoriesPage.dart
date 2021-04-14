@@ -23,6 +23,8 @@ class CategoryProductList extends StatefulWidget {
 class _CategoryProductListState extends State<CategoryProductList> {
   Geolocator geolocator;
   bool _want = false;
+  bool _rent = true;
+  bool _help = false;
   String userType = "Rent";
   var category = "";
   var keyword = "";
@@ -165,7 +167,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                       child: Text(
                         '빌려드려요',
                         style: TextStyle(
-                          color: !_want ? Colors.black : Color(0xff999999),
+                          color: _rent ? Colors.black : Color(0xff999999),
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                         ),
@@ -173,6 +175,8 @@ class _CategoryProductListState extends State<CategoryProductList> {
                       onTap: () {
                         setState(() {
                           _want = false;
+                          _rent = true;
+                          _help = false;
                           userType = "Rent";
                         });
                         Provider.of<ProductProvider>(context, listen: false)
@@ -191,6 +195,8 @@ class _CategoryProductListState extends State<CategoryProductList> {
                       onTap: () {
                         setState(() {
                           _want = true;
+                          _rent = false;
+                          _help = false;
                           userType = "Want";
                         });
                         Provider.of<ProductProvider>(context, listen: false)
@@ -216,8 +222,10 @@ class _CategoryProductListState extends State<CategoryProductList> {
                     InkWell(
                       onTap: () {
                         setState(() {
-                          _want = true;
-                          userType = "Want";
+                          _help = true;
+                          _rent = false;
+                          _want = false;
+                          userType = "HELP";
                         });
                         Provider.of<ProductProvider>(context, listen: false)
                             .categoryWant(categoryIdx, page, userType);
@@ -225,7 +233,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                       child: Text(
                         '도와드려요',
                         style: TextStyle(
-                          color: _want ? Colors.black : Color(0xff999999),
+                          color: _help ? Colors.black : Color(0xff999999),
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                         ),
@@ -240,7 +248,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                       child: Text(
                         '빌려드려요',
                         style: TextStyle(
-                          color: !_want ? Colors.black : Color(0xff999999),
+                          color: _rent ? Colors.black : Color(0xff999999),
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                         ),
@@ -248,6 +256,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                       onTap: () {
                         setState(() {
                           _want = false;
+                          _rent = true;
                           userType = "Rent";
                         });
                         Provider.of<ProductProvider>(context, listen: false)
@@ -266,6 +275,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                       onTap: () {
                         setState(() {
                           _want = true;
+                          _rent = false;
                           userType = "Want";
                         });
                         Provider.of<ProductProvider>(context, listen: false)
