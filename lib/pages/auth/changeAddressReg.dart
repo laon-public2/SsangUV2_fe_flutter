@@ -4,6 +4,7 @@ import 'package:share_product_v2/pages/auth/SuccessReg.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share_product_v2/widgets/loading.dart';
 
 class ChangeAddressReg extends StatefulWidget {
   final num la;
@@ -89,6 +90,7 @@ class _ChangeAddressState extends State<ChangeAddressReg> {
                     if (_addressDetail.text == "") {
                       return;
                     } else {
+                      _showDialogLoading();
                       await _myInfo.changeAddress(
                         this.widget.address,
                         "${this.widget.addressDetail} ${this._addressDetail.text}",
@@ -132,5 +134,13 @@ class _ChangeAddressState extends State<ChangeAddressReg> {
             ));
       },
     );
+  }
+
+  void _showDialogLoading() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Loading();
+        });
   }
 }

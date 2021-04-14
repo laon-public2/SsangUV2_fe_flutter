@@ -22,6 +22,7 @@ class _Category1State extends State<Category3> {
   final List<String> itemKind = [
     "빌려드려요",
     "빌려주세요",
+    "도와드려요",
   ];
 
   String _currentItem = "";
