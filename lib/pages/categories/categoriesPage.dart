@@ -36,15 +36,16 @@ class _CategoryProductListState extends State<CategoryProductList> {
 
   categoryScrollerListener() async {
     final pvm = Provider.of<ProductProvider>(context, listen: false);
-    if(categoryScroll.position.pixels == categoryScroll.position.maxScrollExtent){
+    if (categoryScroll.position.pixels ==
+        categoryScroll.position.maxScrollExtent) {
       print("스크롤이 가장 아래입니다.");
-      if(this.userType == "Rent"){
-        if(pvm.paging.totalCount != pvm.categoryProducts.length){
+      if (this.userType == "Rent") {
+        if (pvm.paging.totalCount != pvm.categoryProducts.length) {
           this.page++;
           pvm.categoryRent(categoryIdx, page, userType);
         }
-      }else{
-        if(pvm.paging.totalCount != pvm.categoryProducts.length){
+      } else {
+        if (pvm.paging.totalCount != pvm.categoryProducts.length) {
           this.page++;
           pvm.categoryWant(categoryIdx, page, userType);
         }
@@ -61,9 +62,10 @@ class _CategoryProductListState extends State<CategoryProductList> {
   void initState() {
     super.initState();
     categoryScroll.addListener(categoryScrollerListener);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _getProduct();
-      print("배열 갯수 === ${Provider.of<ProductProvider>(context, listen: false).categoryProducts.length}");
+      print(
+          "배열 갯수 === ${Provider.of<ProductProvider>(context, listen: false).categoryProducts.length}");
     });
   }
 
@@ -71,8 +73,6 @@ class _CategoryProductListState extends State<CategoryProductList> {
     categoryScroll.dispose();
     super.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +157,83 @@ class _CategoryProductListState extends State<CategoryProductList> {
               Container(
                 color: Colors.white,
                 width: args['category'] == "기타" ? double.infinity : 211.w,
-                child: Row(
+                child: args['category'] == "기타" ?
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    InkWell(
+                      child: Text(
+                        '빌려드려요',
+                        style: TextStyle(
+                          color: !_want ? Colors.black : Color(0xff999999),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      onTap: () {
+                        setState(() {
+                          _want = false;
+                          userType = "Rent";
+                        });
+                        Provider.of<ProductProvider>(context, listen: false)
+                            .categoryRent(categoryIdx, page, userType);
+                      },
+                    ),
+                    Text(
+                      '|',
+                      style: TextStyle(
+                        color: Color(0xff999999),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w200,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          _want = true;
+                          userType = "Want";
+                        });
+                        Provider.of<ProductProvider>(context, listen: false)
+                            .categoryWant(categoryIdx, page, userType);
+                      },
+                      child: Text(
+                        '빌려주세요',
+                        style: TextStyle(
+                          color: _want ? Colors.black : Color(0xff999999),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '|',
+                      style: TextStyle(
+                        color: Color(0xff999999),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w200,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          _want = true;
+                          userType = "Want";
+                        });
+                        Provider.of<ProductProvider>(context, listen: false)
+                            .categoryWant(categoryIdx, page, userType);
+                      },
+                      child: Text(
+                        '도와드려요',
+                        style: TextStyle(
+                          color: _want ? Colors.black : Color(0xff999999),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    )
+                  ],
+                ):
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     InkWell(
@@ -204,36 +280,6 @@ class _CategoryProductListState extends State<CategoryProductList> {
                         ),
                       ),
                     ),
-                    args["category"] == "기타" ?
-                        Text(
-                          '|',
-                          style: TextStyle(
-                            color: Color(0xff999999),
-                            fontSize: 18,
-                            fontWeight: FontWeight.w200,
-                          ),
-                        ):
-                    Container(width: 0, height: 0),
-                    args["category"] == "기타" ?
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          _want = true;
-                          userType = "Want";
-                        });
-                        Provider.of<ProductProvider>(context, listen: false)
-                            .categoryWant(categoryIdx, page, userType);
-                      },
-                      child: Text(
-                        '도와드려요',
-                        style: TextStyle(
-                          color: _want ? Colors.black : Color(0xff999999),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ):
-                    Container(width: 0, height: 0),
                   ],
                 ),
               ),
@@ -269,22 +315,22 @@ class _CategoryProductListState extends State<CategoryProductList> {
                 distance:
                     "${(_myList.categoryProducts[idx].distance).toStringAsFixed(2)}",
                 picture: _myList.categoryProducts[idx].productFiles[0].path,
-
               );
             } else {
               return WantItemMainPage(
                 idx: _myList.categoryProductsWant[idx].id,
                 category:
-                "${_category(_myList.categoryProductsWant[idx].category)}",
+                    "${_category(_myList.categoryProductsWant[idx].category)}",
                 title: "${_myList.categoryProductsWant[idx].title}",
                 name: "${_myList.categoryProductsWant[idx].name}",
                 minPrice:
-                "${_moneyFormat("${_myList.categoryProductsWant[idx].minPrice}")}원",
+                    "${_moneyFormat("${_myList.categoryProductsWant[idx].minPrice}")}원",
                 maxPrice:
-                "${_moneyFormat("${_myList.categoryProductsWant[idx].maxPrice}")}원",
+                    "${_moneyFormat("${_myList.categoryProductsWant[idx].maxPrice}")}원",
                 distance:
-                "${(_myList.categoryProductsWant[idx].distance).toStringAsFixed(2)}",
-                startDate: _dateFormat(_myList.categoryProductsWant[idx].startDate),
+                    "${(_myList.categoryProductsWant[idx].distance).toStringAsFixed(2)}",
+                startDate:
+                    _dateFormat(_myList.categoryProductsWant[idx].startDate),
                 endDate: _dateFormat(_myList.categoryProductsWant[idx].endDate),
                 picture: _myList.categoryProductsWant[idx].productFiles[0].path,
               );
@@ -308,7 +354,7 @@ _moneyFormat(String price) {
     value = value.replaceAll(RegExp(r'\D'), '');
     value = value.replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), ',');
     return value;
-  }else {
+  } else {
     return price;
   }
 }
