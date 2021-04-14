@@ -5,6 +5,7 @@ import 'package:share_product_v2/pages/auth/usePhone.dart';
 import 'package:share_product_v2/pages/mypage/loginpage_use_phone.dart';
 import 'package:share_product_v2/widgets/CustomButton.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share_product_v2/widgets/CustomLinkTextContainer.dart';
 import 'package:share_product_v2/widgets/CustomOnlyTextContainer.dart';
 import 'package:share_product_v2/widgets/bottomBar.dart';
 
@@ -39,6 +40,7 @@ class NoLoginMyPage extends StatelessWidget {
                   ),
                   SizedBox(
                     width: double.infinity,
+                    height: 40,
                     child: CustomButton(
                       title: "로그인/회원가입",
                       enable: true,
@@ -57,7 +59,11 @@ class NoLoginMyPage extends StatelessWidget {
                   //       top: 20.0,
                   //     ),
                   //     child: CustomOnlyTextContainer(title: "알림내역")),
-                  CustomOnlyTextContainer(title: "고객센터"),
+                  SizedBox(height: 10.h),
+                  CustomLinkTextContainer(
+                    title: "고객센터",
+                    link: '/center',
+                  ),
                   Container(
                     width: double.infinity,
                     height: 52,
