@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -7,7 +8,6 @@ import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
 import 'package:share_product_v2/pages/product/ImageView.dart';
 import 'package:share_product_v2/pages/product/detailMapPage.dart';
 import 'package:share_product_v2/pages/product/writeReview.dart';
-import 'package:share_product_v2/providers/contractProvider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/bannerProduct.dart';
@@ -18,10 +18,8 @@ import 'package:share_product_v2/widgets/simpleMap.dart';
 import 'dart:math';
 import 'dart:async';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'ProductModified.dart';
+import "dart:io";
 
 class ProductDetailRent extends StatefulWidget {
   final int productIdx;
@@ -95,7 +93,10 @@ class _ProductDetailState extends State<ProductDetailRent> {
     return Scaffold(
       backgroundColor: Color(0xffebebeb),
       body: SingleChildScrollView(
-        child: _body(),
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: Platform.isIOS ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+          child: _body(),
+        ),
       ),
         floatingActionButton: Consumer<UserProvider>(
           builder: (_, _myUser, __) {
@@ -376,16 +377,19 @@ class _ProductDetailState extends State<ProductDetailRent> {
                                   builder: (context) => ImageView(
                                       _myProduct.productDetail.productFiles)));
                         },
-                        child: Container(
-                          width: double.infinity,
-                          height: 300,
-                          color: Colors.grey[300],
-                          child: _myProduct.productDetail != null
-                              ? BannerItemProduct(
-                                  false,
-                                  _myProduct.productDetail.productFiles,
-                                )
-                              : SizedBox(),
+                        child: Hero(
+                          tag: "ProductDetailImageView",
+                          child: Container(
+                            width: double.infinity,
+                            height: 300,
+                            color: Colors.grey[300],
+                            child: _myProduct.productDetail != null
+                                ? BannerItemProduct(
+                                    false,
+                                    _myProduct.productDetail.productFiles,
+                                  )
+                                : SizedBox(),
+                          ),
                         ),
                       ),
                     ),

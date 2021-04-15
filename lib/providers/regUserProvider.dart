@@ -38,6 +38,7 @@ class RegUserProvider with ChangeNotifier {
     print('$phoneAct, $verify');
     Map<String, dynamic> phoneActivation =
         await regUserService.phone_actCon(phoneAct, verify);
+    print(phoneActivation.toString());
     print('인증번호 상태 = ${phoneActivation['message']}');
     if (phoneActivation['message'] == "인증번호 검증 성공") {
       phoneActive = true;

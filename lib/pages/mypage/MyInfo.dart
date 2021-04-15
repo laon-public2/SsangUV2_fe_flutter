@@ -65,21 +65,23 @@ class _MyInfo extends State<MyInfo> {
                 },
                 child: ListTile(
                   leading: myInfo.userProfileImg != null
-                      ? Container(
-                          width: 50.w,
-                          height: 50.h,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.network(
-                              "http://115.91.73.66:15066/assets/images/user/${myInfo.userProfileImg}",
-                              height: 100.h,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
+                      ? Hero(
+                        tag: "MyProfileImg",
+                        child: Container(
+                            width: 50.w,
+                            height: 50.h,
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                "http://115.91.73.66:15066/assets/images/user/${myInfo.userProfileImg}",
+                              ),
                             ),
                           ),
-                        )
-                      : Icon(Icons.account_circle,
-                          color: Colors.grey, size: 50.0),
+                      )
+                      : Hero(
+                        tag: "MyProfileImg",
+                        child: Icon(Icons.account_circle,
+                            color: Colors.grey, size: 50.0),
+                      ),
                   title: Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -156,8 +158,8 @@ class _MyInfo extends State<MyInfo> {
               myInfo.comNum != null
                   ? Column(
                       children: [
-                        SizedBox(height: 15),
                         Divider(height: 1.0),
+                        SizedBox(height: 15),
                       ],
                     )
                   : SizedBox(),

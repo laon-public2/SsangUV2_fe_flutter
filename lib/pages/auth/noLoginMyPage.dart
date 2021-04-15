@@ -3,6 +3,7 @@ import 'package:share_product_v2/consts/textStyle.dart';
 import 'package:share_product_v2/pages/auth/choiceUser.dart';
 import 'package:share_product_v2/pages/auth/usePhone.dart';
 import 'package:share_product_v2/pages/mypage/loginpage_use_phone.dart';
+import 'package:share_product_v2/pages/test.dart';
 import 'package:share_product_v2/widgets/CustomButton.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_product_v2/widgets/CustomLinkTextContainer.dart';

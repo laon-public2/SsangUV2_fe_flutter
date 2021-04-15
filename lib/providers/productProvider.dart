@@ -62,7 +62,7 @@ class ProductProvider extends ChangeNotifier {
   List<ChatListModel> chatListItem = [];
   Paging chatListCounter;
   List<ChatListModel> rentListItem = [];
-  List<ChatListModel> rentListItemWant = [];
+  List<ChatListModel> rentListItemRent = [];
   Paging rentListCounter;
   String productStart;
 
@@ -1774,6 +1774,7 @@ class ProductProvider extends ChangeNotifier {
 
   Future<void> rentHistory(int userIdx, int page, String token) async{
     print("렌트 히스토리 빌린내역");
+    print(userIdx);
     try{
       final res = await productService.rentHistory(userIdx, page, token, "WANT");
       Map<String, dynamic> jsonMap = json.decode(res.toString());
@@ -1795,8 +1796,9 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> rentHistoryWant(int userIdx, int page, String token) async{
+  Future<void> rentHistoryRent(int userIdx, int page, String token) async{
     print("렌트 히스토리 빌려준내역");
+    print(userIdx);
     try{
       final res = await productService.rentHistory(userIdx, page, token, "RENT");
       Map<String, dynamic> jsonMap = json.decode(res.toString());
@@ -1807,15 +1809,16 @@ class ProductProvider extends ChangeNotifier {
       Paging paging = Paging.fromJson(jsonMap);
       this.rentListCounter = paging;
       if(this.rentListCounter.currentPage == null || this.rentListCounter.currentPage == 0) {
-        this.rentListItemWant = list;
+        this.rentListItemRent = list;
       }else {
         for(var e in list) {
-          this.rentListItemWant.add(e);
+          this.rentListItemRent.add(e);
         }
       }
     }catch(e){
       print(e);
     }
+    notifyListeners();
   }
 
   Future<String> rentInit(int senderIdx, int receiverIdx, int productIdx, String token) async {

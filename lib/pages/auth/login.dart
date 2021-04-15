@@ -12,10 +12,43 @@ class LoginPageNode extends StatefulWidget {
   _LoginPageNodeState createState() => _LoginPageNodeState();
 }
 
-class _LoginPageNodeState extends State<LoginPageNode> {
+class _LoginPageNodeState extends State<LoginPageNode> with SingleTickerProviderStateMixin {
   TextEditingController _phNum = TextEditingController();
   TextEditingController _password = TextEditingController();
   String phNum;
+
+  AnimationController _aniController;
+  Animation<Offset> _offsetAnimation;
+  double _visible = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _aniController = AnimationController(
+      duration: Duration(milliseconds: 800),
+      vsync: this,
+    )..forward();
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset(0.5, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _aniController,
+      curve: Curves.fastOutSlowIn,
+    ));
+    Future.delayed(Duration(milliseconds: 100), () {
+      setState(() {
+        _visible = 1.0;
+      });
+    });
+
+  }
+
+  @override
+  void dispose() {
+    _aniController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +73,7 @@ class _LoginPageNodeState extends State<LoginPageNode> {
             size: 30,
             color: Colors.black,
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
         ),
       ),
     );
@@ -54,14 +87,21 @@ class _LoginPageNodeState extends State<LoginPageNode> {
         padding: const EdgeInsets.only(left: 16, right: 16, top: 30),
         child: Column(
           children: <Widget>[
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '계정을\n입력해주세요.',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
+            AnimatedOpacity(
+              opacity: _visible,
+              duration: Duration(milliseconds: 500),
+              child: SlideTransition(
+                position: _offsetAnimation,
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '계정을\n입력해주세요.',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ),

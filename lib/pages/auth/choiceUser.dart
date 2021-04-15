@@ -69,7 +69,7 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
             size: 30,
             color: Colors.black,
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
         ),
       ),
     );
@@ -247,7 +247,7 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
       },
       child: Container(
         width: MediaQuery.of(context).size.width * 0.8,
-        height: 40.h,
+        height: 50.h,
         decoration: BoxDecoration(
           color: Color(0xffff0066),
           borderRadius: BorderRadius.circular(10),

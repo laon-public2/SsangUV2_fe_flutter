@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
@@ -107,40 +108,32 @@ class _MyPageModifiedState extends State<MyPageModified> {
                   width: double.infinity,
                   height: 200.h,
                   child: Center(
-                    child: Container(
-                      width: 150.w,
-                      height: 150.h,
-                      decoration: BoxDecoration(
-                        border:
-                            Border.all(color: Color(0xffdddddd), width: 1.0),
-                        borderRadius: BorderRadius.circular(150),
-                      ),
-                      child: InkWell(
-                        onTap: () async {
-                          await loadAssets();
-                          await _user.userImgChange(
-                            images,
-                          );
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(200),
-                          child: _user.userProfileImg != null
-                              ? Container(
+                    child: InkWell(
+                      onTap: () async {
+                        await loadAssets();
+                        await _user.userImgChange(
+                          images,
+                        );
+                      },
+                      child: ClipRRect(
+                        child: _user.userProfileImg != null
+                            ? Hero(
+                              tag: "MyProfileImg",
+                              child: Container(
                                   width: 130.w,
                                   height: 130.h,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(200),
-                                    child: Image.network(
+                                  child: CircleAvatar(
+                                    backgroundImage: NetworkImage(
                                       "http://115.91.73.66:15066/assets/images/user/${_user.userProfileImg}",
-                                      height: 120.h,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
                                     ),
                                   ),
-                                )
-                              : Icon(Icons.account_circle,
+                                ),
+                            )
+                            : Hero(
+                              tag: "MyProfileImg",
+                              child: Icon(Icons.account_circle,
                                   color: Colors.grey, size: 130.0),
-                        ),
+                            ),
                       ),
                     ),
                   ),

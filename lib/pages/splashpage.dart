@@ -10,6 +10,7 @@ import 'package:share_product_v2/providers/bannerProvider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/utils/SharedPref.dart';
+import 'package:share_product_v2/widgets/splashAni.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'chat/CustomerMessage.dart';
@@ -96,19 +97,16 @@ class _SplashScreenState extends State<SplashScreen> {
             Spacer(),
             Padding(
               padding: const EdgeInsets.only(bottom: 60),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [1, 2, 3, 4, 5].map((e) {
-                  return Container(
-                    width: 60,
-                    child: Image.asset(
-                      "assets/loading$e.gif",
-                      width: 36,
-                      height: 36,
-                    ),
-                  );
-                }).toList(),
-              ),
+              child: SplashAni(),
+              // child: Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [1, 2, 3, 4, 5].map((e) {
+              //     return Container(
+              //       width: 60,
+              //       child: SplashAni(),
+              //     );
+              //   }).toList(),
+              // ),
             )
           ],
         ),

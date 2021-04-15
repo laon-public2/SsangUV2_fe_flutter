@@ -22,6 +22,8 @@ class _ShareState extends State<Share> {
   final List<String> itemKind = [
     "빌린내역",
     "빌려준내역",
+    "도움받은내역",
+    "도움준내역",
   ];
   ScrollController sharedScroll = ScrollController();
   String _currentItem = "";
@@ -42,7 +44,7 @@ class _ShareState extends State<Share> {
       }else{
         if(pvm.rentListCounter.totalCount != pvm.rentListItem.length){
           this.page++;
-          await pvm.rentHistoryWant(
+          await pvm.rentHistoryRent(
               Provider.of<UserProvider>(context, listen: false).userIdx,
               page,
               Provider.of<UserProvider>(context, listen: false).accessToken);
@@ -140,7 +142,7 @@ class _ShareState extends State<Share> {
                                   );
                                 }else{
                                   Provider.of<ProductProvider>(context, listen: false)
-                                      .rentHistoryWant(
+                                      .rentHistoryRent(
                                     Provider.of<UserProvider>(context, listen: false)
                                         .userIdx,
                                     0,
@@ -159,70 +161,132 @@ class _ShareState extends State<Share> {
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       itemCount: this._currentItem == "빌린내역" ? product.rentListItem.length
-                          : product.rentListItemWant.length,
+                          : product.rentListItemRent.length,
                       separatorBuilder: (context, idx) => Divider(
                         color: Color(0xffdddddd),
                       ),
                       itemBuilder: (context, idx){
-                        return ListTile(
-                          onTap: () {},
-                          leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Container(
-                              width: 48.w,
-                              height: 48.h,
-                              child: Image.network(
-                                "http://115.91.73.66:15066/assets/images/product/${product.rentListItem[idx].productFiles[0].path}",
-                                fit: BoxFit.cover,
+                        if(_currentItem == "빌린내역") {
+                          return ListTile(
+                            onTap: () {},
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                width: 48.w,
+                                height: 48.h,
+                                child: Image.network(
+                                  "http://115.91.73.66:15066/assets/images/product/${product.rentListItem[idx].productFiles[0].path}",
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                          ),
-                          title: Text(
-                            product.rentListItem[idx].productTitle,
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xff333333),
+                            title: Text(
+                              product.rentListItem[idx].productTitle,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xff333333),
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomText(
-                                text: "${product.rentListItem[idx].receiverName}님",
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w700,
-                                textColor: Color(0xff999999),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomText(
+                                  text: "${product.rentListItem[idx].receiverName}님",
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w700,
+                                  textColor: Color(0xff999999),
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    CustomText(
+                                      text: _dateFormat(
+                                          product.rentListItem[idx].startDate),
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Color(0xff999999),
+                                    ),
+                                    Text(
+                                      ' ~ ',
+                                      style: TextStyle(
+                                          color: Color(0xff999999),
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12.sp),
+                                    ),
+                                    CustomText(
+                                      text: _dateFormat(
+                                          product.rentListItem[idx].endDate),
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Color(0xff999999),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        }else {
+                          return ListTile(
+                            onTap: () {},
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                width: 48.w,
+                                height: 48.h,
+                                child: Image.network(
+                                  "http://115.91.73.66:15066/assets/images/product/${product.rentListItemRent[idx].productFiles[0].path}",
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                              Row(
-                                children: <Widget>[
-                                  CustomText(
-                                    text: _dateFormat(
-                                        product.rentListItem[idx].startDate),
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w400,
-                                    textColor: Color(0xff999999),
-                                  ),
-                                  Text(
-                                    ' ~ ',
-                                    style: TextStyle(
-                                        color: Color(0xff999999),
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 12.sp),
-                                  ),
-                                  CustomText(
-                                    text: _dateFormat(
-                                        product.rentListItem[idx].endDate),
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w400,
-                                    textColor: Color(0xff999999),
-                                  ),
-                                ],
+                            ),
+                            title: Text(
+                              product.rentListItemRent[idx].productTitle,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xff333333),
                               ),
-                            ],
-                          ),
-                        );
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomText(
+                                  text: "${product.rentListItemRent[idx].receiverName}님",
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w700,
+                                  textColor: Color(0xff999999),
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    CustomText(
+                                      text: _dateFormat(
+                                          product.rentListItemRent[idx].startDate),
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Color(0xff999999),
+                                    ),
+                                    Text(
+                                      ' ~ ',
+                                      style: TextStyle(
+                                          color: Color(0xff999999),
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12.sp),
+                                    ),
+                                    CustomText(
+                                      text: _dateFormat(
+                                          product.rentListItemRent[idx].endDate),
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Color(0xff999999),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                       },
                     ),
                   ],
