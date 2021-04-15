@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
+import 'package:share_product_v2/widgets/loading.dart';
 
 class SuccessReg extends StatefulWidget {
   @override
@@ -36,7 +39,9 @@ class _SuccessRegState extends State<SuccessReg> {
               ),
               Spacer(),
               InkWell(
-                onTap: (){
+                onTap: () async {
+                  _showDialogLoading();
+                  await Provider.of<UserProvider>(context, listen: false).getMyInfo();
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
                 child: Container(
@@ -71,6 +76,14 @@ class _SuccessRegState extends State<SuccessReg> {
         context: context,
         builder: (BuildContext context) {
           return CustomDialogApply(Center(child: Text(text)), '확인');
+        });
+  }
+
+  void _showDialogLoading() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Loading();
         });
   }
 }
