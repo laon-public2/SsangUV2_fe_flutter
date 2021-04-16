@@ -591,6 +591,7 @@ class _CustomerMessage extends State<CustomerMessage>
                                               },
                                             );
                                             break;
+
                                         }
                                       },
                                     ),

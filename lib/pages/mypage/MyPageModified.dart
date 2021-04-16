@@ -13,14 +13,38 @@ class MyPageModified extends StatefulWidget {
   _MyPageModifiedState createState() => _MyPageModifiedState();
 }
 
-class _MyPageModifiedState extends State<MyPageModified> {
+class _MyPageModifiedState extends State<MyPageModified> with SingleTickerProviderStateMixin{
   TextEditingController userNameContorller = TextEditingController();
+
+  AnimationController _aniController;
+  Animation<Offset> _offsetAnimation;
+  double _visible = 0.0;
 
   void initState() {
     super.initState();
-    // setState(() {
-    //   this._userNameContorller.text = Provider.of<UserProvider>(context, listen: false).username;
-    // });
+    _aniController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    )
+      ..forward();
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.5, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _aniController,
+      curve: Curves.fastOutSlowIn,
+    ));
+    Future.delayed(Duration(milliseconds: 100), () {
+      setState(() {
+        _visible = 1.0;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _aniController.dispose();
+    super.dispose();
   }
 
   final picker = ImagePicker();
@@ -90,12 +114,19 @@ class _MyPageModifiedState extends State<MyPageModified> {
                         ),
                         Container(
                           margin: const EdgeInsets.only(left: 10),
-                          child: Text(
-                            '프로필 수정',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 23.sp),
+                          child: AnimatedOpacity(
+                            opacity: _visible,
+                            duration: Duration(milliseconds: 500),
+                            child: SlideTransition(
+                              position: _offsetAnimation,
+                              child: Text(
+                                '프로필 수정',
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 23.sp),
+                              ),
+                            ),
                           ),
                         ),
                       ],

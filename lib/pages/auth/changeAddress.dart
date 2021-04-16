@@ -17,8 +17,40 @@ class ChangeAddress extends StatefulWidget {
   _ChangeAddressState createState() => _ChangeAddressState();
 }
 
-class _ChangeAddressState extends State<ChangeAddress> {
+class _ChangeAddressState extends State<ChangeAddress> with SingleTickerProviderStateMixin{
   TextEditingController _addressDetail = TextEditingController();
+
+  AnimationController _aniController;
+  Animation<Offset> _offsetAnimation;
+  double _visible = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _aniController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    )
+      ..forward();
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.5, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _aniController,
+      curve: Curves.fastOutSlowIn,
+    ));
+    Future.delayed(Duration(milliseconds: 100), () {
+      setState(() {
+        _visible = 1.0;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _aniController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +73,7 @@ class _ChangeAddressState extends State<ChangeAddress> {
     return Consumer<UserProvider>(
       builder: (_, _myInfo, __) {
         return Container(
+            color: Colors.white,
             width: double.infinity,
             height: double.infinity,
             padding: const EdgeInsets.only(
@@ -49,12 +82,19 @@ class _ChangeAddressState extends State<ChangeAddress> {
               children: <Widget>[
                 Row(
                   children: [
-                    Text(
-                      '상세 주소를\n입력해주세요.',
-                      style: TextStyle(
-                        fontSize: 30.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
+                    AnimatedOpacity(
+                      opacity: _visible,
+                      duration: Duration(milliseconds: 500),
+                      child: SlideTransition(
+                        position: _offsetAnimation,
+                        child: Text(
+                          '상세 주소를\n입력해주세요.',
+                          style: TextStyle(
+                            fontSize: 30.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
                     ),
                   ],

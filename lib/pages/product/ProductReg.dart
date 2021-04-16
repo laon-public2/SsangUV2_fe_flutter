@@ -11,13 +11,14 @@ import 'package:share_product_v2/consts/textStyle.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
 import "package:flutter_screenutil/flutter_screenutil.dart";
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
+import 'package:share_product_v2/widgets/loading.dart';
 
 class ProductReg extends StatefulWidget {
   @override
   _ProductRegState createState() => _ProductRegState();
 }
 
-class _ProductRegState extends State<ProductReg> {
+class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateMixin {
   List<String> categories = [
     "생활용품",
     "여행",
@@ -52,6 +53,10 @@ class _ProductRegState extends State<ProductReg> {
   List<RadioModel> LocationData = new List<RadioModel>(); //커스텀 라디오 버튼
   FocusNode descriptionFocus;
 
+  AnimationController _aniController;
+  Animation<Offset> _offsetAnimation;
+  double _visible = 0.0;
+
   @override
   void initState() {
     //지금 위젯이 처음 시작할 때부터 2개 자동 추가
@@ -59,7 +64,23 @@ class _ProductRegState extends State<ProductReg> {
     LocationData.add(RadioModel(true, "OnlyMine", "현재 위치"));
     LocationData.add(RadioModel(false, "NormalLocation", "기본 위치"));
     LocationData.add(RadioModel(false, "OtherLocation", "다른 위치"));
-    Provider.of<ProductProvider>(context, listen: false).resetAddress();
+    //애니메이션
+    _aniController = AnimationController(
+      duration: Duration(milliseconds: 800),
+      vsync: this,
+    )..forward();
+    _offsetAnimation = Tween<Offset> (
+      begin: Offset(0.5, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _aniController,
+      curve: Curves.fastOutSlowIn,
+    ));
+    Future.delayed(Duration(milliseconds: 100), (){
+      setState(() {
+        _visible = 1.0;
+      });
+    });
   }
 
   String _isDialogText;
@@ -165,6 +186,9 @@ class _ProductRegState extends State<ProductReg> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await Provider.of<ProductProvider>(context, listen: false).resetAddress();
+    });
     return Scaffold(
       // resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
@@ -196,12 +220,19 @@ class _ProductRegState extends State<ProductReg> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      '상품요청하기',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
+                    AnimatedOpacity(
+                      duration: Duration(milliseconds: 500),
+                      opacity: _visible,
+                      child: SlideTransition(
+                        position: _offsetAnimation,
+                        child: Text(
+                          '상품요청하기',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(height: 10),
@@ -491,6 +522,7 @@ class _ProductRegState extends State<ProductReg> {
                           });
                           _showDialog();
                         } else {
+                          _showDialogLoading();
                           if(this.LocationData[0].isSelected == true){
                             List<String> date = _dateController.text.split("~");
                             await _myProduct.productApplyWant(
@@ -527,8 +559,8 @@ class _ProductRegState extends State<ProductReg> {
                               date[1],
                               "${_user.address}",
                               "${_user.addressDetail}",
-                              _myProduct.laUser,
-                              _myProduct.loUser,
+                              _user.userLocationX,
+                              _user.userLocationY,
                               _user.accessToken,
                               _otherLocation,
                             );
@@ -760,6 +792,14 @@ class _ProductRegState extends State<ProductReg> {
       value = value.replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), ',');
       return value;
     }
+  }
+
+  void _showDialogLoading() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Loading();
+        });
   }
 
   void _showDialogSuccess(String text) {

@@ -24,7 +24,7 @@ class ProductApplyPage extends StatefulWidget {
   _ProductApplyPageState createState() => _ProductApplyPageState();
 }
 
-class _ProductApplyPageState extends State<ProductApplyPage> {
+class _ProductApplyPageState extends State<ProductApplyPage> with SingleTickerProviderStateMixin {
   List<String> categories = [
     "생활용품",
     "여행",
@@ -59,6 +59,10 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
   List<Asset> images = List<Asset>();
   List<RadioModel> LocationData = new List<RadioModel>();
 
+  AnimationController _animationController;
+  Animation<Offset> _offsetAnimation;
+  double _visible = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -68,7 +72,23 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
     LocationData.add(RadioModel(true, "OnlyMine", "현재 위치"));
     LocationData.add(RadioModel(false, "NormalLocation", "기본 위치"));
     LocationData.add(RadioModel(false, "OtherLocation", "다른 위치"));
-    Provider.of<ProductProvider>(context, listen: false).resetAddress();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    )
+      ..forward();
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.5, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.fastOutSlowIn,
+    ));
+    Future.delayed(Duration(milliseconds: 100), () {
+      setState(() {
+        _visible = 1.0;
+      });
+    });
   }
 
   @override
@@ -127,6 +147,9 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await Provider.of<ProductProvider>(context, listen: false).resetAddress();
+    });
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar.appBarWithPrev("", 0, context),
@@ -209,12 +232,19 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '공유상품 등록',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
+        AnimatedOpacity(
+          opacity: _visible,
+          duration: Duration(milliseconds: 500),
+          child: SlideTransition(
+            position: _offsetAnimation,
+            child: Text(
+              '공유상품 등록',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
         SizedBox(height: 20.h),
@@ -370,6 +400,7 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
                         if(this.LocationData[2].isSelected && _otherAddressDetail.text == ""){
                           _showDialog(context, "기타 자세한 주소가 설정되지 않았습니다.", "description");
                         }
+                        _showDialogLoading();
                         List<String> date = _dateController.text.split("~");
                         if(this.LocationData[0].isSelected){
                           await _product.productApplyRent(
@@ -403,8 +434,8 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
                             date[1],
                             "${_user.address}",
                             "${_user.addressDetail}",
-                            _product.laUser,
-                            _product.loUser,
+                            _user.userLocationX,
+                            _user.userLocationY,
                             _user.accessToken,
                             _otherLocation,
                           );
@@ -604,6 +635,14 @@ class _ProductApplyPageState extends State<ProductApplyPage> {
         context: context,
         builder: (BuildContext context) {
           return CustomDialogApplyReg(Center(child: Text(text)), '확인');
+        });
+  }
+
+  void _showDialogLoading() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Loading();
         });
   }
 

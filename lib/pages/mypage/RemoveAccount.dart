@@ -11,7 +11,39 @@ class RemoveAccount extends StatefulWidget {
   _RemoveAccountState createState() => _RemoveAccountState();
 }
 
-class _RemoveAccountState extends State<RemoveAccount> {
+class _RemoveAccountState extends State<RemoveAccount> with SingleTickerProviderStateMixin{
+
+  bool _isDelete = false;
+  AnimationController _animationController;
+  Animation<Offset> _offsetAnimation;
+  double _visible = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    )..forward();
+    _offsetAnimation = Tween<Offset> (
+      begin: const Offset(0.5, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.fastOutSlowIn,
+    ));
+    Future.delayed(Duration(milliseconds: 100), () {
+      setState(() {
+        _visible = 1.0;
+      });
+    });
+  }
+
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,12 +77,19 @@ class _RemoveAccountState extends State<RemoveAccount> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '정말\n탈퇴하실건가요?',
-                  style: TextStyle(
-                    fontSize: 30.sp,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w700,
+                AnimatedOpacity(
+                  opacity: _visible,
+                  duration: Duration(milliseconds: 500),
+                  child: SlideTransition(
+                    position: _offsetAnimation,
+                    child: Text(
+                      '정말\n탈퇴하실건가요?',
+                      style: TextStyle(
+                        fontSize: 30.sp,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: 30.h),
@@ -111,18 +150,46 @@ class _RemoveAccountState extends State<RemoveAccount> {
                 ),
                 Spacer(),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget> [
+                    Checkbox(
+                      activeColor: Color(0xffe83023),
+                      value: _isDelete,
+                      onChanged: (bool value){
+                        setState(() {
+                          _isDelete = value;
+                        });
+                      },
+                    ),
+                    AnimatedDefaultTextStyle(
+                      duration: Duration(milliseconds: 500),
+                      style: TextStyle(
+                        color: _isDelete ? Color(0xffe83023) : Colors.black,
+                        fontWeight: _isDelete ? FontWeight.w700 : FontWeight.w300,
+                      ),
+                      child: Text(
+                        "위 내용을 숙지하였으며, 탈퇴하겠습니다.",
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 30),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     InkWell(
                       onTap: () async {
-                        await myInfo.DeleteUser(myInfo.phNum);
-                        Navigator.of(context).popUntil((route) => route.isFirst);
+                        if(_isDelete) {
+                          await myInfo.DeleteUser(myInfo.phNum);
+                          Navigator.of(context).popUntil((route) => route.isFirst);
+                        }
                       },
-                      child: Container(
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
                         width: 211.w,
                         height: 50.h,
                         decoration: BoxDecoration(
-                          color: Color(0xffe83023),
+                          color: _isDelete ? Color(0xffe83023) : Colors.grey[400],
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Center(

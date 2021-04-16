@@ -26,7 +26,13 @@ class ProductModified extends StatefulWidget {
   _ProductRegState createState() => _ProductRegState();
 }
 
-class _ProductRegState extends State<ProductModified> {
+class _ProductRegState extends State<ProductModified> with SingleTickerProviderStateMixin{
+
+  //애니메이션
+  AnimationController _animationController;
+  Animation<Offset> _offsetAnimaiton;
+  double _visible = 0.0;
+
   List<String> categories = [
     "생활용품",
     "여행",
@@ -64,19 +70,30 @@ class _ProductRegState extends State<ProductModified> {
       _selectedCategory = this.widget.categoryString;
       _priceController.text = "${this.widget.originalInfo.price}";
       _dateController.text =
-          "${_dateFormat(this.widget.originalInfo.startDate)} ~ ${_dateFormat(this.widget.originalInfo.endDate)}";
+      "${_dateFormat(this.widget.originalInfo.startDate)} ~ ${_dateFormat(this.widget.originalInfo.endDate)}";
       _minMoneyController.text = "${this.widget.originalInfo.minPrice}";
       _maxMoneyController.text = "${this.widget.originalInfo.maxPrice}";
       descriptionTextController.text = this.widget.originalInfo.description;
       original_images = this.widget.originalInfo.productFiles.toList();
       _otherAddressDetail.text = this.widget.originalInfo.addressDetail;
     });
-    Provider.of<ProductProvider>(context, listen: false).changeAddress(
-      "lend1",
-      this.widget.originalInfo.lati,
-      this.widget.originalInfo.longti,
-      this.widget.originalInfo.address,
-    );
+    //애니메이션
+    _animationController = AnimationController(
+      duration: Duration(milliseconds: 800),
+      vsync: this,
+    )..forward();
+    _offsetAnimaiton = Tween<Offset>(
+      begin: Offset(0.5, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.fastOutSlowIn,
+    ));
+    Future.delayed(Duration(milliseconds: 100), (){
+      setState(() {
+        _visible = 1.0;
+      });
+    });
   }
 
   String _isDialogText;
@@ -214,6 +231,14 @@ class _ProductRegState extends State<ProductModified> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await Provider.of<ProductProvider>(context, listen: false).changeAddress(
+        "lend1",
+        this.widget.originalInfo.lati,
+        this.widget.originalInfo.longti,
+        this.widget.originalInfo.address,
+      );
+    });
     return Scaffold(
       // resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
@@ -248,12 +273,19 @@ class _ProductRegState extends State<ProductModified> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      '상품수정하기',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
+                    AnimatedOpacity(
+                      opacity: _visible,
+                      duration: Duration(milliseconds: 500),
+                      child: SlideTransition(
+                        position: _offsetAnimaiton,
+                        child: Text(
+                          '상품수정하기',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(height: 10),

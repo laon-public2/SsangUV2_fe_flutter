@@ -11,6 +11,7 @@ import 'package:share_product_v2/widgets/WantItemMyAct.dart';
 import 'package:share_product_v2/widgets/lendItem.dart';
 import 'package:share_product_v2/widgets/lendItemMyAct.dart';
 import 'package:share_product_v2/widgets/loading.dart';
+import 'package:share_product_v2/widgets/loading2.dart';
 import 'package:share_product_v2/widgets/rentItem.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -98,7 +99,8 @@ class _Category1State extends State<Category0> {
                       height: 300.h,
                       color: Colors.white,
                       child: Center(
-                        child: Image.asset("assets/loading1.gif", width: 48.0, height: 48.0,),
+                        // child: Image.asset("assets/loading1.gif", width: 48.0, height: 48.0,),
+                        child: Loading2(),
                       ),
                     );
                   }else if (snapshot.hasError) {

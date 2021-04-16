@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/screenutil_init.dart';
 import 'package:provider/provider.dart';
+import 'package:share_product_v2/models/IOSLocaliztionsDelegate.dart';
 import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
 import 'package:share_product_v2/providers/bannerProvider.dart';
 import 'package:share_product_v2/providers/contractProvider.dart';
@@ -80,6 +81,7 @@ class _MyAppState extends State<MyApp> {
             localizationsDelegates: [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
+              CupertinoLocalizationsDelegate(),
             ],
             supportedLocales: [
               const Locale('en', "US"),

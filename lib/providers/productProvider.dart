@@ -136,7 +136,7 @@ class ProductProvider extends ChangeNotifier {
   Paging searchPagingCa10;
 
 
-  void resetAddress() {
+  Future<void> resetAddress() {
     this.firstAddress = '기본 주소 설정';
     this.secondAddress = '기타 주소 설정';
     this.firstLa = 0;
@@ -155,8 +155,7 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> changeAddress(
-      String type, num la, num lo, String address) async {
+  Future<void> changeAddress(String type, num la, num lo, String address) {
     print(type);
     if (type == "lend1") {
       this.firstAddress = address;
@@ -401,6 +400,8 @@ class ProductProvider extends ChangeNotifier {
     print("상품등록하기 빌려주기");
     print(address);
     print(addressDetail);
+    print(la);
+    print(lo);
     try {
       List<MultipartFile> fileList = [];
       for (var file in files) {
@@ -1071,12 +1072,28 @@ class ProductProvider extends ChangeNotifier {
     try {
       int page = 0;
       if (this.myLocation[0] == value) {
+        Fluttertoast.showToast(
+            msg: "주소가 '$value'로 변경되었습니다.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Color(0xffff0066),
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
         this.la = this.laDefault;
         this.lo = this.loDefault;
         this.currentLocation = value;
         await getMainRent(page);
         await getMainWant(page);
       } else if (this.myLocation[1] == value) {
+        Fluttertoast.showToast(
+            msg: "주소가 '$value'로 변경되었습니다.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Color(0xffff0066),
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
         this.myLocation[1] = value;
         this.currentLocation = value;
         this.la = this.loUser;
@@ -1084,6 +1101,14 @@ class ProductProvider extends ChangeNotifier {
         await getMainRent(page);
         await getMainWant(page);
       } else {
+        Fluttertoast.showToast(
+            msg: "주소가 '$value'로 변경되었습니다.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Color(0xffff0066),
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
         this.myLocation[2] = value;
         this.currentLocation = value;
         this.la = this.laSecondDefault;
@@ -1719,6 +1744,7 @@ class ProductProvider extends ChangeNotifier {
       final res = await productService.delProduct(productIdx, token);
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
+      mainProducts.removeWhere((item) => item.id == productIdx);
     } catch (e) {
       print(e);
     }

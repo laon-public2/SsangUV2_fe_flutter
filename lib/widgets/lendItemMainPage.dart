@@ -1,6 +1,7 @@
 //빌려 드려요
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/product/ProductDetail.dart';
 import 'package:share_product_v2/pages/product/ProductDetailRent.dart';
@@ -42,7 +43,10 @@ class LendItemMainPage extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ProductDetailRent(this.idx, this.category)),
+          PageTransition(
+              child: ProductDetailRent(this.idx, this.category),
+              type: PageTransitionType.fade,
+          ),
         );
       },
       child: Container(

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
 import 'package:share_product_v2/pages/product/ImageView.dart';
@@ -13,6 +14,7 @@ import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/bannerProduct.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 import 'package:share_product_v2/widgets/loading.dart';
+import 'package:share_product_v2/widgets/loading2.dart';
 import 'package:share_product_v2/widgets/reviewPage.dart';
 import 'package:share_product_v2/widgets/simpleMap.dart';
 import 'dart:math';
@@ -25,7 +27,8 @@ class ProductDetailRent extends StatefulWidget {
   final int productIdx;
   final String category;
 
-  const ProductDetailRent(this.productIdx, this.category);
+  const ProductDetailRent(
+      this.productIdx, this.category);
 
   @override
   _ProductDetailState createState() => _ProductDetailState();
@@ -67,10 +70,11 @@ class _ProductDetailState extends State<ProductDetailRent> {
                       color: Colors.white,
                       height: 300.h,
                       child: Center(
-                        child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Color(0xffff0066)),
-                        ),
+                        // child: CircularProgressIndicator(
+                        //   valueColor:
+                        //       AlwaysStoppedAnimation<Color>(Color(0xffff0066)),
+                        // ),
+                        child: Loading2(),
                       ),
                     );
                   }
@@ -373,9 +377,11 @@ class _ProductDetailState extends State<ProductDetailRent> {
                         onTap: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => ImageView(
-                                      _myProduct.productDetail.productFiles)));
+                              PageTransition(
+                                  child: ImageView(_myProduct.productDetail.productFiles),
+                                  type: PageTransitionType.fade,
+                              ),
+                          );
                         },
                         child: Hero(
                           tag: "ProductDetailImageView",
@@ -591,9 +597,12 @@ class _ProductDetailState extends State<ProductDetailRent> {
                     //설명 부분
                     Container(
                       padding:
-                          const EdgeInsets.only(left: 16, right: 16, top: 10),
+                          const EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 20),
                       width: double.infinity,
-                      height: 124.h,
+                      // height: 200.h,
+                      constraints: BoxConstraints(
+                        maxHeight: double.infinity,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         border: Border(

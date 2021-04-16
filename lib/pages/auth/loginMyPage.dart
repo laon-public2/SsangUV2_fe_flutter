@@ -80,7 +80,9 @@ class _LoginMyPageState extends State<LoginMyPage> {
                         ),
                       ),
                       InkWell(
-                        onTap: () => _getMyinfo.logout(),
+                        onTap: () {
+                          _getMyinfo.logout();
+                        },
                         child: CustomOnlyTextContainer(title: "로그아웃"),
                       ),
                     ],

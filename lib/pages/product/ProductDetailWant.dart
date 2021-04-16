@@ -337,19 +337,16 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                   builder: (context) => ImageView(
                                       _myProduct.productDetail.productFiles)));
                         },
-                        child: Hero(
-                          tag: "ProductDetailImageView",
-                          child: Container(
-                            width: double.infinity,
-                            height: 300,
-                            color: Colors.grey[300],
-                            child: _myProduct.productDetail != null
-                                ? BannerItemProduct(
-                                    false,
-                                    _myProduct.productDetail.productFiles,
-                                  )
-                                : SizedBox(),
-                          ),
+                        child: Container(
+                          width: double.infinity,
+                          height: 300,
+                          color: Colors.grey[300],
+                          child: _myProduct.productDetail != null
+                              ? BannerItemProduct(
+                                  false,
+                                  _myProduct.productDetail.productFiles,
+                                )
+                              : SizedBox(),
                         ),
                       ),
                     ),

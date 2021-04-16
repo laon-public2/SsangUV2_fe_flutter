@@ -16,11 +16,33 @@ class MyComModified extends StatefulWidget {
   _MyPageModifiedState createState() => _MyPageModifiedState();
 }
 
-class _MyPageModifiedState extends State<MyComModified> {
+class _MyPageModifiedState extends State<MyComModified> with SingleTickerProviderStateMixin {
   TextEditingController userNameContorller = TextEditingController();
+
+  //애니메이션
+  AnimationController _aniController;
+  Animation<Offset> _offsetAnimation;
+  double _visible = 0.0;
+
 
   void initState() {
     super.initState();
+    _aniController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    )..forward();
+    _offsetAnimation = Tween<Offset> (
+      begin: const Offset(0.5, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _aniController,
+      curve: Curves.fastOutSlowIn,
+    ));
+    Future.delayed(Duration(milliseconds: 100), () {
+      setState(() {
+        _visible = 1.0;
+      });
+    });
     // setState(() {
     //   this._userNameContorller.text = Provider.of<UserProvider>(context, listen: false).username;
     // });
@@ -74,12 +96,19 @@ class _MyPageModifiedState extends State<MyComModified> {
                         ),
                         Container(
                           margin: const EdgeInsets.only(left: 10),
-                          child: Text(
-                            '사업자정보 수정',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 23.sp),
+                          child: AnimatedOpacity(
+                            duration: Duration(milliseconds: 500),
+                            opacity: _visible,
+                            child: SlideTransition(
+                              position: _offsetAnimation,
+                              child: Text(
+                                '사업자정보 수정',
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 23.sp),
+                              ),
+                            ),
                           ),
                         ),
                       ],
