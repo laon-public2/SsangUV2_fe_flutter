@@ -9,6 +9,8 @@ import 'package:share_product_v2/widgets/CustomOnlyTextContainer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import 'myPage.dart';
+
 class LoginMyPage extends StatefulWidget {
   @override
   _LoginMyPageState createState() => _LoginMyPageState();
@@ -136,7 +138,7 @@ class _LoginMyPageState extends State<LoginMyPage> {
                           child: Text(
                             "알림 설정 시 푸시 알림이 전송됩니다. 알림을 해제 시 푸시 알림이 보내지지 않습니다.",
                             style: TextStyle(
-                              fontSize: 10.sp,
+                              fontSize: 13.sp,
                               color: Color(0xff999999),
                             ),
                           ),
@@ -167,9 +169,25 @@ class MyInfoContainer extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          PageTransition(
-            child: MyInfo(),
-            type: PageTransitionType.rightToLeft,
+          PageRouteBuilder(
+            pageBuilder: (c, a1, a2) => MyInfo(),
+            transitionsBuilder: (c, anim, a2, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.easeInOutCubic;
+
+              var tween = Tween(begin: begin, end: end);
+              var curvedAnimation = CurvedAnimation(
+                parent: anim,
+                curve: curve,
+              );
+
+              return SlideTransition(
+                position: tween.animate(curvedAnimation),
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 800),
           ),
         );
       },
@@ -238,7 +256,7 @@ class MyInfoContainer extends StatelessWidget {
                   ),
                   Text(
                     this.phone,
-                    style: normal_10_999,
+                    style: normal_14_999,
                   ),
                 ],
               ),

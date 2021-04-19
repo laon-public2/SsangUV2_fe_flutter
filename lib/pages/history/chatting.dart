@@ -76,8 +76,8 @@ class Chatting extends StatelessWidget {
                         onTap: () {
                           Navigator.push(
                             context,
-                            PageTransition(
-                              child: CustomerMessage(
+                            PageRouteBuilder(
+                              pageBuilder: (c, a1, a2) => CustomerMessage(
                                 contracts.chatListItem[idx].uuid,
                                 contracts.chatListItem[idx].productIdx,
                                 contracts.chatListItem[idx].productTitle,
@@ -93,7 +93,23 @@ class Chatting extends StatelessWidget {
                                 contracts.chatListItem[idx].receiverFcmToken,
                                 contracts.chatListItem[idx].senderIdx,
                               ),
-                              type: PageTransitionType.rightToLeft,
+                              transitionsBuilder: (c, anim, a2, child) {
+                                var begin = Offset(1.0, 0.0);
+                                var end = Offset.zero;
+                                var curve = Curves.easeInOutCubic;
+
+                                var tween = Tween(begin: begin, end: end);
+                                var curvedAnimation = CurvedAnimation(
+                                  parent: anim,
+                                  curve: curve,
+                                );
+
+                                return SlideTransition(
+                                  position: tween.animate(curvedAnimation),
+                                  child: child,
+                                );
+                              },
+                              transitionDuration: Duration(milliseconds: 800),
                             ),
                           );
                         },

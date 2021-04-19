@@ -641,12 +641,28 @@ class _CustomerMessage extends State<CustomerMessage>
                                   client.deactivate();
                                   Navigator.push(
                                     context,
-                                    PageTransition(
-                                      child: ProductDetailRent(
+                                    PageRouteBuilder(
+                                      pageBuilder: (c, a1, a2) => ProductDetailRent(
                                         this.widget.productIdx,
                                         this.widget.category,
                                       ),
-                                      type: PageTransitionType.rightToLeft,
+                                      transitionsBuilder: (c, anim, a2, child) {
+                                        var begin = Offset(1.0, 0.0);
+                                        var end = Offset.zero;
+                                        var curve = Curves.easeInOutCubic;
+
+                                        var tween = Tween(begin: begin, end: end);
+                                        var curvedAnimation = CurvedAnimation(
+                                          parent: anim,
+                                          curve: curve,
+                                        );
+
+                                        return SlideTransition(
+                                          position: tween.animate(curvedAnimation),
+                                          child: child,
+                                        );
+                                      },
+                                      transitionDuration: Duration(milliseconds: 800),
                                     ),
                                   );
                                 },
