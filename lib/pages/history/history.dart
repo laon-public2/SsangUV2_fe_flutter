@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_product_v2/pages/history/chatting.dart';
 import 'package:share_product_v2/pages/history/share.dart';
@@ -45,10 +45,10 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
           controller: controller,
           tabs: [
             Tab(
-              text: "채팅 내역",
+              text: "대여 내역",
             ),
             Tab(
-              text: "대여 내역",
+              text: "채팅 내역",
             ),
           ],
         ),
@@ -61,8 +61,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     return TabBarView(
       controller: controller,
       children: [
-        Chatting(),
         Share(),
+        Chatting(),
       ],
     );
   }

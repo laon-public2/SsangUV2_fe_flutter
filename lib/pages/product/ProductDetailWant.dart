@@ -12,6 +12,7 @@ import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/bannerProduct.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 import 'package:share_product_v2/widgets/loading.dart';
+import 'package:share_product_v2/widgets/loading2.dart';
 import 'package:share_product_v2/widgets/simpleMap.dart';
 import 'dart:math';
 import 'dart:async';
@@ -72,9 +73,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
             color: Colors.white,
             height: 300.h,
             child: Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xffff0066)),
-              ),
+                child: Loading2(),
             ),
           );
         }

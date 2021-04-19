@@ -1,6 +1,7 @@
 //빌려 드려요
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:share_product_v2/pages/product/ProductDetail.dart';
 import 'package:share_product_v2/pages/product/ProductDetailRent.dart';
 import 'package:share_product_v2/pages/product/ProductDetailWant.dart';
@@ -42,7 +43,10 @@ class WantItemMainPage extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ProductDetailWant(this.idx, this.category)),
+          PageTransition(
+            child: ProductDetailWant(this.idx, this.category),
+            type: PageTransitionType.fade,
+          ),
         );
       },
       child: Container(
