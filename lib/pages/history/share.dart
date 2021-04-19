@@ -33,7 +33,7 @@ class _ShareState extends State<Share> {
     final pvm =  Provider.of<ProductProvider>(context, listen: false);
     if(sharedScroll.position.pixels == sharedScroll.position.maxScrollExtent){
       print("스크롤이 가장 아래에 있습니다.");
-      if(_currentItem == "빌린내역") {
+      if(_currentItem == "대여요청") {
         if(pvm.rentListCounter.totalCount != pvm.rentListItem.length){
           this.page++;
           await pvm.rentHistory(
@@ -160,13 +160,13 @@ class _ShareState extends State<Share> {
                     ListView.separated(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
-                      itemCount: this._currentItem == "빌린내역" ? product.rentListItem.length
+                      itemCount: this._currentItem == "대여요청" ? product.rentListItem.length
                           : product.rentListItemRent.length,
                       separatorBuilder: (context, idx) => Divider(
                         color: Color(0xffdddddd),
                       ),
                       itemBuilder: (context, idx){
-                        if(_currentItem == "빌린내역") {
+                        if(_currentItem == "대여요청") {
                           return ListTile(
                             onTap: () {},
                             leading: ClipRRect(
