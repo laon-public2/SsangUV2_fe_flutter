@@ -20,10 +20,10 @@ class Share extends StatefulWidget {
 class _ShareState extends State<Share> {
 
   final List<String> itemKind = [
-    "빌린내역",
-    "빌려준내역",
-    "도움받은내역",
-    "도움준내역",
+    "대여요청",
+    "대여제공",
+    "도움요청",
+    "도움제공",
   ];
   ScrollController sharedScroll = ScrollController();
   String _currentItem = "";
