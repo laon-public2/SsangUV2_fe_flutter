@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/consts/textStyle.dart';
 import 'package:share_product_v2/pages/mypage/MyInfo.dart';
@@ -8,6 +7,7 @@ import 'package:share_product_v2/widgets/CustomLinkTextContainer.dart';
 import 'package:share_product_v2/widgets/CustomOnlyTextContainer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:share_product_v2/widgets/PageTransition.dart';
 
 import 'myPage.dart';
 
@@ -169,26 +169,12 @@ class MyInfoContainer extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          PageRouteBuilder(
-            pageBuilder: (c, a1, a2) => MyInfo(),
-            transitionsBuilder: (c, anim, a2, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.easeInOutCubic;
-
-              var tween = Tween(begin: begin, end: end);
-              var curvedAnimation = CurvedAnimation(
-                parent: anim,
-                curve: curve,
-              );
-
-              return SlideTransition(
-                position: tween.animate(curvedAnimation),
-                child: child,
-              );
-            },
-            transitionDuration: Duration(milliseconds: 800),
-          ),
+          PageTransitioned(
+              child: MyInfo(),
+              curves: Curves.fastOutSlowIn,
+              duration: const Duration(milliseconds: 800),
+              durationRev: const Duration(milliseconds: 600),
+          )
         );
       },
       child: Container(

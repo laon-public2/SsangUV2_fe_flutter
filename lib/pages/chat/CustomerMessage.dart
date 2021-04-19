@@ -16,6 +16,7 @@ import 'package:share_product_v2/pages/product/ProductDetailRent.dart';
 import 'package:share_product_v2/providers/contractProvider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/widgets/PageTransition.dart';
 import 'package:share_product_v2/widgets/chatBigImg.dart';
 import 'package:share_product_v2/widgets/loading.dart';
 import 'package:stomp_dart_client/stomp.dart';
@@ -641,29 +642,15 @@ class _CustomerMessage extends State<CustomerMessage>
                                   client.deactivate();
                                   Navigator.push(
                                     context,
-                                    PageRouteBuilder(
-                                      pageBuilder: (c, a1, a2) => ProductDetailRent(
-                                        this.widget.productIdx,
-                                        this.widget.category,
-                                      ),
-                                      transitionsBuilder: (c, anim, a2, child) {
-                                        var begin = Offset(1.0, 0.0);
-                                        var end = Offset.zero;
-                                        var curve = Curves.easeInOutCubic;
-
-                                        var tween = Tween(begin: begin, end: end);
-                                        var curvedAnimation = CurvedAnimation(
-                                          parent: anim,
-                                          curve: curve,
-                                        );
-
-                                        return SlideTransition(
-                                          position: tween.animate(curvedAnimation),
-                                          child: child,
-                                        );
-                                      },
-                                      transitionDuration: Duration(milliseconds: 800),
-                                    ),
+                                    PageTransitioned(
+                                        child: ProductDetailRent(
+                                          this.widget.productIdx,
+                                          this.widget.category,
+                                        ),
+                                        curves: Curves.fastOutSlowIn,
+                                        duration: const Duration(milliseconds: 800),
+                                        durationRev: const Duration(milliseconds: 600),
+                                    )
                                   );
                                 },
                               ),

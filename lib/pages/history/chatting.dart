@@ -8,6 +8,7 @@ import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
 import 'package:share_product_v2/providers/contractProvider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/widgets/PageTransition.dart';
 import 'package:share_product_v2/widgets/customText.dart';
 
 class Chatting extends StatelessWidget {
@@ -76,41 +77,27 @@ class Chatting extends StatelessWidget {
                         onTap: () {
                           Navigator.push(
                             context,
-                            PageRouteBuilder(
-                              pageBuilder: (c, a1, a2) => CustomerMessage(
-                                contracts.chatListItem[idx].uuid,
-                                contracts.chatListItem[idx].productIdx,
-                                contracts.chatListItem[idx].productTitle,
-                                _category(
-                                    contracts.chatListItem[idx].categoryNum),
-                                contracts.chatListItem[idx].receiverName,
-                                contracts.chatListItem[idx].productPrice,
-                                contracts
-                                    .chatListItem[idx].productFiles[0].path,
-                                contracts.chatListItem[idx].status,
-                                contracts.chatListItem[idx].receiverIdx,
-                                contracts.chatListItem[idx].senderFcmToken,
-                                contracts.chatListItem[idx].receiverFcmToken,
-                                contracts.chatListItem[idx].senderIdx,
-                              ),
-                              transitionsBuilder: (c, anim, a2, child) {
-                                var begin = Offset(1.0, 0.0);
-                                var end = Offset.zero;
-                                var curve = Curves.easeInOutCubic;
-
-                                var tween = Tween(begin: begin, end: end);
-                                var curvedAnimation = CurvedAnimation(
-                                  parent: anim,
-                                  curve: curve,
-                                );
-
-                                return SlideTransition(
-                                  position: tween.animate(curvedAnimation),
-                                  child: child,
-                                );
-                              },
-                              transitionDuration: Duration(milliseconds: 800),
-                            ),
+                            PageTransitioned(
+                                child: CustomerMessage(
+                                  contracts.chatListItem[idx].uuid,
+                                  contracts.chatListItem[idx].productIdx,
+                                  contracts.chatListItem[idx].productTitle,
+                                  _category(
+                                      contracts.chatListItem[idx].categoryNum),
+                                  contracts.chatListItem[idx].receiverName,
+                                  contracts.chatListItem[idx].productPrice,
+                                  contracts
+                                      .chatListItem[idx].productFiles[0].path,
+                                  contracts.chatListItem[idx].status,
+                                  contracts.chatListItem[idx].receiverIdx,
+                                  contracts.chatListItem[idx].senderFcmToken,
+                                  contracts.chatListItem[idx].receiverFcmToken,
+                                  contracts.chatListItem[idx].senderIdx,
+                                ),
+                                curves: Curves.fastOutSlowIn,
+                                duration: const Duration(milliseconds: 800),
+                                durationRev: const Duration(milliseconds: 600),
+                            )
                           );
                         },
                         leading: ClipRRect(
