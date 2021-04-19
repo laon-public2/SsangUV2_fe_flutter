@@ -34,9 +34,9 @@ class _HomePageState extends State<HomePage> {
 
   int page = 0;
   final List<String> itemKind = [
-    "빌려드려요",
     "빌려주세요",
-    "도와드려요"
+    "빌려드려요",
+    "도와주세요"
   ];
   String _currentItem = "";
 

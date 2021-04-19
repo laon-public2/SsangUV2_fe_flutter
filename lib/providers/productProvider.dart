@@ -203,7 +203,9 @@ class ProductProvider extends ChangeNotifier {
 
   Future<void> getUserGeoDrop() async {
     try {
-      myLocation[1] = geoUserLocation[1].depth3;
+      if(myLocation[0] != geoUserLocation[1].depth3){
+        myLocation[1] = geoUserLocation[1].depth3;
+      }
     } catch (e) {
       print(e);
     }
