@@ -157,6 +157,15 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
                       _formField('닉네임', name, false),
                       SizedBox(height: 18.h),
                       _formField('비밀번호', pwd, true),
+                      SizedBox(height: 10.h),
+                      Text(
+                        '비밀번호는 소문자, 숫자, 특수문자를 합하여 10자 이상이여야 합니다.',
+                        style: TextStyle(
+                          color: Color(0xff999999),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w200,
+                        ),
+                      ),
                       SizedBox(height: 18.h),
                       _formField('비밀번호 확인', chkPwd, true),
                       SizedBox(height: 18.h),
@@ -172,6 +181,15 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
                       _formField('닉네임', name, false),
                       SizedBox(height: 18.h),
                       _formField('비밀번호', pwd, true),
+                      SizedBox(height: 10.h),
+                      Text(
+                        '비밀번호는 소문자, 숫자, 특수문자를 합하여 10자 이상이여야 합니다.',
+                        style: TextStyle(
+                          color: Color(0xff999999),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w200,
+                        ),
+                      ),
                       SizedBox(height: 18.h),
                       _formField('비밀번호 확인', chkPwd, true),
                       SizedBox(height: 60.h),
@@ -188,6 +206,7 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
   _regDone() {
     return InkWell(
       onTap: () async {
+        bool validatePassword = _validatePassword(pwd.text);
         if (name.text == '') {
           _showDialog('이름이 입력되지 않았습니다.');
           return;
@@ -202,6 +221,9 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
         }
         if (chkPwd.text != pwd.text) {
           _showDialog('비밀번호가 서로 일치하지 않습니다.');
+          return;
+        } if(validatePassword == false){
+          _showDialog('비밀번호의 형식이 옯바르지 않습니다.');
           return;
         } else {
           await Provider.of<RegUserProvider>(context, listen: false)
@@ -267,6 +289,7 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
   _regComDone() {
     return InkWell(
       onTap: () async {
+        bool validatePassword = _validatePassword(pwd.text);
         if (name.text == '') {
           _showDialog('이름이 입력되지 않았습니다.');
           return;
@@ -278,9 +301,12 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
         if (chkPwd.text == '') {
           _showDialog('비밀번호확인란이 입력되지 않았습니다.');
           return;
-        }
-        if (chkPwd.text != pwd.text) {
+        } if (chkPwd.text != pwd.text) {
           _showDialog('비밀번호가 서로 일치하지 않습니다.');
+          return;
+        }
+        if(validatePassword == false){
+          _showDialog("비밀번호의 형식이 옯바르지 않습니다.");
           return;
         }
         if (_image == null) {
@@ -483,6 +509,12 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
         ],
       ),
     );
+  }
+
+  bool _validatePassword(String value){
+    String pattern = r'^(?=.*?[a-z)(?=.*?[0-9])(?=.*?[!@#\$&*~]).{10,}$';
+    RegExp regExp = RegExp(pattern);
+    return regExp.hasMatch(value);
   }
 
   void _showDialog(String text) {

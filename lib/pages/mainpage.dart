@@ -14,6 +14,7 @@ import 'package:share_product_v2/utils/APIUtil.dart';
 import 'package:share_product_v2/widgets/CustomPopup.dart';
 import 'package:share_product_v2/widgets/InputDoneView.dart';
 import 'package:share_product_v2/widgets/customdialog.dart';
+import 'package:share_product_v2/widgets/customdialogApply.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
@@ -388,6 +389,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     }
   }
 
+  void _showDialogErr(String text) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomDialogApply(Center(child: Text(text)), '확인');
+        });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -395,7 +404,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       await Provider.of<FCMModel>(context, listen: false).getMbToken();
       await Provider.of<UserProvider>(context, listen: false)
           .AddFCMtoken(Provider.of<FCMModel>(context, listen: false).mbToken);
-      await Provider.of<BannerProvider>(context, listen: false).getBanners();
+      bool getBanners = await Provider.of<BannerProvider>(context, listen: false).getBanners();
+      if(getBanners == false){
+        _showDialogErr("서버와의 통신에 문제가 있습니다\n만약 서비스가 계속 작동되지 않는다면 고객센터로 문의 주십시오.");
+      }
     });
     Provider.of<ProductProvider>(context, listen: false).getGeolocator();
     if (Provider.of<UserProvider>(context, listen: false).isLoggenIn) {

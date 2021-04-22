@@ -8,12 +8,16 @@ class BannerProvider extends ChangeNotifier {
   List<BannerModel> banners = [];
   List<BannerModel> categoryBanner = [];
 
-  Future<void> getBanners() async {
+  Future<bool> getBanners() async {
     print('배너 시작');
     List<BannerModel> list = await bannerService.getBanners();
     this.categoryBanner = list;
     notifyListeners();
     this.banners = list;
     notifyListeners();
+    print(list.length);
+    if(list.length == 0){
+      return false;
+    }else return true;
   }
 }

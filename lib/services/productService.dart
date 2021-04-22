@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:share_product_v2/utils/APIUtil.dart';
 
@@ -667,6 +670,15 @@ class ProductService {
       return res;
     } on DioError catch (e) {
       print('위치 조회 에러');
+      Fluttertoast.showToast(
+          msg: "서버와의 연결이 원할하지 않습니다.\n앱 재시작 후에도 똑같다면 고객센터로 연락주세요.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Color(0xffff0066),
+          textColor: Colors.white,
+          fontSize: 16.0,
+          timeInSecForIos: 10,
+      );
       print(e.response.statusCode);
       print(e.response.data.toString());
     }

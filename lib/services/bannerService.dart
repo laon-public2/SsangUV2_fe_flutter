@@ -35,9 +35,7 @@ class BannerService {
     } on DioError catch (e) {
       print('배너 서비스 접속 에러');
       print(e.response.statusCode);
-      print(e.response.headers);
-      print(e.response.request);
-      print(e.request);
+      print(e.response.data.toString());
       print(e.message);
     }
 
