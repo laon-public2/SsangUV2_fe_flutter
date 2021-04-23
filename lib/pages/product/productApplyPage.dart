@@ -505,6 +505,8 @@ class _ProductApplyPageState extends State<ProductApplyPage> with SingleTickerPr
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
+          this.images.length == 3 ?
+          SizedBox():
           Container(
             margin: const EdgeInsets.only(right: 15),
             width: 72,

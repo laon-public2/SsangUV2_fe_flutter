@@ -138,6 +138,8 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
+          this.images.length == 3 ?
+          SizedBox():
           Container(
             margin: const EdgeInsets.only(right: 15),
             width: 72,
