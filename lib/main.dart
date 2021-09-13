@@ -74,62 +74,74 @@ class _MyAppState extends State<MyApp> {
         child: ScreenUtilInit(
           designSize: Size(360, 680),
           allowFontScaling: false,
-          builder: () => MaterialApp(
-            navigatorKey: navigatorKey,
-            title: '쌩유',
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: [
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              CupertinoLocalizationsDelegate(),
-            ],
-            supportedLocales: [
-              const Locale('en', "US"),
-              const Locale('ko', "KO"),
-            ],
-            theme: ThemeData(
-              fontFamily: "NotoSans",
-              primarySwatch: Colors.blue,
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-              primaryColor: Color(0xffFF0066),
-              brightness: Brightness.light,
-              appBarTheme: AppBarTheme(
-                  brightness: Brightness.light,
-                  color: Colors.white,
-                  elevation: 0.0),
+          builder: () => ScrollConfiguration(
+            behavior: MyBehavior(),
+            child: MaterialApp(
+              navigatorKey: navigatorKey,
+              title: '쌩유',
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                CupertinoLocalizationsDelegate(),
+              ],
+              supportedLocales: [
+                const Locale('en', "US"),
+                const Locale('ko', "KO"),
+              ],
+              theme: ThemeData(
+                fontFamily: "NotoSans",
+                primarySwatch: Colors.blue,
+                visualDensity: VisualDensity.adaptivePlatformDensity,
+                primaryColor: Color(0xffFF0066),
+                brightness: Brightness.light,
+                appBarTheme: AppBarTheme(
+                    brightness: Brightness.light,
+                    color: Colors.white,
+                    elevation: 0.0),
+              ),
+              // home: SplashScreen(),
+              // DefaultTabController(
+              //   length: 3,
+              //   child: Scaffold(
+              //     body: TabBarView(
+              //       physics: NeverScrollableScrollPhysics(),
+              //       children: <Widget>[
+              //         MainPage(),
+              //         ProductReg(),
+              //         LoginMyPage(),
+              //       ],
+              //     ),
+              //     bottomNavigationBar: BottomBar(),
+              //   ),
+              // ),
+              initialRoute: "/",
+              routes: routes,
+              // onGenerateRoute: (routeSettings) {
+              //   if (routeSettings.name == "/product" ||
+              //       routeSettings.name == "/product/detail") {
+              //     Map<String, dynamic> args = routeSettings.arguments;
+              //     return MaterialPageRoute(
+              //       builder: (context) {
+              //         return DetailProduct(
+              //           id: args['id'],
+              //         );
+              //       },
+              //     );
+              //   }
+              //   return null;
+              // },
             ),
-            // home: SplashScreen(),
-            // DefaultTabController(
-            //   length: 3,
-            //   child: Scaffold(
-            //     body: TabBarView(
-            //       physics: NeverScrollableScrollPhysics(),
-            //       children: <Widget>[
-            //         MainPage(),
-            //         ProductReg(),
-            //         LoginMyPage(),
-            //       ],
-            //     ),
-            //     bottomNavigationBar: BottomBar(),
-            //   ),
-            // ),
-            initialRoute: "/",
-            routes: routes,
-            // onGenerateRoute: (routeSettings) {
-            //   if (routeSettings.name == "/product" ||
-            //       routeSettings.name == "/product/detail") {
-            //     Map<String, dynamic> args = routeSettings.arguments;
-            //     return MaterialPageRoute(
-            //       builder: (context) {
-            //         return DetailProduct(
-            //           id: args['id'],
-            //         );
-            //       },
-            //     );
-            //   }
-            //   return null;
-            // },
           ),
         ));
+  }
+}
+
+// 오버스크롤 이펙트를 없애는 작업
+class MyBehavior extends ScrollBehavior {
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) => ClampingScrollPhysics();
+  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection){
+    return child;
   }
 }

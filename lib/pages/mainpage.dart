@@ -5,6 +5,8 @@ import 'package:share_product_v2/pages/history/history.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_product_v2/pages/home.dart';
 import 'package:share_product_v2/pages/auth/myPage.dart';
+import 'package:share_product_v2/pages/product/ProductReg.dart';
+import 'package:share_product_v2/pages/product/productApplyPage.dart';
 import 'package:share_product_v2/pages/product/productHelpReg.dart';
 import 'package:share_product_v2/providers/bannerProvider.dart';
 import 'package:share_product_v2/providers/fcm_model.dart';
@@ -13,6 +15,7 @@ import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/utils/APIUtil.dart';
 import 'package:share_product_v2/widgets/CustomPopup.dart';
 import 'package:share_product_v2/widgets/InputDoneView.dart';
+import 'package:share_product_v2/widgets/PageTransition.dart';
 import 'package:share_product_v2/widgets/customdialog.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -118,7 +121,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     const TextStyle optionStyle =
-        TextStyle(fontSize: 12, fontWeight: FontWeight.w100);
+        TextStyle(fontSize: 12, fontWeight: FontWeight.w400);
 
     return Consumer<UserProvider>(builder: (_, user, __) {
       return WillPopScope(
@@ -207,7 +210,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             InkWell(
               onTap: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushNamed("/product/applyOnerWhatever");
+                Navigator.of(context).push(
+                    PageTransitioned(
+                      child: ProductApplyPage(),
+                      curves: Curves.fastOutSlowIn,
+                      duration: const Duration(milliseconds: 500),
+                      durationRev: const Duration(milliseconds: 600),
+                    )
+                );
               },
               child: SizedBox(
                 height: 72.h,
@@ -248,7 +258,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             InkWell(
               onTap: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushNamed("/product/apply");
+                Navigator.of(context).push(
+                    PageTransitioned(
+                      child: ProductReg(),
+                      curves: Curves.fastOutSlowIn,
+                      duration: const Duration(milliseconds: 500),
+                      durationRev: const Duration(milliseconds: 600),
+                    )
+                );
               },
               child: SizedBox(
                 height: 45.h,
@@ -289,9 +306,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             InkWell(
               onTap: () {
                 Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProductHelpReg())
+                Navigator.of(context).push(
+                    PageTransitioned(
+                      child: ProductHelpReg(),
+                      curves: Curves.fastOutSlowIn,
+                      duration: const Duration(milliseconds: 500),
+                      durationRev: const Duration(milliseconds: 600),
+                    )
                 );
               },
               child: SizedBox(

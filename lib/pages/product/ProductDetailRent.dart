@@ -34,10 +34,20 @@ class ProductDetailRent extends StatefulWidget {
   _ProductDetailState createState() => _ProductDetailState();
 }
 
-class _ProductDetailState extends State<ProductDetailRent> {
+class _ProductDetailState extends State<ProductDetailRent> with TickerProviderStateMixin{
+  //애니메이션 빌더
+  AnimationController _colorAni;
+  Animation _colorTween, _iconColorTween, _borderColorTween;
+
+  bool _scrollListener(ScrollNotification scrollInfo){
+    if(scrollInfo.metrics.axis == Axis.vertical) {
+      _colorAni.animateTo(scrollInfo.metrics.pixels / 120);
+      return true;
+    }
+  }
+
   GoogleMapController mapController;
   final LatLng _center = const LatLng(37.61686408091954, 126.89315008364576);
-
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
@@ -48,6 +58,10 @@ class _ProductDetailState extends State<ProductDetailRent> {
 
   void initState() {
     super.initState();
+    _colorAni = AnimationController(duration: Duration(seconds: 0), vsync: this);
+    _colorTween = ColorTween(begin: Colors.transparent, end: Colors.white).animate(_colorAni);
+    _iconColorTween = ColorTween(begin: Colors.white, end: Color(0xffff0066)).animate(_colorAni);
+    _borderColorTween = ColorTween(begin: Colors.transparent, end: Color(0xffff0066)).animate(_colorAni);
   }
 
   Future<bool> _loadLocator() async {
@@ -96,10 +110,61 @@ class _ProductDetailState extends State<ProductDetailRent> {
   _scaffold(){
     return Scaffold(
       backgroundColor: Color(0xffebebeb),
-      body: SingleChildScrollView(
-        child: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: Platform.isIOS ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
-          child: _body(),
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: Platform.isIOS ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: _body(),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              child: AnimatedBuilder(
+                animation: _colorAni,
+                builder: (context, child) => Container(
+                  width: double.infinity,
+                  height: 75.h,
+                  decoration: BoxDecoration(
+                    color: _colorTween.value,
+                    border: Border(
+                      bottom: BorderSide(
+                        width: 0,
+                        color: _borderColorTween.value,
+                      ),
+                    )
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              child: Container(
+                width: double.infinity,
+                height: 75.h,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    AnimatedBuilder(
+                      animation: _colorAni,
+                      builder: (context, child) => IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios_sharp,
+                          color: _iconColorTween.value,
+                          size: 30.0,
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ],
+                )
+              ),
+            ),
+          ],
         ),
       ),
         floatingActionButton: Consumer<UserProvider>(
@@ -354,516 +419,518 @@ class _ProductDetailState extends State<ProductDetailRent> {
   _body() {
     return Consumer<ProductProvider>(
       builder: (__, _myProduct, _) {
-        return Container(
-          // height: 970,
-          color: Color(0xffebebeb),
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                height: 300,
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Color(0xffdddddd),
+        return NotificationListener<ScrollNotification>(
+          onNotification: _scrollListener,
+          child: SingleChildScrollView(
+            child: Container(
+              // height: 970,
+              color: Color(0xffebebeb),
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: 300,
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Color(0xffdddddd),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                child: Stack(
-                  children: [
-                    //배너 사이즈 및 색
-                    Positioned.fill(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              PageTransition(
+                    child: Stack(
+                      children: [
+                        //배너 사이즈 및 색
+                        Positioned.fill(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                PageTransition(
                                   child: ImageView(_myProduct.productDetail.productFiles),
                                   type: PageTransitionType.fade,
-                              ),
-                          );
-                        },
-                        child: Hero(
-                          tag: "ProductDetailImageView",
-                          child: Container(
-                            width: double.infinity,
-                            height: 300,
-                            color: Colors.grey[300],
-                            child: _myProduct.productDetail != null
-                                ? BannerItemProduct(
-                                    false,
-                                    _myProduct.productDetail.productFiles,
-                                  )
-                                : SizedBox(),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    //배너 그림자
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: Opacity(
-                        opacity: 0.5,
-                        child: Container(
-                          width: double.infinity,
-                          height: 80.h,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                Colors.black,
-                              ],
-                              stops: [
-                                0.0,
-                                1.9,
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: 0,
-                      child: Opacity(
-                        opacity: 0.5,
-                        child: Container(
-                          width: double.infinity,
-                          height: 80.h,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.black,
-                                Colors.transparent,
-                              ],
-                              stops: [
-                                0.0,
-                                1.9,
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    //날짜
-                    Positioned(
-                      left: 10,
-                      right: 0,
-                      bottom: 10,
-                      child: Text(
-                        '${_dateFormat(_myProduct.productDetail.startDate)}~${_dateFormat(_myProduct.productDetail.endDate)}',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13.sp,
-                        ),
-                      ),
-                    ),
-                    //뒤로가기
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: 30,
-                      child: Container(
-                        width: double.infinity,
-                        height: 50,
-                        padding: const EdgeInsets.only(left: 0, right: 16),
-                        child: Container(
-                          width: double.infinity,
-                          height: 52,
-                          alignment: Alignment.topLeft,
-                          child: IconButton(
-                            icon: Transform.rotate(
-                              angle: 180 * pi / 180,
-                              child: Icon(
-                                Icons.arrow_forward_ios_sharp,
-                                color: Colors.white,
-                                size: 30.0,
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                child: Column(
-                  children: [
-                    //타이틀 부분
-                    Container(
-                      width: double.infinity,
-                      height: 120.h,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Color(0xffdddddd),
-                          ),
-                        ),
-                      ),
-                      padding:
-                          const EdgeInsets.only(left: 16, right: 16, top: 10),
-                      child: Column(
-                        children: [
-                          Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  width: 70,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Color(0xffff0066),
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "${this.widget.category}",
-                                      style: TextStyle(
-                                          color: Color(0xffff0066),
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.normal),
-                                    ),
-                                  ),
                                 ),
-                                Container(
-                                  child: Center(
-                                    child: Text(
-                                      "${(_myProduct.productDetail.distance).toStringAsFixed(2)}km",
-                                      style: TextStyle(
-                                        color: Color(0xff888888),
+                              );
+                            },
+                            child: Hero(
+                              tag: "ProductDetailImageView",
+                              child: Container(
+                                width: double.infinity,
+                                height: 300,
+                                color: Colors.grey[300],
+                                child: _myProduct.productDetail != null
+                                    ? BannerItemProduct(
+                                  false,
+                                  _myProduct.productDetail.productFiles,
+                                )
+                                    : SizedBox(),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        //배너 그림자
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: Opacity(
+                            opacity: 0.5,
+                            child: Container(
+                              width: double.infinity,
+                              height: 80.h,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.black,
+                                  ],
+                                  stops: [
+                                    0.0,
+                                    1.9,
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          top: 0,
+                          child: Opacity(
+                            opacity: 0.5,
+                            child: Container(
+                              width: double.infinity,
+                              height: 80.h,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.black,
+                                    Colors.transparent,
+                                  ],
+                                  stops: [
+                                    0.0,
+                                    1.9,
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        //날짜
+                        Positioned(
+                          left: 10,
+                          right: 0,
+                          bottom: 10,
+                          child: Text(
+                            '${_dateFormat(_myProduct.productDetail.startDate)}~${_dateFormat(_myProduct.productDetail.endDate)}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 13.sp,
+                            ),
+                          ),
+                        ),
+                        //뒤로가기
+                        // Positioned(
+                        //   left: 0,
+                        //   right: 0,
+                        //   top: 30,
+                        //   child: Container(
+                        //     width: double.infinity,
+                        //     height: 50,
+                        //     padding: const EdgeInsets.only(left: 0, right: 16),
+                        //     child: Container(
+                        //       width: double.infinity,
+                        //       height: 52,
+                        //       alignment: Alignment.topLeft,
+                        //       child: IconButton(
+                        //         icon: Icon(
+                        //           Icons.arrow_back_ios_sharp,
+                        //           color: Colors.white,
+                        //           size: 30.0,
+                        //         ),
+                        //         onPressed: () {
+                        //           Navigator.pop(context);
+                        //         },
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    child: Column(
+                      children: [
+                        //타이틀 부분
+                        Container(
+                          width: double.infinity,
+                          height: 120.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border(
+                              bottom: BorderSide(
+                                color: Color(0xffdddddd),
+                              ),
+                            ),
+                          ),
+                          padding:
+                          const EdgeInsets.only(left: 16, right: 16, top: 10),
+                          child: Column(
+                            children: [
+                              Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      width: 70,
+                                      height: 20,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: Color(0xffff0066),
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          "${this.widget.category}",
+                                          style: TextStyle(
+                                              color: Color(0xffff0066),
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.normal),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                    Container(
+                                      child: Center(
+                                        child: Text(
+                                          "${(_myProduct.productDetail.distance).toStringAsFixed(2)}km",
+                                          style: TextStyle(
+                                            color: Color(0xff888888),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 10),
-                            alignment: Alignment.topLeft,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${_myProduct.productDetail.title}',
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(top: 10),
+                                alignment: Alignment.topLeft,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${_myProduct.productDetail.title}',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${_myProduct.productDetail.name}',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: Color(0xff999999),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(top: 10),
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  '${_myProduct.productDetail.price}원',
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
                                   ),
                                 ),
-                                Text(
-                                  '${_myProduct.productDetail.name}',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Color(0xff999999),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 10),
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              '${_myProduct.productDetail.price}원',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                        ),
+                        //사이즈 박스 사이공간 조절
+                        SizedBox(height: 10.h),
+                        //설명 부분
+                        Container(
+                          padding:
+                          const EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 20),
+                          width: double.infinity,
+                          // height: 200.h,
+                          constraints: BoxConstraints(
+                            maxHeight: double.infinity,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border(
+                              top: BorderSide(
+                                color: Color(0xffdddddd),
+                              ),
+                              bottom: BorderSide(
+                                color: Color(0xffdddddd),
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    //사이즈 박스 사이공간 조절
-                    SizedBox(height: 10.h),
-                    //설명 부분
-                    Container(
-                      padding:
-                          const EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 20),
-                      width: double.infinity,
-                      // height: 200.h,
-                      constraints: BoxConstraints(
-                        maxHeight: double.infinity,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          top: BorderSide(
-                            color: Color(0xffdddddd),
-                          ),
-                          bottom: BorderSide(
-                            color: Color(0xffdddddd),
+                          child: Text(
+                            '${_myProduct.productDetail.description}',
                           ),
                         ),
-                      ),
-                      child: Text(
-                        '${_myProduct.productDetail.description}',
-                      ),
-                    ),
-                    //사이즈 박스 사이공간 조절
-                    SizedBox(height: 10),
-                    //주소 및 지도 표시 부분
-                    Container(
-                      padding:
+                        //사이즈 박스 사이공간 조절
+                        SizedBox(height: 10),
+                        //주소 및 지도 표시 부분
+                        Container(
+                          padding:
                           const EdgeInsets.only(left: 16, right: 16, top: 10),
-                      width: double.infinity,
-                      height: 300,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          top: BorderSide(
-                            color: Color(0xffdddddd),
-                          ),
-                          bottom: BorderSide(
-                            color: Color(0xffdddddd),
-                          ),
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${_myProduct.productDetail.address} ${_myProduct.productDetail.addressDetail}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                          width: double.infinity,
+                          height: 300,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border(
+                              top: BorderSide(
+                                color: Color(0xffdddddd),
+                              ),
+                              bottom: BorderSide(
+                                color: Color(0xffdddddd),
+                              ),
                             ),
                           ),
-                          SizedBox(height: 5.h),
-                          Container(
-                            child: Stack(
-                              children: [
-                                Container(
-                                  height: 200,
-                                  child: SimpleGoogleMaps(
-                                    latitude: _myProduct.productDetail.lati,
-                                    longitude: _myProduct.productDetail.longti,
-                                  ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${_myProduct.productDetail.address} ${_myProduct.productDetail.addressDetail}',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(builder: (_) {
-                                      return DetailMapPage(
-                                        address:
-                                            "${_myProduct.productDetail.address} ${_myProduct.productDetail.addressDetail}",
+                              ),
+                              SizedBox(height: 5.h),
+                              Container(
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      height: 200,
+                                      child: SimpleGoogleMaps(
                                         latitude: _myProduct.productDetail.lati,
-                                        longitude:
+                                        longitude: _myProduct.productDetail.longti,
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.of(context)
+                                            .push(MaterialPageRoute(builder: (_) {
+                                          return DetailMapPage(
+                                            address:
+                                            "${_myProduct.productDetail.address} ${_myProduct.productDetail.addressDetail}",
+                                            latitude: _myProduct.productDetail.lati,
+                                            longitude:
                                             _myProduct.productDetail.longti,
-                                      );
-                                    }));
-                                  },
-                                  child: Container(
-                                    height: 200,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    //사이즈 박스 사이공간 조절
-                    SizedBox(height: 10),
-                    //리뷰 작성 부분
-                    Container(
-                      padding: const EdgeInsets.only(
-                          left: 16, right: 16, top: 10, bottom: 20),
-                      width: double.infinity,
-                      // height: 300,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          top: BorderSide(
-                            color: Color(0xffdddddd),
-                          ),
-                          bottom: BorderSide(
-                            color: Color(0xffdddddd),
+                                          );
+                                        }));
+                                      },
+                                      child: Container(
+                                        height: 200,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //사이즈 박스 사이공간 조절
+                        SizedBox(height: 10),
+                        //리뷰 작성 부분
+                        Container(
+                          padding: const EdgeInsets.only(
+                              left: 16, right: 16, top: 10, bottom: 20),
+                          width: double.infinity,
+                          // height: 300,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border(
+                              top: BorderSide(
+                                color: Color(0xffdddddd),
+                              ),
+                              bottom: BorderSide(
+                                color: Color(0xffdddddd),
+                              ),
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    '리뷰 ',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black,
-                                      fontSize: 16.sp,
+                                  Row(
+                                    children: [
+                                      Text(
+                                        '리뷰 ',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 16.sp,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${_myProduct.reviewPaging.totalCount}개",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xffff0066),
+                                          fontSize: 16.sp,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  _myProduct.productDetail.review != null
+                                      ? _myProduct.productDetail.review
+                                      ? InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                WriteReview(this
+                                                    .widget
+                                                    .productIdx)),
+                                      );
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          '리뷰작성',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xffff0066),
+                                            fontSize: 16.sp,
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: Color(0xffff0066),
+                                          size: 16.sp,
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                      : SizedBox()
+                                      : SizedBox(),
+                                ],
+                              ),
+                              SizedBox(height: 5.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  //별 갯수
+                                  RatingBarIndicator(
+                                    itemSize: 20,
+                                    rating: _myProduct.reviewPaging.averageRating ==
+                                        null
+                                        ? 0
+                                        : _myProduct.reviewPaging.averageRating
+                                        .toDouble(),
+                                    direction: Axis.horizontal,
+                                    itemCount: 5,
+                                    itemPadding:
+                                    EdgeInsets.symmetric(horizontal: 0.5),
+                                    itemBuilder: (context, _) => Icon(
+                                      Icons.star,
+                                      color: Color(0xffff0066),
                                     ),
                                   ),
-                                  Text(
-                                    "${_myProduct.reviewPaging.totalCount}개",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xffff0066),
-                                      fontSize: 16.sp,
+                                  SizedBox(width: 5.w),
+                                  SizedBox(
+                                    width: 60.w,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(
+                                          "${_myProduct.reviewPaging.averageRating == null ? 0.0 : _myProduct.reviewPaging.averageRating}",
+                                          style: TextStyle(
+                                            color: Color(0xffff0066),
+                                            fontSize: 14.sp,
+                                          ),
+                                        ),
+                                        Text(
+                                          "|",
+                                          style: TextStyle(
+                                            color: Color(0xffdddddd),
+                                            fontSize: 14.sp,
+                                          ),
+                                        ),
+                                        Text(
+                                          "5.0",
+                                          style: TextStyle(
+                                            color: Color(0xff999999),
+                                            fontSize: 14.sp,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   )
                                 ],
                               ),
-                              _myProduct.productDetail.review != null
-                                  ? _myProduct.productDetail.review
-                                      ? InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      WriteReview(this
-                                                          .widget
-                                                          .productIdx)),
-                                            );
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                '리뷰작성',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Color(0xffff0066),
-                                                  fontSize: 16.sp,
-                                                ),
-                                              ),
-                                              Icon(
-                                                Icons.arrow_forward_ios,
-                                                color: Color(0xffff0066),
-                                                size: 16.sp,
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      : SizedBox()
-                                  : SizedBox(),
-                            ],
-                          ),
-                          SizedBox(height: 5.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              //별 갯수
-                              RatingBarIndicator(
-                                itemSize: 20,
-                                rating: _myProduct.reviewPaging.averageRating ==
-                                        null
-                                    ? 0
-                                    : _myProduct.reviewPaging.averageRating
-                                        .toDouble(),
-                                direction: Axis.horizontal,
-                                itemCount: 5,
-                                itemPadding:
-                                    EdgeInsets.symmetric(horizontal: 0.5),
-                                itemBuilder: (context, _) => Icon(
-                                  Icons.star,
-                                  color: Color(0xffff0066),
+                              Flexible(
+                                child: ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, idx) {
+                                    return reviewPage(
+                                      picture:
+                                      "${_myProduct.productReviewnot[idx].productFiles}",
+                                      nickname:
+                                      "${_myProduct.productReviewnot[idx].nickname}",
+                                      createAt:
+                                      "${_reviewdateFormat(_myProduct.productReviewnot[idx].createAt)}",
+                                      grage: _myProduct.productReviewnot[idx].grade,
+                                      description:
+                                      "${_myProduct.productReviewnot[idx].content}",
+                                    );
+                                  },
+                                  separatorBuilder: (context, idx) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 3.0),
+                                      child: Divider(),
+                                    );
+                                  },
+                                  itemCount: _myProduct.reviewPaging.totalCount < 5
+                                      ? _myProduct.productReviewnot.length
+                                      : 5,
                                 ),
                               ),
-                              SizedBox(width: 5.w),
-                              SizedBox(
-                                width: 60.w,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text(
-                                      "${_myProduct.reviewPaging.averageRating == null ? 0.0 : _myProduct.reviewPaging.averageRating}",
+                              _myProduct.productReviewnot.length != 0
+                                  ? Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text('더보기',
                                       style: TextStyle(
                                         color: Color(0xffff0066),
                                         fontSize: 14.sp,
-                                      ),
-                                    ),
-                                    Text(
-                                      "|",
-                                      style: TextStyle(
-                                        color: Color(0xffdddddd),
-                                        fontSize: 14.sp,
-                                      ),
-                                    ),
-                                    Text(
-                                      "5.0",
-                                      style: TextStyle(
-                                        color: Color(0xff999999),
-                                        fontSize: 14.sp,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                      ))
+                                ],
                               )
+                                  : SizedBox(),
                             ],
                           ),
-                          Flexible(
-                            child: ListView.separated(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, idx) {
-                                return reviewPage(
-                                  picture:
-                                      "${_myProduct.productReviewnot[idx].productFiles}",
-                                  nickname:
-                                      "${_myProduct.productReviewnot[idx].nickname}",
-                                  createAt:
-                                      "${_reviewdateFormat(_myProduct.productReviewnot[idx].createAt)}",
-                                  grage: _myProduct.productReviewnot[idx].grade,
-                                  description:
-                                      "${_myProduct.productReviewnot[idx].content}",
-                                );
-                              },
-                              separatorBuilder: (context, idx) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 3.0),
-                                  child: Divider(),
-                                );
-                              },
-                              itemCount: _myProduct.reviewPaging.totalCount < 5
-                                  ? _myProduct.productReviewnot.length
-                                  : 5,
-                            ),
-                          ),
-                          _myProduct.productReviewnot.length != 0
-                              ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text('더보기',
-                                        style: TextStyle(
-                                          color: Color(0xffff0066),
-                                          fontSize: 14.sp,
-                                        ))
-                                  ],
-                                )
-                              : SizedBox(),
-                        ],
-                      ),
+                        ),
+                        SizedBox(height: 60),
+                      ],
                     ),
-                    SizedBox(height: 60),
-                  ],
-                ),
+                  ),
+                  SizedBox(height: 20),
+                ],
               ),
-              SizedBox(height: 20),
-            ],
+            ),
           ),
         );
       },

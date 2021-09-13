@@ -24,7 +24,7 @@ class ProductHelpReg extends StatefulWidget {
   _ProductApplyPageState createState() => _ProductApplyPageState();
 }
 
-class _ProductApplyPageState extends State<ProductHelpReg> {
+class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderStateMixin{
   List<String> categories = [
     "생활용품",
     "여행",
@@ -59,6 +59,10 @@ class _ProductApplyPageState extends State<ProductHelpReg> {
   List<Asset> images = List<Asset>();
   List<RadioModel> LocationData = new List<RadioModel>();
 
+  AnimationController _animationController;
+  Animation<Offset> _offsetAnimation;
+  double _visible = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -69,11 +73,30 @@ class _ProductApplyPageState extends State<ProductHelpReg> {
     LocationData.add(RadioModel(false, "NormalLocation", "기본 위치"));
     LocationData.add(RadioModel(false, "OtherLocation", "다른 위치"));
     Provider.of<ProductProvider>(context, listen: false).resetAddress();
+    //애니메이션 추가 부분
+    _animationController = AnimationController(
+      duration: Duration(milliseconds: 800),
+      vsync: this,
+    )..forward();
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset(0.5, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.fastOutSlowIn,
+    ));
+    Future.delayed(Duration(milliseconds: 100), (){
+      setState(() {
+        _visible = 1.0;
+      });
+    });
+    //페이드인 애니만들기 위한 것
   }
 
   @override
   void dispose() {
     super.dispose();
+    _animationController.dispose();
     titleFocus.dispose();
     priceFocus.dispose();
     descriptionFocus.dispose();
@@ -209,12 +232,19 @@ class _ProductApplyPageState extends State<ProductHelpReg> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '도와드려요!',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
+        AnimatedOpacity(
+          opacity: _visible,
+          duration: Duration(milliseconds: 500),
+          child: SlideTransition(
+            position: _offsetAnimation,
+            child: Text(
+              '도와드려요!',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
         SizedBox(height: 20.h),

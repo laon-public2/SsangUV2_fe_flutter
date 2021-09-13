@@ -7,7 +7,7 @@ class PageTransitioned<T> extends PageRouteBuilder<T> {
   final Duration durationRev;
 
   PageTransitioned({
-    @required this.child,
+    this.child,
     @required this.curves,
     @required this.duration,
     this.durationRev,

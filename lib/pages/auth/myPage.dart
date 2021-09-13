@@ -10,26 +10,36 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
+  double _visible = 0.0;
   bool isLogin = false;
   void initState() {
     super.initState();
+    Future.delayed(Duration(milliseconds: 100), () {
+      setState(() {
+        _visible = 1.0;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Consumer<UserProvider>(
-        builder: (context, counter, child) {
-          return Stack(
-            children: [
-              Provider.of<UserProvider>(context, listen: false).isLoggenIn
-                  ? LoginMyPage()
-                  : NoLoginMyPage(),
-              // LoginMyPage(),
-            ],
-          );
-        },
+    return AnimatedOpacity(
+      opacity: _visible,
+      duration: Duration(milliseconds: 100),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Consumer<UserProvider>(
+          builder: (context, counter, child) {
+            return Stack(
+              children: [
+                Provider.of<UserProvider>(context, listen: false).isLoggenIn
+                    ? LoginMyPage()
+                    : NoLoginMyPage(),
+                // LoginMyPage(),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

@@ -23,7 +23,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserProvider extends ChangeNotifier {
   final UserService userService = UserService();
   final PushService pushService = PushService();
-  bool isLoggenIn = false;
+  bool isLoggenIn = true;
   int userIdx;
   String userFBtoken;
   String originalFBtoken;

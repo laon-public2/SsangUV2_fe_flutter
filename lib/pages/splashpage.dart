@@ -5,7 +5,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import 'package:share_product_v2/pages/mainpage.dart';
 import 'package:share_product_v2/providers/bannerProvider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
@@ -27,7 +29,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigationPage(){
-    Navigator.of(context).pushReplacementNamed('/main');
+    Navigator.of(context).push(
+      PageTransition(
+        child: MainPage(),
+        type: PageTransitionType.fade,
+      )
+    );
   }
 
   @override

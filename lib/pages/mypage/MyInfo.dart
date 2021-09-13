@@ -29,7 +29,7 @@ class _MyInfo extends State<MyInfo> {
     return AppBar(
       centerTitle: true,
       title: Text(
-        '내정보',
+        '내 프로필',
         style: TextStyle(color: Colors.black, fontSize: 17.sp),
       ),
       leading: IconButton(

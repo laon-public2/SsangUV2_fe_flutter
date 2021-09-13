@@ -13,47 +13,56 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   TabController controller;
-
+  double _visible = 0.0;
   @override
   void initState() {
     super.initState();
     controller = new TabController(length: 2, vsync: this);
+    Future.delayed(Duration(milliseconds: 100), () {
+      setState(() {
+        _visible = 1.0;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 1.0,
-        brightness: Brightness.light,
+    return AnimatedOpacity(
+      opacity: _visible,
+      duration: Duration(milliseconds: 100),
+      child: Scaffold(
         backgroundColor: Colors.white,
-        title: Text(
-          "이용 내역",
-          style: TextStyle(fontSize: 16.sp, color: Colors.black),
+        appBar: AppBar(
+          elevation: 1.0,
+          brightness: Brightness.light,
+          backgroundColor: Colors.white,
+          title: Text(
+            "이용 내역",
+            style: TextStyle(fontSize: 16.sp, color: Colors.black),
+          ),
+          centerTitle: true,
+          bottom: TabBar(
+            unselectedLabelColor: Color(0xff999999),
+            labelColor: Color(0xff333333),
+            // indicator: UnderlineTabIndicator(
+            //   borderSide:
+            //       BorderSide(width: 3.0, color: Theme.of(context).primaryColor),
+            //   insets: EdgeInsets.symmetric(horizontal: 30.w),
+            // ),
+            indicatorColor: Color(0xffff0066),
+            controller: controller,
+            tabs: [
+              Tab(
+                text: "대여 내역",
+              ),
+              Tab(
+                text: "채팅 내역",
+              ),
+            ],
+          ),
         ),
-        centerTitle: true,
-        bottom: TabBar(
-          unselectedLabelColor: Color(0xff999999),
-          labelColor: Color(0xff333333),
-          // indicator: UnderlineTabIndicator(
-          //   borderSide:
-          //       BorderSide(width: 3.0, color: Theme.of(context).primaryColor),
-          //   insets: EdgeInsets.symmetric(horizontal: 30.w),
-          // ),
-          indicatorColor: Color(0xffff0066),
-          controller: controller,
-          tabs: [
-            Tab(
-              text: "대여 내역",
-            ),
-            Tab(
-              text: "채팅 내역",
-            ),
-          ],
-        ),
+        body: body(),
       ),
-      body: body(),
     );
   }
 

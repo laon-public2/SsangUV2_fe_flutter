@@ -513,7 +513,7 @@ class _CustomerMessage extends State<CustomerMessage>
                                       builder: (_, chat, __) {
                                         return ListView.builder(
                                             shrinkWrap: true,
-                                            physics: NeverScrollableScrollPhysics(),
+                                            physics: ClampingScrollPhysics(),
                                             controller: chatScrollController,
                                             padding: const EdgeInsets.all(8.0),
                                             reverse: true,

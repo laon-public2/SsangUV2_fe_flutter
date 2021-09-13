@@ -94,6 +94,7 @@ class _ProductApplyPageState extends State<ProductApplyPage> with SingleTickerPr
   @override
   void dispose() {
     super.dispose();
+    _animationController.dispose();
     titleFocus.dispose();
     priceFocus.dispose();
     descriptionFocus.dispose();
