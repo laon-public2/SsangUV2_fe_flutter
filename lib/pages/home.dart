@@ -217,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                         ), // 배너 구간
                         MainCategory(), // 카테고리 구간
                         Container(
-                          margin: const EdgeInsets.only(top: 0, bottom: 16),
+                          margin: const EdgeInsets.only(top: 0, bottom: 16, left: 10),
                           child: CustomDropdown(
                             items: itemKind,
                             value: _currentItem,

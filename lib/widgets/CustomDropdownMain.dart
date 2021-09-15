@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+
+import 'package:flutter/material.dart' hide DropdownButton, DropdownMenuItem, DropdownButtonHideUnderline;
+import 'CustomNativeDropDown.dart';
 
 class CustomDropdownMain extends StatefulWidget {
   final String value;
@@ -23,7 +24,6 @@ class _CustomDropdownState extends State<CustomDropdownMain> {
   @override
   Widget build(BuildContext context) {
     items.clear();
-
     for (String item in widget.items) {
       items.add(
         DropdownMenuItem(
@@ -34,30 +34,30 @@ class _CustomDropdownState extends State<CustomDropdownMain> {
     }
     return DropdownButtonHideUnderline(
       child: DropdownButton<String>(
-        elevation: 1,
-        value: widget.value,
-        dropdownColor: Colors.white,
-        icon: Container(
-          padding: const EdgeInsets.only(left: 10),
-          child: ImageIcon(AssetImage('assets/icon/dropdown.png')),
-        ),
-        items: items,
-        selectedItemBuilder: (BuildContext context) {
-          return items.map((e) {
-            return Center(
-                child: Text(
-              e.value,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-              ),
-            ));
-          }).toList();
-        },
-        onChanged: (value) {
-          widget.onChange(value);
-          print(value);
-        },
+          elevation: 1,
+          value: widget.value,
+          dropdownColor: Colors.white,
+          icon: Container(
+            padding: const EdgeInsets.only(left: 10),
+            child: ImageIcon(AssetImage('assets/icon/dropdown.png')),
+          ),
+          items: items,
+          selectedItemBuilder: (BuildContext context) {
+            return items.map((e) {
+              return Center(
+                  child: Text(
+                e.value,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ));
+            }).toList();
+          },
+          onChanged: (value) {
+            widget.onChange(value);
+            print(value);
+          },
       ),
     );
   }

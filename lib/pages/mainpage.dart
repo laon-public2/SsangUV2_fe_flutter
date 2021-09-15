@@ -196,7 +196,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   Widget buildBottomSheet(BuildContext context) {
     return Container(
-        height: 200.h,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -206,6 +205,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         ),
         child: SafeArea(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
           children: [
             InkWell(
               onTap: () {

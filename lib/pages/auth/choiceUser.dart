@@ -331,8 +331,7 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
             _image,
             Provider.of<UserProvider>(context, listen: false).userFBtoken,
           );
-          if (Provider.of<RegUserProvider>(context, listen: false)
-              .regUserTruth) {
+          if (Provider.of<RegUserProvider>(context, listen: false).regUserTruth) {
             KopoModel model =
             await Navigator.of(context).push(PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
