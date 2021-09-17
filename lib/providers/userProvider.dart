@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:share_product_v2/model/UserNoticeModel.dart';
 import 'package:share_product_v2/model/paging.dart';
@@ -139,7 +140,7 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getMyInfo() async {
+  Future<String> getMyInfo() async {
     print('내정보 확인하기');
     print("${this.accessToken} ${this.phNum}");
     Map<String, dynamic> myinfo =
@@ -153,18 +154,32 @@ class UserProvider extends ChangeNotifier {
         this.comIdentity = myinfo['data']['businessIdentifyFile'];
         this.address = myinfo['data']['address'];
         this.addressDetail = myinfo['data']['addressDetail'];
-        this.userLocationX = myinfo['data']['user_location']['x'];
-        this.userLocationY = myinfo['data']['user_location']['y'];
         this.userProfileImg = myinfo['data']['image'];
         this.userFBtoken = myinfo['data']['fcm_token'];
+        if(myinfo['data']['push'] == null) {
+          this.userPush = false;
+        }
         if (myinfo['data']['push'] == 1) {
           this.userPush = true;
         } else {
           this.userPush = false;
         }
+        if(myinfo['data']['user_location'] != null){
+          this.userLocationX = myinfo['data']['user_location']['x'];
+        } else {
+          var currentPosition = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
+          this.userLocationX = currentPosition.latitude;
+        }
+        if(myinfo['data']['user_location'] != null){
+          this.userLocationY = myinfo['data']['user_location']['y'];
+        } else {
+          var currentPosition = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
+          this.userLocationY = currentPosition.longitude;
+        }
+
         print('x == ${this.userLocationX} y == ${this.userLocationY}');
         if (this.originalFBtoken == this.userFBtoken) {
-          return;
+          return 'success';
         } else {
           print("fcm토큰 수정");
           fBToken();

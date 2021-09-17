@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kopo/kopo.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/providers/fcm_model.dart';
@@ -13,8 +13,19 @@ import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 
+import '../../main.dart';
+import '../KakaoMap.dart';
 import 'changeAddress.dart';
 import 'changeAddressReg.dart';
+
+TextEditingController name = TextEditingController();
+TextEditingController pwd = TextEditingController();
+TextEditingController chkPwd = TextEditingController();
+TextEditingController comNum = TextEditingController();
+bool _company = false;
+File regimage;
+
+String userType = "NOMAL";
 
 class ChoiceUser extends StatefulWidget {
   @override
@@ -24,15 +35,9 @@ class ChoiceUser extends StatefulWidget {
 class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
   var maskComNumFomatter = new MaskTextInputFormatter(
       mask: '###-##-#####', filter: {'#': RegExp(r'[0-9]')});
-  TextEditingController name = TextEditingController();
-  TextEditingController pwd = TextEditingController();
-  TextEditingController chkPwd = TextEditingController();
-  TextEditingController _comNum = TextEditingController();
   final ImagePicker _picker = ImagePicker();
-  File _image;
 
-  bool _company = false;
-  String userType = "NOMAL";
+
 
   Future _getImage() async {
     PickedFile image;
@@ -42,7 +47,7 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
     image =
         await _picker.getImage(source: ImageSource.gallery, imageQuality: 100);
     setState(() {
-      _image = File(image.path);
+      regimage = File(image.path);
     });
   }
 
@@ -169,7 +174,7 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
                       SizedBox(height: 18.h),
                       _formField('비밀번호 확인', chkPwd, true),
                       SizedBox(height: 18.h),
-                      _companyField(_comNum),
+                      _companyField(comNum),
                       SizedBox(height: 30.h),
                       _regComDone(),
                       SizedBox(height: 30.h),
@@ -226,26 +231,28 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
           _showDialog('비밀번호의 형식이 옯바르지 않습니다.');
           return;
         } else {
-          await Provider.of<RegUserProvider>(context, listen: false)
-              .regUserForm(
-            pwd.text,
-            name.text,
-            userType,
-            '1',
-            _comNum.text,
-            _image,
-            Provider.of<FCMModel>(context, listen: false).mbToken,
-          );
-          await Provider.of<UserProvider>(context, listen: false).getAccessTokenReg(
-            Provider.of<RegUserProvider>(context, listen: false).phNum,
-            pwd.text,
-          );
-          if (Provider.of<RegUserProvider>(context, listen: false)
-              .regUserTruth) {
+          // await Provider.of<RegUserProvider>(context, listen: false)
+          //     .regUserForm(
+          //   pwd.text,
+          //   name.text,
+          //   userType,
+          //   '1',
+          //   comNum.text,
+          //   regimage,
+          //   Provider.of<FCMModel>(context, listen: false).mbToken,
+          // );
+          // await Provider.of<UserProvider>(context, listen: false).getAccessTokenReg(
+          //   Provider.of<RegUserProvider>(context, listen: false).phNum,
+          //   pwd.text,
+          // );
+          // if (Provider.of<RegUserProvider>(context, listen: false)
+          //     .regUserTruth) {
+            await localhostServer.close();
+            await localhostServer.start();
             KopoModel model =
             await Navigator.of(context).push(PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
-                  Kopo(),
+                  KakaoMap(),
             ));
             String position =
             await Provider.of<MapProvider>(context, listen: false)
@@ -258,13 +265,13 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
                       double.parse(positionSplit[0]),
                       double.parse(positionSplit[1]),
                       "${model.sido} ${model.sigungu} ${model.bname}",
-                      "${model.buildingName}${model.apartment}"),
+                      "${model.buildingName.replaceAll('Y','').replaceAll('N', '')}${model.apartment.replaceAll('Y','').replaceAll('N', '')}"),
                 ));
             // _showDialogSuccess('회원가입이 완료되었습니다.');
             // Navigator.popUntil(context, (Route<dynamic> route) => route is PageRoute);
-          } else {
-            _showDialogSuccess('해당 전화번호는 이미 존재하는 회원입니다.');
-          }
+          // }else {
+          //   _showDialogSuccess('해당 전화번호는 이미 존재하는 회원입니다.');
+          // }
         }
       },
       child: Container(
@@ -309,15 +316,15 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
           _showDialog("비밀번호의 형식이 옯바르지 않습니다.");
           return;
         }
-        if (_image == null) {
+        if (regimage == null) {
           _showDialog('사업자 등록증 파일이 업로드 되지 않았습니다.');
           return;
         }
-        if (_image == null) {
+        if (regimage == null) {
           _showDialog('사업자 등록증 파일이 업로드 되지 않았습니다.');
           return;
         }
-        if (_comNum.text == '') {
+        if (comNum.text == '') {
           _showDialog('사업자 등록번호가 비어 있습니다.');
           return;
         } else {
@@ -327,15 +334,18 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
             name.text,
             userType,
             '1',
-            _comNum.text,
-            _image,
+            comNum.text,
+            regimage,
             Provider.of<UserProvider>(context, listen: false).userFBtoken,
           );
           if (Provider.of<RegUserProvider>(context, listen: false).regUserTruth) {
+            await localhostServer.close();
+            await localhostServer.start();
+
             KopoModel model =
             await Navigator.of(context).push(PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
-                  Kopo(),
+                  KakaoMap(),
             ));
             String position =
             await Provider.of<MapProvider>(context, listen: false)
@@ -348,7 +358,7 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
                       double.parse(positionSplit[0]),
                       double.parse(positionSplit[1]),
                       "${model.sido} ${model.sigungu} ${model.bname}",
-                      "${model.buildingName}${model.apartment}"),
+                      "${model.buildingName.replaceAll('Y','').replaceAll('N', '')}${model.apartment.replaceAll('Y','').replaceAll('N', '')}"),
                 ));
           } else {
             _showDialogSuccess('해당 전화번호는 이미 존재하는 회원입니다.');
@@ -385,11 +395,11 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      if (_image == null) {
+                      if (regimage == null) {
                         _getImage();
                       } else {
                         setState(() {
-                          _image = null;
+                          regimage = null;
                         });
                       }
                     },
@@ -403,7 +413,7 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
                               Border.all(color: Color(0xffdddddd), width: 1.0)),
                       child: Center(
                         child: Text(
-                          _image == null ? '파일첨부' : '파일 삭제',
+                          regimage == null ? '파일첨부' : '파일 삭제',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 15,
@@ -415,12 +425,12 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
                   Row(
                     children: [
                       Text(
-                        _image == null
+                        regimage == null
                             ? '사업자 등록증 사본을 첨부하여 주세요.'
                             : '사업자 등록증이 업로드 되었습니다.',
                         style: TextStyle(
                           fontSize: 13,
-                          color: _image == null
+                          color: regimage == null
                               ? Color(0xff999999)
                               : Colors.green[300],
                         ),
