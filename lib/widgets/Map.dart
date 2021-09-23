@@ -1,16 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:kopo/kopo.dart';
 import 'package:provider/provider.dart';
+import 'package:share_product_v2/pages/KakaoMap.dart';
 import 'package:share_product_v2/providers/mapProvider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../main.dart';
 import 'customDoneBtn.dart';
 
 class GoogleMaps extends StatefulWidget {
@@ -149,9 +151,12 @@ class _GoogleMapsState extends State<GoogleMaps> {
         children: [
           InkWell(
             onTap: () async {
+              await localhostServer.close();
+              await localhostServer.start();
+
               KopoModel model =
                   await Navigator.of(context).push(PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) => Kopo(),
+                pageBuilder: (context, animation, secondaryAnimation) => KakaoMap(),
               ));
 
               String position =

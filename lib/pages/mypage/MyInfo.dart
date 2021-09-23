@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import 'package:kopo/kopo.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/auth/changeAddress.dart';
 import 'package:share_product_v2/pages/mypage/MyComModified.dart';
@@ -10,6 +10,9 @@ import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../main.dart';
+import '../KakaoMap.dart';
 
 class MyInfo extends StatefulWidget {
   @override
@@ -174,10 +177,12 @@ class _MyInfo extends State<MyInfo> {
                 ),
                 subtitle: InkWell(
                   onTap: () async {
+                    await localhostServer.close();
+                    await localhostServer.start();
                     KopoModel model =
                         await Navigator.of(context).push(PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
-                          Kopo(),
+                          KakaoMap(),
                     ));
                     String position =
                         await Provider.of<MapProvider>(context, listen: false)
@@ -190,7 +195,7 @@ class _MyInfo extends State<MyInfo> {
                               double.parse(positionSplit[1]),
                               double.parse(positionSplit[0]),
                               "${model.sido} ${model.sigungu} ${model.bname}",
-                              "${model.buildingName}${model.apartment}"),
+                              "${model.buildingName.replaceAll('Y','').replaceAll('N', '')}${model.apartment.replaceAll('Y','').replaceAll('N', '')}"),
                         ));
                   },
                   child: Text(
@@ -208,10 +213,12 @@ class _MyInfo extends State<MyInfo> {
                     padding: new EdgeInsets.all(0.0),
                     icon: Image.asset('assets/icon/write.png'),
                     onPressed: () async {
+                      await localhostServer.close();
+                      await localhostServer.start();
                       KopoModel model =
                           await Navigator.of(context).push(PageRouteBuilder(
                         pageBuilder: (context, animation, secondaryAnimation) =>
-                            Kopo(),
+                            KakaoMap(),
                       ));
                       String position =
                           await Provider.of<MapProvider>(context, listen: false)
@@ -225,7 +232,7 @@ class _MyInfo extends State<MyInfo> {
                                 double.parse(positionSplit[0]),
                                 double.parse(positionSplit[1]),
                                 "${model.sido} ${model.sigungu} ${model.bname}",
-                                "${model.buildingName}${model.apartment}"),
+                                "${model.buildingName.replaceAll('Y','').replaceAll('N', '')}${model.apartment.replaceAll('Y','').replaceAll('N', '')}"),
                           ));
                     },
                   ),

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/utils/APIUtil.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 import 'package:share_product_v2/widgets/loading.dart';
+
+import '../mainpage.dart';
 
 class SuccessReg extends StatefulWidget {
   @override
@@ -14,6 +17,7 @@ class SuccessReg extends StatefulWidget {
 class _SuccessRegState extends State<SuccessReg> {
   @override
   Widget build(BuildContext context) {
+    MyStatefulWidgetState myStatefulWidgetState = MyStatefulWidgetState();
     return WillPopScope(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -41,6 +45,7 @@ class _SuccessRegState extends State<SuccessReg> {
               InkWell(
                 onTap: () async {
                   _showDialogLoading();
+
                   await Provider.of<UserProvider>(context, listen: false).getMyInfo();
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },

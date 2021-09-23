@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RemoveAccount extends StatefulWidget {
   final String phNum;
@@ -181,6 +182,8 @@ class _RemoveAccountState extends State<RemoveAccount> with SingleTickerProvider
                       onTap: () async {
                         if(_isDelete) {
                           await myInfo.DeleteUser(myInfo.phNum);
+                          SharedPreferences pref = await SharedPreferences.getInstance();
+                          pref.clear();
                           Navigator.of(context).popUntil((route) => route.isFirst);
                         }
                       },

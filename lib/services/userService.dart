@@ -120,6 +120,7 @@ class UserService {
           "username" : userPh,
         },
       );
+
     }on DioError catch (e){
       print("회원탈퇴 에러");
       print(e.response.data.toString());
@@ -248,7 +249,7 @@ class UserService {
   Future<ApiResponse> me() async {
     try {
       Response response = await dio.get("/members/me");
-      print("me ${response}");
+      print("me ${response.statusCode}");
       Map<String, dynamic> jsonMap = json.decode(response.toString());
       print('me jsonMap ${jsonMap['data']}');
       print(jsonMap['data'].runtimeType);

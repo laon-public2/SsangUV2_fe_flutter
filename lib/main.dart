@@ -1,10 +1,12 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/screenutil_init.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/models/IOSLocaliztionsDelegate.dart';
+import 'package:share_product_v2/pages/KakaoMap.dart';
 import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
 import 'package:share_product_v2/providers/bannerProvider.dart';
 import 'package:share_product_v2/providers/contractProvider.dart';
@@ -24,6 +26,8 @@ class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 }
+
+final InAppLocalhostServer localhostServer = new InAppLocalhostServer();
 
 class _MyAppState extends State<MyApp> {
   var tokens;

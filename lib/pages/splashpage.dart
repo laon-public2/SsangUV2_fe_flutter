@@ -29,12 +29,14 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigationPage(){
-    Navigator.of(context).push(
-      PageTransition(
-        child: MainPage(),
-        type: PageTransitionType.fade,
-      )
-    );
+    Route route = MaterialPageRoute(builder: (context) => MainPage());
+    Navigator.pushReplacement(context, route);
+    // Navigator.of(context).push(
+    //   PageTransition(
+    //     child: MainPage(),
+    //     type: PageTransitionType.fade,
+    //   )
+    // );
   }
 
   @override

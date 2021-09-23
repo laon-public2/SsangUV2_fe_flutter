@@ -1,10 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/auth/SuccessReg.dart';
+import 'package:share_product_v2/providers/fcm_model.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
+import 'package:share_product_v2/providers/regUserProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 import 'package:share_product_v2/widgets/loading.dart';
+
+import 'choiceUser.dart';
 
 class ChangeAddressReg extends StatefulWidget {
   final num la;
@@ -21,6 +28,7 @@ class ChangeAddressReg extends StatefulWidget {
 class _ChangeAddressState extends State<ChangeAddressReg> {
   TextEditingController _addressDetail = TextEditingController();
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +40,8 @@ class _ChangeAddressState extends State<ChangeAddressReg> {
             color: Colors.black,
             size: 30.0,
           ),
-          onPressed: () => Navigator.popUntil(context, (Route<dynamic> route) => route is PageRoute),
+          onPressed: () => Navigator.popUntil(
+              context, (Route<dynamic> route) => route is PageRoute),
         ),
       ),
       body: _body(),
@@ -91,23 +100,50 @@ class _ChangeAddressState extends State<ChangeAddressReg> {
                       return;
                     } else {
                       _showDialogLoading();
-                      await _myInfo.changeAddress(
-                        this.widget.address,
-                        "${this.widget.addressDetail} ${this._addressDetail.text}",
-                        this.widget.la,
-                        this.widget.lo,
+                      await Provider.of<RegUserProvider>(context, listen: false)
+                          .regUserForm(
+                        pwd.text,
+                        name.text,
+                        userType,
+                        '1',
+                        comNum.text,
+                        regimage,
+                        Provider.of<FCMModel>(context, listen: false).mbToken,
                       );
-                      await Provider.of<ProductProvider>(context, listen: false)
-                          .changeUserPosition(
-                        Provider.of<UserProvider>(context, listen: false).userLocationX,
-                        Provider.of<UserProvider>(context, listen: false).userLocationY,
+                      await Provider.of<UserProvider>(context, listen: false)
+                          .getAccessTokenReg(
+                        Provider.of<RegUserProvider>(context, listen: false)
+                            .phNum,
+                        pwd.text,
                       );
-                      await Provider.of<ProductProvider>(context, listen: false).getGeolocator();
-                      await Provider.of<UserProvider>(context, listen: false).getMyInfo();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SuccessReg()),
-                      );
+                      if (Provider.of<RegUserProvider>(context, listen: false)
+                          .regUserTruth) {
+                        await _myInfo.changeAddress(
+                          this.widget.address,
+                          "${this.widget.addressDetail} ${this._addressDetail.text}",
+                          this.widget.la,
+                          this.widget.lo,
+                        );
+
+                        await Provider.of<ProductProvider>(context, listen: false)
+                            .changeUserPosition(
+                          Provider.of<UserProvider>(context, listen: false)
+                              .userLocationX,
+                          Provider.of<UserProvider>(context, listen: false)
+                              .userLocationY,
+                        );
+                        await Provider.of<ProductProvider>(context, listen: false)
+                            .getGeolocator();
+                        await Provider.of<UserProvider>(context, listen: false)
+                            .getMyInfo();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SuccessReg()),
+                        );
+                      } else {
+                        _showDialogSuccess('해당 전화번호는 이미 존재하는 회원입니다.');
+                      }
+
                     }
                   },
                   child: Container(
@@ -141,6 +177,14 @@ class _ChangeAddressState extends State<ChangeAddressReg> {
         context: context,
         builder: (BuildContext context) {
           return Loading();
+        });
+  }
+
+  void _showDialogSuccess(String text) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomDialogApplyReg(Center(child: Text(text)), '확인');
         });
   }
 }

@@ -2,9 +2,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:kopo/kopo.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/product/ProductDetailRent.dart';
@@ -17,6 +17,8 @@ import 'package:share_product_v2/widgets/banner.dart';
 import 'package:share_product_v2/widgets/categoryItem.dart';
 import 'package:share_product_v2/widgets/lendItemMainPage.dart';
 
+import '../main.dart';
+import 'KakaoMap.dart';
 import 'chat/CustomerMessage.dart';
 
 class HomePage extends StatefulWidget {
@@ -158,11 +160,13 @@ class _HomePageState extends State<HomePage> {
                             value: _myProduct.currentLocation,
                             onChange: (value) async {
                               if (value == "다른 위치 설정") {
+                               await localhostServer.close();
+                                await localhostServer.start();
                                 KopoModel model = await Navigator.of(context)
                                     .push(PageRouteBuilder(
                                   pageBuilder:
                                       (context, animation, secondaryAnimation) =>
-                                      Kopo(),
+                                      KakaoMap(),
                                 ));
                                 String position = await Provider.of<MapProvider>(
                                     context,
@@ -217,7 +221,7 @@ class _HomePageState extends State<HomePage> {
                         ), // 배너 구간
                         MainCategory(), // 카테고리 구간
                         Container(
-                          margin: const EdgeInsets.only(top: 0, bottom: 16),
+                          margin: const EdgeInsets.only(top: 0, bottom: 16, left: 10),
                           child: CustomDropdown(
                             items: itemKind,
                             value: _currentItem,

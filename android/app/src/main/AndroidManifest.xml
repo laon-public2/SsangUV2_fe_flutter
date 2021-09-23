@@ -14,6 +14,7 @@
         android:name=".Application"
         android:label="쌩유 베타버전"
         android:hardwareAccelerated="false"
+        android:usesCleartextTraffic="true"
         android:largeHeap="true"
         android:icon="@mipmap/ic_launcher">
 <!--        largeheap으로 버퍼 메모리 늘림 및 하드웨어 가속 거-->

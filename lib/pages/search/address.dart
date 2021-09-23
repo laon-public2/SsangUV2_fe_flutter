@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:kopo/kopo.dart';
 import 'package:share_product_v2/widgets/Map.dart';
 import 'package:share_product_v2/widgets/customAppBar%20copy.dart';
 import 'package:share_product_v2/widgets/customAppBar.dart';
 import 'package:share_product_v2/widgets/customDoneBtn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../main.dart';
+import '../KakaoMap.dart';
 
 class Address extends StatefulWidget {
   @override
@@ -58,9 +61,12 @@ class _AddressState extends State<Address> {
         children: [
           InkWell(
             onTap: () async {
+              await localhostServer.close();
+              await localhostServer.start();
+
               KopoModel model =
                   await Navigator.of(context).push(PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) => Kopo(),
+                pageBuilder: (context, animation, secondaryAnimation) => KakaoMap(),
               ));
 
               print(model.toJson());

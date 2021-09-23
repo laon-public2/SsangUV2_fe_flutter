@@ -21,6 +21,10 @@ import 'package:share_product_v2/widgets/customdialogApply.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
+
+
+int bottomSelectedIndex = 0;
+
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -39,15 +43,15 @@ class MainPage extends StatelessWidget {
 
 class MyStatefulWidget extends StatefulWidget {
   MyStatefulWidget({Key key}) : super(key: key);
-
+  static MyStatefulWidgetState of(BuildContext context) => context.findAncestorStateOfType<MyStatefulWidgetState>();
   @override
-  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
+  MyStatefulWidgetState createState() => MyStatefulWidgetState();
+
 }
 
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+class MyStatefulWidgetState extends State<MyStatefulWidget> {
   // final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
   SharedPreferences pref;
-  int _selectedIndex = 0;
   int page = 0;
   OverlayEntry overlayEntry;
 
@@ -68,7 +72,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   ];
 
   Future setAuthToken() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
+    SharedPreferences  pref = await SharedPreferences.getInstance();
     String token = pref.get("access_token");
     String reToken = pref.get("refresh_token");
     print("token : $token");
@@ -89,10 +93,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     }
   }
 
-  void _onItemTapped(int index) {
+  void onItemTapped(int index) {
+
     setState(() {
       if (index == 0) {
-        _selectedIndex = index;
+        bottomSelectedIndex = index;
         return;
       }
       if (index == 1) {
@@ -106,12 +111,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         if (!Provider.of<UserProvider>(context, listen: false).isLoggenIn) {
           _showDialog(context);
         } else {
-          _selectedIndex = index;
+          bottomSelectedIndex = index;
           return;
         }
       }
       if (index == 3) {
-        _selectedIndex = index;
+        bottomSelectedIndex = index;
         return;
       }
       // showModalBottomSheet(context: context, builder: buildBottomSheet);
@@ -126,9 +131,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     return Consumer<UserProvider>(builder: (_, user, __) {
       return WillPopScope(
         onWillPop: () {
-          if (_selectedIndex != 0) {
+          if (bottomSelectedIndex != 0) {
             setState(() {
-              _selectedIndex = 0;
+              bottomSelectedIndex = 0;
             });
             return Future(() => false);
           }
@@ -141,7 +146,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             width: double.infinity,
             height: double.infinity,
             child: Center(
-              child: _widgetOptions.elementAt(_selectedIndex),
+              child: _widgetOptions.elementAt(bottomSelectedIndex),
             ),
           ),
           bottomNavigationBar: BottomNavigationBar(
@@ -182,10 +187,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 ),
               ),
             ],
-            currentIndex: _selectedIndex,
+
+            currentIndex: bottomSelectedIndex,
             selectedItemColor: Theme.of(context).primaryColor,
             unselectedItemColor: Color(0xff888888),
-            onTap: _onItemTapped,
+            onTap: onItemTapped,
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.white,
           ),
@@ -196,7 +202,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   Widget buildBottomSheet(BuildContext context) {
     return Container(
-        height: 200.h,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -206,6 +211,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         ),
         child: SafeArea(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
           children: [
             InkWell(
               onTap: () {
@@ -362,7 +368,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           return CustomDialog(dialogChild(), "확인", () {
             Navigator.of(context).pop();
             setState(() {
-              _selectedIndex = 3;
+              bottomSelectedIndex = 3;
             });
           });
         });
@@ -545,4 +551,5 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       ),
     );
   }
+
 }

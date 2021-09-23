@@ -644,7 +644,7 @@ class ProductService {
       dio.options.contentType = "application/x-www-form-urlencoded";
       dio.options.headers['x-access-token'] = token;
       Response res = await dio.post('/review/write', data: {
-        'userIdx': userIdx,
+        'userIdx': userIdx, 
         'productIdx': productIdx,
         'subject': "리뷰등록",
         "content": description,
