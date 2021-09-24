@@ -7,7 +7,7 @@ class WithdrawPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar.appBarWithPrev("회원탈퇴", 1.0, context),
+      appBar: AppBarWithPrev(appBar: AppBar(), title: "회원탈퇴", elevation: 1.0,),
       body: SafeArea(child: body(context)),
     );
   }

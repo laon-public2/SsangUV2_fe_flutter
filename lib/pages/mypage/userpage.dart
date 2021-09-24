@@ -7,15 +7,15 @@ import 'package:share_product_v2/widgets/customAppBar%20copy.dart';
 import 'package:share_product_v2/widgets/customdialog.dart';
 
 class UserPage extends StatelessWidget {
-  UserProvider userProvider;
+  late UserProvider userProvider;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar.appBarWithPrev("내 정보", 1.0, context),
+      appBar: AppBarWithPrev(appBar: AppBar(), title: "내 정보", elevation: 1.0,),
       body: Consumer<UserProvider>(
         builder: (_, user, __) {
-          print(user.loginMember.member.kakao.profile);
+          print(user.loginMember!.member.kakao.profile);
           userProvider = user;
           if (!userProvider.isLoggenIn) {
             Navigator.of(context).pop();
@@ -31,8 +31,8 @@ class UserPage extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 24),
       child: Column(
         children: [
-          usernameItem(nullReturnEmpty(userProvider.loginMember.member.name)),
-          emailItem(nullReturnEmpty(userProvider.loginMember.member.username)),
+          usernameItem(nullReturnEmpty(userProvider.loginMember!.member.name)),
+          emailItem(nullReturnEmpty(userProvider.loginMember!.member.username)),
           // phoneItem(nullReturnEmpty(null)),
           // dealItem(context, 12, 3),
           Spacer(),

@@ -4,19 +4,19 @@ import 'package:share_product_v2/widgets/BackBtn.dart';
 import 'package:share_product_v2/widgets/customAppBar%20copy.dart';
 
 class PolicyDetailPage extends StatelessWidget {
-  String title;
-  String content;
+  String? title;
+  String? content;
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, String> args = ModalRoute.of(context).settings.arguments;
+    final Map<String, String> args = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
 
     this.title = args["title"];
     this.content = args["content"];
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar.appBarWithPrev(args["title"], 0.0, context),
+      appBar: AppBarWithPrev(appBar: AppBar(), title: args["title"], elevation: 1.0,),
       body: body(),
     );
   }
@@ -26,7 +26,7 @@ class PolicyDetailPage extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(20),
         child: Text(
-          content,
+          content!,
           style: TextStyle(
               fontSize: 14.h,
               fontWeight: FontWeight.normal,

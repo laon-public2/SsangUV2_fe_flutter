@@ -13,13 +13,13 @@ class ProductDetail extends StatefulWidget {
 }
 
 class _ProductDetailState extends State<ProductDetail> {
-  GoogleMapController mapController;
+  late GoogleMapController mapController;
   final LatLng _center = const LatLng(37.61686408091954, 126.89315008364576);
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
 
-  List<String> address;
+  late List<String> address;
   int _reviewCount = 130;
 
   void initState(){
@@ -30,9 +30,9 @@ class _ProductDetailState extends State<ProductDetail> {
 
   _loadLocator() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String addressStr = pref.get("address");
+    String? addressStr = pref.get("address") as String?;
     setState(() {
-      this.address = addressStr.split(",");
+      this.address = addressStr!.split(",");
     });
     print("현재 상품 주소 ==== ${this.address}");
   }

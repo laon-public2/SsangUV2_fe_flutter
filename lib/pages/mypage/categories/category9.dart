@@ -27,9 +27,9 @@ class Category9 extends StatefulWidget {
 class _Category1State extends State<Category9> {
   final List<String> itemKind = ["빌려드려요", "빌려주세요"];
 
-  int page;
+  late int page;
   int category = 10;
-  int totalCount;
+  late int totalCount;
 
   String _currentItem = "";
 
@@ -163,6 +163,7 @@ class _Category1State extends State<Category9> {
                     context,
                     MaterialPageRoute(builder: (context) => ProductDetail()),
                   );
+                  return Container();
                 }
               },
               separatorBuilder: (context, idx) {

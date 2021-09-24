@@ -19,7 +19,7 @@ GlobalKey globalKey;
 bool isLoading = false;
 
 class ApiUtils {
-  Dio dio;
+  late Dio dio;
 
   ApiUtils() {
     globalKey = new GlobalKey();
@@ -35,7 +35,7 @@ class ApiUtils {
 }
 
 class ChatUtils {
-  Dio dio;
+  late Dio dio;
   ChatUtils() {
     globalKey = new GlobalKey();
     dio = new Dio();
@@ -50,7 +50,7 @@ class ChatUtils {
 
 
 class AuthUtils {
-  Dio dio;
+  late Dio dio;
 
   AuthUtils() {
     dio = new Dio();
@@ -65,7 +65,7 @@ class AuthUtils {
 }
 
 class ChatServerUtils {
-  Dio dio;
+  late Dio dio;
 
   ChatServerUtils() {
     dio = new Dio();

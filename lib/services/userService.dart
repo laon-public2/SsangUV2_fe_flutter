@@ -11,7 +11,7 @@ class UserService {
   Dio dio = ApiUtils.instance.dio;
   // Dio Authdio = AuthUtils.instance.dio;
 
-  Future<Response> noticeViewService(int userIdx, int page, String token) async {
+  Future<Response?> noticeViewService(int userIdx, int page, String token) async {
     print("유저 알림 서비스 접속");
     print(userIdx);
     print(page);
@@ -28,12 +28,12 @@ class UserService {
       return res;
     }on DioError catch(e){
       print("유저 알림 서비스 접속 에러");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> changePushService(String token, int userIdx) async{
+  Future<Response?> changePushService(String token, int userIdx) async{
     print('유저푸시 알림 서비스 변경');
     try{
       dio.options.headers['x-access-token'] = token;
@@ -46,12 +46,12 @@ class UserService {
       return res;
     }on DioError catch(e){
       print("유저 푸시 알림서비스 접속 에러");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> changeUserAddress(String phNum, String address, String addressDetail, num la, num lo, String token) async {
+  Future<Response?> changeUserAddress(String phNum, String address, String addressDetail, num la, num lo, String token) async {
     print('유저 주소 변경 서비스 접속');
     try{
       dio.options.headers['x-access-token'] = token;
@@ -69,19 +69,19 @@ class UserService {
       print(res.statusCode);
       return res;
     }on DioError catch(e){
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Map<String, dynamic>> getAccessToken(
+  Future<Map<String, dynamic>?> getAccessToken(
       String phone, String password) async {
     try {
       print(phone);
       Response response = await dio
           .post("/user/login", data: {"username": phone, 'password': password});
       print("response = ${response.statusCode}");
-      Map<String, dynamic> jsonMap;
+      Map<String, dynamic>? jsonMap;
       if (response.statusCode == 400) {
         return jsonMap;
       } else {
@@ -92,13 +92,13 @@ class UserService {
     }
   }
 
-  Future<Map<String, dynamic>> refresh_token(String refresh_token) async {
+  Future<Map<String, dynamic>?> refresh_token(String refresh_token) async {
     try {
       dio.options.contentType = 'application/x-www-form-urlencoded';
       Response response = await dio
           .post("/user/refresh", data: {"refresh_token": refresh_token});
       print("response리프레시 = ${response.statusCode}");
-      Map<String, dynamic> jsonMap;
+      Map<String, dynamic>? jsonMap;
       if (response.statusCode == 400) {
         return jsonMap;
       } else {
@@ -109,7 +109,7 @@ class UserService {
     }
   }
 
-  Future<Response> delete_user(String userPh, String access_token) async{
+  Future<Response?> delete_user(String userPh, String access_token) async{
     try{
       dio.options.contentType = "application/x-www-form-urlencoded";
       dio.options.headers['x-access-token'] = access_token;
@@ -123,12 +123,12 @@ class UserService {
 
     }on DioError catch (e){
       print("회원탈퇴 에러");
-      print(e.response.data.toString());
-      print(e.response.statusCode);
+      
+      
     }
   }
 
-  Future<Map<String, dynamic>> myInfo(String token, String phnum) async {
+  Future<Map<String, dynamic>?> myInfo(String token, String phnum) async {
     try {
       print("내정보 확인 접속 서비스");
       print("$phnum");
@@ -144,7 +144,7 @@ class UserService {
       );
       print(response.data.toString());
       print("res내정보상태 = ${response.statusCode}");
-      Map<String, dynamic> jsonMap;
+      Map<String, dynamic>? jsonMap;
       if (response.statusCode == 403) {
         return jsonMap;
       } else if (response.statusCode == 400) {
@@ -155,23 +155,23 @@ class UserService {
         return json.decode(response.toString());
       }
     } on DioError catch (e) {
-      print(e.response.statusCode);
-      print(e.response.headers);
-      print(e.response.request);
-      print(e.request);
+      
+      
+      
+      
       print(e.message);
-      Map<String, dynamic> jsonMap;
+      Map<String, dynamic>? jsonMap;
       return jsonMap;
     }
   }
 
-  Future<Map<String, dynamic>> set_token(String access_token) async {
+  Future<Map<String, dynamic>?> set_token(String access_token) async {
     try {
       print("토큰값. 토큰 로그인 == $access_token");
       dio.options.headers['x-access-token'] = access_token;
       Response response = await dio.post("/user/login/token");
       print("response = ${response.statusCode}");
-      Map<String, dynamic> jsonMap;
+      Map<String, dynamic>? jsonMap;
       if (response.statusCode == 400) {
         return jsonMap;
       } else {
@@ -182,7 +182,7 @@ class UserService {
     }
   }
 
-  Future<Map<String, dynamic>> updateFBtoken(
+  Future<Map<String, dynamic>?> updateFBtoken(
       int userIDX, String fcmToken, String myToken) async {
     try {
       dio.options.contentType = "application/x-www-form-urlencoded";
@@ -197,19 +197,19 @@ class UserService {
       print('fcm토큰 업뎃 === ${res.statusCode}');
       return json.decode(res.toString());
     } on DioError catch (e) {
-      Map<String, dynamic> jsonMap;
-      print(e.response.statusCode);
-      if (e.response.statusCode == 403) {
+      Map<String, dynamic>? jsonMap;
+      
+      if (e.response!.statusCode == 403) {
         return jsonMap;
       }
-      print(e.response.headers);
-      print(e.response.request);
-      print(e.request);
+      
+      
+      
       print(e.message);
     }
   }
 
-  Future<Map<String, dynamic>> myInfo_token(
+  Future<Map<String, dynamic>?> myInfo_token(
       String access_token, String username) async {
     try {
       dio.options.contentType = "application/x-www-form-urlencoded";
@@ -221,7 +221,7 @@ class UserService {
         },
       );
       print("response = ${response.statusCode}");
-      Map<String, dynamic> jsonMap;
+      Map<String, dynamic>? jsonMap;
       if (response.statusCode == 400) {
         return jsonMap;
       } else {
@@ -232,13 +232,13 @@ class UserService {
     }
   }
 
-  Future<Map<String, dynamic>> checkLogin(String phone) async {
+  Future<Map<String, dynamic>?> checkLogin(String phone) async {
     try {
       Response response = await dio.post("/phone", data: {
         "phone": phone,
       });
       print("response = $response");
-      Map<String, dynamic> jsonMap = json.decode(response.toString());
+      Map<String, dynamic>? jsonMap = json.decode(response.toString());
 
       return jsonMap;
     } catch (e) {
@@ -250,8 +250,8 @@ class UserService {
     try {
       Response response = await dio.get("/members/me");
       print("me ${response.statusCode}");
-      Map<String, dynamic> jsonMap = json.decode(response.toString());
-      print('me jsonMap ${jsonMap['data']}');
+      Map<String, dynamic>? jsonMap = json.decode(response.toString());
+      print('me jsonMap ${jsonMap!['data']}');
       print(jsonMap['data'].runtimeType);
       MemberWithContractCount data =
           MemberWithContractCount.fromJson(jsonMap['data']);
@@ -262,8 +262,7 @@ class UserService {
       return apiResponse;
     } on DioError catch (e) {
       print(e);
-      ApiResponse apiResponse = new ApiResponse(
-          statusCode: 500, message: e.message, data: e.response);
+      ApiResponse apiResponse = new ApiResponse(statusCode: 500, message: e.message, data: e.response);
       return apiResponse;
     }
   }
@@ -272,20 +271,20 @@ class UserService {
     try {
       Response response = await dio.get("/logout");
 
-      Map<String, dynamic> jsonMap = json.decode(response.toString());
-      ApiResponse apiResponse = ApiResponse.fromJson(jsonMap);
+      Map<String, dynamic>? jsonMap = json.decode(response.toString());
+      ApiResponse apiResponse = ApiResponse.fromJson(jsonMap!);
 
       return apiResponse;
     } on DioError catch (e) {
       ApiResponse apiResponse = new ApiResponse(
-          statusCode: e.response.statusCode,
+          statusCode: e.response!.statusCode,
           message: e.message,
           data: e.response);
       return apiResponse;
     }
   }
 
-  Future<Response> withdrawal() async {
+  Future<Response?> withdrawal() async {
     Response response = await dio.delete("/members");
     return response;
   }
@@ -295,13 +294,13 @@ class UserService {
       Response response = await dio
           .post("/members/address", data: {"address": address, "detail": ""});
 
-      Map<String, dynamic> jsonMap = json.decode(response.toString());
-      ApiResponse apiResponse = ApiResponse.fromJson(jsonMap);
+      Map<String, dynamic>? jsonMap = json.decode(response.toString());
+      ApiResponse apiResponse = ApiResponse.fromJson(jsonMap!);
 
       return apiResponse;
     } on DioError catch (e) {
       ApiResponse apiResponse = new ApiResponse(
-          statusCode: e.response.statusCode,
+          statusCode: e.response!.statusCode,
           message: e.message,
           data: e.response);
       return apiResponse;
@@ -312,23 +311,23 @@ class UserService {
     try {
       Response response = await dio.get("/banners123");
 
-      Map<String, dynamic> jsonMap = json.decode(response.toString());
+      Map<String, dynamic>? jsonMap = json.decode(response.toString());
       List<Banner> datas =
-          (jsonMap['data'] as List).map((e) => Banner.fromJson(e)).toList();
+          (jsonMap!['data'] as List).map((e) => Banner.fromJson(e)).toList();
       jsonMap['data'] = datas;
       ApiResponse apiResponse = ApiResponse<List<Banner>>.fromJson(jsonMap);
 
       return apiResponse;
     } on DioError catch (e) {
       ApiResponse apiResponse = new ApiResponse(
-          statusCode: e.response.statusCode,
+          statusCode: e.response!.statusCode,
           message: e.message,
           data: e.response);
       return apiResponse;
     }
   }
 
-  Future<Response> changeUserPic(List<dynamic> userImg, String token, int userIdx, String userName) async{
+  Future<Response?> changeUserPic(List<dynamic> userImg, String token, int userIdx, String userName) async{
     try{
       dio.options.contentType = "multipart/form-data";
       dio.options.headers['x-access-token'] = token;
@@ -344,12 +343,12 @@ class UserService {
       return res;
     }on DioError catch(e){
       print("유저 사진 변경 에러");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> changeUserName(String name, String userPh, String token) async {
+  Future<Response?> changeUserName(String name, String userPh, String token) async {
     try{
       print("유저 이름 변경 접속");
       dio.options.headers['x-access-token'] = token;
@@ -364,11 +363,11 @@ class UserService {
       return res;
     }on DioError catch(e){
       print("유저 이름 변경 에러");
-      print(e.response.data.toString());
+      
     }
   }
 
-  Future<Response> changePassword(String userPh, String currentPwd, String newPwd, String token) async {
+  Future<Response?> changePassword(String userPh, String currentPwd, String newPwd, String token) async {
     try{
       print("유저 비밀번호 변경 접속");
       dio.options.headers['x-access-token'] = token;
@@ -383,12 +382,12 @@ class UserService {
       return res;
     }on DioError catch(e){
       print("유저 비밀번호 변경 오류");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  // Future<Response> changeCompanyNum(String comNum, String token) async {
+  // Future<Response?> changeCompanyNum(String comNum, String token) async {
   //   try{
   //     print("유저 대여업체 사업자번호 변경");
   //     dio.options.headers['x-access-token'] = token;
@@ -401,12 +400,12 @@ class UserService {
   //     return res;
   //   }on DioError catch(e) {
   //     print("유저 대여업체 사업자번호 변경 에러");
-  //     print(e.response.statusCode);
-  //     print(e.response.data.toString());
+  //     
+  //     
   //   }
   // }
 
-  Future<Response> changeCompanyImg(File comImg, String token, int userIdx) async {
+  Future<Response?> changeCompanyImg(File comImg, String token, int userIdx) async {
     try{
       print("유저 대여업체 사업자이미지 변경");
       print(userIdx);
@@ -424,8 +423,8 @@ class UserService {
       return res;
     }on DioError catch(e){
       print("유저 대여업체 사업자이미지 변경 에러");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 }

@@ -12,7 +12,9 @@ class reviewPage extends StatelessWidget {
   final int grage;
   final String description;
 
-  reviewPage({this.picture, this.nickname, this.createAt, this.grage, this.description});
+
+
+  reviewPage({required this.picture, required this.nickname, required this.createAt, required this.grage, required this.description});
 
   @override
   Widget build(BuildContext context) {

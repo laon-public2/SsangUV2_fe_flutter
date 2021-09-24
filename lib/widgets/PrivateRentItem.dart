@@ -17,7 +17,7 @@ class PrivateRentItem extends StatelessWidget {
   final int idx;
   final String picture;
 
-  PrivateRentItem({this.idx, this.category, this.title, this.name, this.price, this.distance, this.picture});
+  PrivateRentItem({required this.idx, required this.category, required this.title, required this.name, required this.price, required this.distance, required this.picture});
 
   @override
   Widget build(BuildContext context) {

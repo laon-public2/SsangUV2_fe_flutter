@@ -10,7 +10,7 @@ import 'package:stomp_dart_client/stomp_frame.dart';
 class ChattingService {
   var dio = Dio();
 
-  Future<Response> getChatList(String uuid) async {
+  Future<Response?> getChatList(String uuid) async {
     print('이전 채팅기록내역');
   }
 }

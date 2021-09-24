@@ -11,7 +11,7 @@ import 'dart:io';
 class MyComModified extends StatefulWidget {
   final String comName;
   final String comNum;
-  MyComModified({this.comName, this.comNum});
+  MyComModified({required this.comName, required this.comNum});
   @override
   _MyPageModifiedState createState() => _MyPageModifiedState();
 }
@@ -20,8 +20,8 @@ class _MyPageModifiedState extends State<MyComModified> with SingleTickerProvide
   TextEditingController userNameContorller = TextEditingController();
 
   //애니메이션
-  AnimationController _aniController;
-  Animation<Offset> _offsetAnimation;
+  late AnimationController _aniController;
+  late Animation<Offset> _offsetAnimation;
   double _visible = 0.0;
 
 
@@ -48,8 +48,8 @@ class _MyPageModifiedState extends State<MyComModified> with SingleTickerProvide
     // });
   }
   final picker = ImagePicker();
-  File _images;
-  String _isDialogText;
+  late File _images;
+  late String _isDialogText;
 
   Future<void> loadAssets() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);

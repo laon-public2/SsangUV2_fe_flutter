@@ -5,7 +5,7 @@ class CategoryItem extends StatelessWidget {
   final String assets;
   final String text;
 
-  CategoryItem({this.assets, this.text});
+  CategoryItem({required this.assets, required this.text});
 
   @override
   Widget build(BuildContext context) {

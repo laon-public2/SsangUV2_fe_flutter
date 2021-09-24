@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class RemoveAccount extends StatefulWidget {
   final String phNum;
 
-  RemoveAccount({this.phNum});
+  RemoveAccount({required this.phNum});
   @override
   _RemoveAccountState createState() => _RemoveAccountState();
 }
@@ -15,8 +15,8 @@ class RemoveAccount extends StatefulWidget {
 class _RemoveAccountState extends State<RemoveAccount> with SingleTickerProviderStateMixin{
 
   bool _isDelete = false;
-  AnimationController _animationController;
-  Animation<Offset> _offsetAnimation;
+  late AnimationController _animationController;
+  late Animation<Offset> _offsetAnimation;
   double _visible = 0.0;
 
   @override
@@ -156,9 +156,9 @@ class _RemoveAccountState extends State<RemoveAccount> with SingleTickerProvider
                     Checkbox(
                       activeColor: Color(0xffe83023),
                       value: _isDelete,
-                      onChanged: (bool value){
+                      onChanged: (bool? value){
                         setState(() {
-                          _isDelete = value;
+                          _isDelete = value!;
                         });
                       },
                     ),

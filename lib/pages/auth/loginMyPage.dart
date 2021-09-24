@@ -161,7 +161,7 @@ class MyInfoContainer extends StatelessWidget {
   final String username;
   final String phone;
 
-  MyInfoContainer({this.username, this.phone});
+  MyInfoContainer({required this.username, required this.phone});
 
   @override
   Widget build(BuildContext context) {

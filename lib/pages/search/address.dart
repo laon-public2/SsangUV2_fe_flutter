@@ -16,22 +16,22 @@ class Address extends StatefulWidget {
 }
 
 class _AddressState extends State<Address> {
-  Geolocator geolocator;
+  late Geolocator geolocator;
 
   String address = "";
 
   double latitude = 37.5666805;
   double longitude = 126.9784147;
-  String type;
+  String? type;
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, String> args = ModalRoute.of(context).settings.arguments;
+    final Map<String, String> args = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
     this.type = args["type"];
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar.appBarWithPrev("주소설정", 1.0, context),
+      appBar: AppBarWithPrev(appBar: AppBar(), title: "주소설정", elevation: 1.0,),
       body: body(),
     );
   }
@@ -105,7 +105,7 @@ class _AddressState extends State<Address> {
   Widget map() {
     print("map load");
     return Container(
-      child: GoogleMaps(this.type),
+      child: GoogleMaps(this.type!),
     );
   }
 

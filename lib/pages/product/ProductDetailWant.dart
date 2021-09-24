@@ -31,14 +31,14 @@ class ProductDetailWant extends StatefulWidget {
 }
 
 class _ProductDetailState extends State<ProductDetailWant> {
-  GoogleMapController mapController;
+  late GoogleMapController mapController;
   final LatLng _center = const LatLng(37.61686408091954, 126.89315008364576);
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
 
-  List<String> address;
+  late List<String> address;
   int _reviewCount = 130;
   int _page = 0;
 
@@ -55,7 +55,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
     await Provider.of<ProductProvider>(context, listen: false)
         .getproductDetail(this.widget.productIdx);
     print(Provider.of<ProductProvider>(context, listen: false)
-        .productDetail
+        .productDetail!
         .name);
     await Provider.of<ProductProvider>(context, listen: false)
         .getProductReviewFive(this.widget.productIdx, _page);
@@ -106,7 +106,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
             return Consumer<ProductProvider>(
               builder: (__, _myProduct, _) {
                 return _myUser.isLoggenIn
-                    ? _myUser.username == _myProduct.productDetail.name
+                    ? _myUser.username == _myProduct.productDetail!.name
                         ? Container(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,7 +114,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                 InkWell(
                                   onTap: () async {
                                     await _myProduct.delProduct(
-                                        _myProduct.productDetail.id,
+                                        _myProduct.productDetail!.id,
                                         _myUser.accessToken);
                                     await _myProduct.getMainWant(0);
                                     await _myProduct.getMainWant(0);
@@ -218,19 +218,19 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ProductApplyPrivatePage(
-                                    _myProduct.productDetail.id,
+                                    _myProduct.productDetail!.id,
                                     _myUser.userIdx,
                                     _myUser.userNum,
-                                    _myProduct.productDetail.category,
-                                    _myProduct.productDetail.title,
-                                    _myProduct.productDetail.minPrice,
-                                    _myProduct.productDetail.maxPrice,
-                                    _myProduct.productDetail.startDate,
-                                    _myProduct.productDetail.endDate,
-                                    "${_myProduct.productDetail.address}",
-                                    "${_myProduct.productDetail.addressDetail}",
-                                    _myProduct.productDetail.longti,
-                                    _myProduct.productDetail.lati,
+                                    _myProduct.productDetail!.category,
+                                    _myProduct.productDetail!.title,
+                                    _myProduct.productDetail!.minPrice,
+                                    _myProduct.productDetail!.maxPrice,
+                                    _myProduct.productDetail!.startDate,
+                                    _myProduct.productDetail!.endDate,
+                                    "${_myProduct.productDetail!.address}",
+                                    "${_myProduct.productDetail!.addressDetail}",
+                                    _myProduct.productDetail!.longti,
+                                    _myProduct.productDetail!.lati,
                                   ),
                                 ),
                               );
@@ -334,7 +334,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ImageView(
-                                      _myProduct.productDetail.productFiles)));
+                                      _myProduct.productDetail!.productFiles)));
                         },
                         child: Container(
                           width: double.infinity,
@@ -343,7 +343,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                           child: _myProduct.productDetail != null
                               ? BannerItemProduct(
                                   false,
-                                  _myProduct.productDetail.productFiles,
+                                  _myProduct.productDetail!.productFiles,
                                 )
                               : SizedBox(),
                         ),
@@ -409,7 +409,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                       right: 0,
                       bottom: 10,
                       child: Text(
-                        '${_dateFormat(_myProduct.productDetail.startDate)}~${_dateFormat(_myProduct.productDetail.endDate)}',
+                        '${_dateFormat(_myProduct.productDetail!.startDate)}~${_dateFormat(_myProduct.productDetail!.endDate)}',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 13.sp,
@@ -495,7 +495,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                     Container(
                                       child: Center(
                                         child: Text(
-                                          "${(_myProduct.productDetail.distance).toStringAsFixed(2)}km",
+                                          "${(_myProduct.productDetail!.distance).toStringAsFixed(2)}km",
                                           style: TextStyle(
                                             color: Color(0xff888888),
                                           ),
@@ -511,7 +511,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      '${_myProduct.productDetail.title}',
+                                      '${_myProduct.productDetail!.title}',
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
@@ -519,7 +519,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                       ),
                                     ),
                                     Text(
-                                      '${_myProduct.productDetail.name}',
+                                      '${_myProduct.productDetail!.name}',
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400,
@@ -538,7 +538,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      '${_myProduct.productDetail.minPrice} ~ ${_myProduct.productDetail.maxPrice}원',
+                                      '${_myProduct.productDetail!.minPrice} ~ ${_myProduct.productDetail!.maxPrice}원',
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -546,7 +546,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                       ),
                                     ),
                                     _user.username ==
-                                            _myProduct.productDetail.name
+                                            _myProduct.productDetail!.name
                                         ? InkWell(
                                             onTap: () {
                                               Navigator.push(
@@ -554,7 +554,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           MySSangU(_myProduct
-                                                              .productDetail
+                                                              .productDetail!
                                                               .id)));
                                             },
                                             child: Container(
@@ -603,7 +603,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                             ),
                           ),
                           child: Text(
-                            '${_myProduct.productDetail.description}',
+                            '${_myProduct.productDetail!.description}',
                           ),
                         ),
                         //사이즈 박스 사이공간 조절
@@ -629,7 +629,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${_myProduct.productDetail.address} ${_myProduct.productDetail.addressDetail}',
+                                '${_myProduct.productDetail!.address} ${_myProduct.productDetail!.addressDetail}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
@@ -642,9 +642,8 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                     Container(
                                       height: 200,
                                       child: SimpleGoogleMaps(
-                                        latitude: _myProduct.productDetail.lati,
-                                        longitude:
-                                            _myProduct.productDetail.longti,
+                                        latitude: _myProduct.productDetail!.lati.toDouble(),
+                                        longitude: _myProduct.productDetail!.longti.toDouble(),
                                       ),
                                     ),
                                     InkWell(
@@ -653,11 +652,11 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                             MaterialPageRoute(builder: (_) {
                                           return DetailMapPage(
                                             address:
-                                                "${_myProduct.productDetail.address} ${_myProduct.productDetail.addressDetail}",
+                                                "${_myProduct.productDetail!.address} ${_myProduct.productDetail!.addressDetail}",
                                             latitude:
-                                                _myProduct.productDetail.lati,
+                                                _myProduct.productDetail!.lati.toDouble(),
                                             longitude:
-                                                _myProduct.productDetail.longti,
+                                                _myProduct.productDetail!.longti.toDouble(),
                                           );
                                         }));
                                       },

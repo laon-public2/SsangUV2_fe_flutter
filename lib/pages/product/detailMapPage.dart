@@ -8,14 +8,14 @@ class DetailMapPage extends StatelessWidget {
   final double latitude;
   final double longitude;
 
-  DetailMapPage({this.address, this.latitude, this.longitude});
+  DetailMapPage({required this.address, required this.latitude, required this.longitude});
 
   @override
   Widget build(BuildContext context) {
     print("lat : $latitude");
     print("long : $longitude");
     return Scaffold(
-        appBar: CustomAppBar.appBarWithPrev("$address", 0.0, context),
+        appBar: AppBarWithPrev(appBar: AppBar(), title: "$address", elevation: 0.0,),
         body: Container(
             child: SimpleGoogleMaps(
           latitude: latitude,

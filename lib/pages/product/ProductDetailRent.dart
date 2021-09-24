@@ -36,24 +36,27 @@ class ProductDetailRent extends StatefulWidget {
 
 class _ProductDetailState extends State<ProductDetailRent> with TickerProviderStateMixin{
   //애니메이션 빌더
-  AnimationController _colorAni;
-  Animation _colorTween, _iconColorTween, _borderColorTween;
+  late AnimationController _colorAni;
+  late Animation _colorTween, _iconColorTween, _borderColorTween;
 
   bool _scrollListener(ScrollNotification scrollInfo){
     if(scrollInfo.metrics.axis == Axis.vertical) {
       _colorAni.animateTo(scrollInfo.metrics.pixels / 120);
       return true;
     }
+    else {
+      return false;
+    }
   }
 
-  GoogleMapController mapController;
+  late GoogleMapController mapController;
   final LatLng _center = const LatLng(37.61686408091954, 126.89315008364576);
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
 
-  List<String> address;
-  List<String> Pics;
+  late List<String> address;
+  late List<String> Pics;
   int _page = 0;
 
   void initState() {
@@ -172,7 +175,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
             return Consumer<ProductProvider>(
               builder: (__, _product, _) {
                 return _myUser.isLoggenIn ?
-                _myUser.username == _product.productDetail.name
+                _myUser.username == _product.productDetail!.name
                     ? Container(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -180,7 +183,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                       InkWell(
                         onTap: () async {
                           await _product.delProduct(
-                              _product.productDetail.id,
+                              _product.productDetail!.id,
                               _myUser.accessToken);
                           await _product.getMainWant(0);
                           await _product.getMainWant(0);
@@ -275,7 +278,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                           .rentInit(
                         Provider.of<UserProvider>(context, listen: false)
                             .userIdx,
-                        _product.productDetail.receiverIdx,
+                        _product.productDetail!.receiverIdx,
                         this.widget.productIdx,
                         Provider.of<UserProvider>(context, listen: false)
                             .accessToken,
@@ -288,15 +291,15 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                               builder: (context) => CustomerMessage(
                                 uuid,
                                 this.widget.productIdx,
-                                _product.productDetail.title,
+                                _product.productDetail!.title,
                                 this.widget.category,
-                                _product.productDetail.name,
-                                _product.productDetail.price,
+                                _product.productDetail!.name,
+                                _product.productDetail!.price,
                                 _product
-                                    .productDetail.productFiles[0].path,
+                                    .productDetail!.productFiles[0].path,
                                 "INIT",
-                                _product.productDetail.receiverIdx,
-                                _product.productDetail.fcmToken,
+                                _product.productDetail!.receiverIdx,
+                                _product.productDetail!.fcmToken,
                                 Provider.of<UserProvider>(context, listen: false).userFBtoken,
                                 Provider.of<UserProvider>(context, listen: false).userIdx,
                               )));
@@ -347,7 +350,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                           .rentInit(
                         Provider.of<UserProvider>(context, listen: false)
                             .userIdx,
-                        _product.productDetail.receiverIdx,
+                        _product.productDetail!.receiverIdx,
                         this.widget.productIdx,
                         Provider.of<UserProvider>(context, listen: false)
                             .accessToken,
@@ -360,15 +363,15 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                               builder: (context) => CustomerMessage(
                                 uuid,
                                 this.widget.productIdx,
-                                _product.productDetail.title,
+                                _product.productDetail!.title,
                                 this.widget.category,
-                                _product.productDetail.name,
-                                _product.productDetail.price,
+                                _product.productDetail!.name,
+                                _product.productDetail!.price,
                                 _product
-                                    .productDetail.productFiles[0].path,
+                                    .productDetail!.productFiles[0].path,
                                 "INIT",
-                                _product.productDetail.receiverIdx,
-                                _product.productDetail.fcmToken,
+                                _product.productDetail!.receiverIdx,
+                                _product.productDetail!.fcmToken,
                                 Provider.of<UserProvider>(context, listen: false).userFBtoken,
                                 Provider.of<UserProvider>(context, listen: false).userIdx,
                               )));
@@ -446,7 +449,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                               Navigator.push(
                                 context,
                                 PageTransition(
-                                  child: ImageView(_myProduct.productDetail.productFiles),
+                                  child: ImageView(_myProduct.productDetail!.productFiles),
                                   type: PageTransitionType.fade,
                                 ),
                               );
@@ -460,7 +463,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                 child: _myProduct.productDetail != null
                                     ? BannerItemProduct(
                                   false,
-                                  _myProduct.productDetail.productFiles,
+                                  _myProduct.productDetail!.productFiles,
                                 )
                                     : SizedBox(),
                               ),
@@ -527,7 +530,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                           right: 0,
                           bottom: 10,
                           child: Text(
-                            '${_dateFormat(_myProduct.productDetail.startDate)}~${_dateFormat(_myProduct.productDetail.endDate)}',
+                            '${_dateFormat(_myProduct.productDetail!.startDate)}~${_dateFormat(_myProduct.productDetail!.endDate)}',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 13.sp,
@@ -607,7 +610,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                     Container(
                                       child: Center(
                                         child: Text(
-                                          "${(_myProduct.productDetail.distance).toStringAsFixed(2)}km",
+                                          "${(_myProduct.productDetail!.distance).toStringAsFixed(2)}km",
                                           style: TextStyle(
                                             color: Color(0xff888888),
                                           ),
@@ -624,7 +627,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '${_myProduct.productDetail.title}',
+                                      '${_myProduct.productDetail!.title}',
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
@@ -632,7 +635,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                       ),
                                     ),
                                     Text(
-                                      '${_myProduct.productDetail.name}',
+                                      '${_myProduct.productDetail!.name}',
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400,
@@ -646,7 +649,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                 padding: const EdgeInsets.only(top: 10),
                                 alignment: Alignment.topLeft,
                                 child: Text(
-                                  '${_myProduct.productDetail.price}원',
+                                  '${_myProduct.productDetail!.price}원',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -680,7 +683,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                             ),
                           ),
                           child: Text(
-                            '${_myProduct.productDetail.description}',
+                            '${_myProduct.productDetail!.description}',
                           ),
                         ),
                         //사이즈 박스 사이공간 조절
@@ -706,7 +709,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${_myProduct.productDetail.address} ${_myProduct.productDetail.addressDetail}',
+                                '${_myProduct.productDetail!.address} ${_myProduct.productDetail!.addressDetail}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
@@ -719,8 +722,8 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                     Container(
                                       height: 200,
                                       child: SimpleGoogleMaps(
-                                        latitude: _myProduct.productDetail.lati,
-                                        longitude: _myProduct.productDetail.longti,
+                                        latitude: _myProduct.productDetail!.lati.toDouble(),
+                                        longitude: _myProduct.productDetail!.longti.toDouble(),
                                       ),
                                     ),
                                     InkWell(
@@ -729,10 +732,9 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                             .push(MaterialPageRoute(builder: (_) {
                                           return DetailMapPage(
                                             address:
-                                            "${_myProduct.productDetail.address} ${_myProduct.productDetail.addressDetail}",
-                                            latitude: _myProduct.productDetail.lati,
-                                            longitude:
-                                            _myProduct.productDetail.longti,
+                                            "${_myProduct.productDetail!.address} ${_myProduct.productDetail!.addressDetail}",
+                                            latitude: _myProduct.productDetail!.lati.toDouble(),
+                                            longitude: _myProduct.productDetail!.longti.toDouble(),
                                           );
                                         }));
                                       },
@@ -791,8 +793,8 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                       )
                                     ],
                                   ),
-                                  _myProduct.productDetail.review != null
-                                      ? _myProduct.productDetail.review
+                                  _myProduct.productDetail!.review != null
+                                      ? _myProduct.productDetail!.review
                                       ? InkWell(
                                     onTap: () {
                                       Navigator.push(
@@ -887,14 +889,14 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                   itemBuilder: (context, idx) {
                                     return reviewPage(
                                       picture:
-                                      "${_myProduct.productReviewnot[idx].productFiles}",
+                                      "${_myProduct.productReviewnot![idx].productFiles}",
                                       nickname:
-                                      "${_myProduct.productReviewnot[idx].nickname}",
+                                      "${_myProduct.productReviewnot![idx].nickname}",
                                       createAt:
-                                      "${_reviewdateFormat(_myProduct.productReviewnot[idx].createAt)}",
-                                      grage: _myProduct.productReviewnot[idx].grade,
+                                      "${_reviewdateFormat(_myProduct.productReviewnot![idx].createAt)}",
+                                      grage: _myProduct.productReviewnot![idx].grade,
                                       description:
-                                      "${_myProduct.productReviewnot[idx].content}",
+                                      "${_myProduct.productReviewnot![idx].content}",
                                     );
                                   },
                                   separatorBuilder: (context, idx) {
@@ -904,11 +906,11 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                     );
                                   },
                                   itemCount: _myProduct.reviewPaging.totalCount < 5
-                                      ? _myProduct.productReviewnot.length
+                                      ? _myProduct.productReviewnot!.length
                                       : 5,
                                 ),
                               ),
-                              _myProduct.productReviewnot.length != 0
+                              _myProduct.productReviewnot!.length != 0
                                   ? Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [

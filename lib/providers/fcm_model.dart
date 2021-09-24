@@ -6,7 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
 
 class FCMModel with ChangeNotifier {
-  String mbToken;
+  String? mbToken;
   static Future<dynamic> myBackgroundMessageHandler(
       Map<String, dynamic> message) async {
     if (message.containsKey('data')) {
@@ -24,7 +24,7 @@ class FCMModel with ChangeNotifier {
     // Or do other work.
   }
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   // FCMModel(BuildContext context) {
   //   if (Platform.isIOS) _iosPermission();
@@ -89,12 +89,12 @@ class FCMModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void _iosPermission() {
-    _firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true));
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
-    });
-  }
+  // void _iosPermission() {
+  //   _firebaseMessaging.requestNotificationPermissions(
+  //       IosNotificationSettings(sound: true, badge: true, alert: true));
+  //   _firebaseMessaging.onIosSettingsRegistered
+  //       .listen((IosNotificationSettings settings) {
+  //     print("Settings registered: $settings");
+  //   });
+  // }
 }

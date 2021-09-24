@@ -43,50 +43,50 @@ class BaseClient extends http.BaseClient {
     return _client.send(request);
   }
 
-  @override
-  Future<http.Response> get(url, {Map<String, String> headers}) {
-    return _client.get(defaultUrl + url, headers: _defaultHeaders);
-  }
+  // @override
+  // Future<http.Response> get(url, {Map<String, String>? headers}) {
+  //   _client.get(Uri.parse(defaultUrl + url.toString()), headers: _defaultHeaders);
+  // }
 
   @override
   Future<http.Response> post(url,
-      {Map<String, String> headers, dynamic body, Encoding encoding}) {
-    return _client.post(defaultUrl + url,
+      {Map<String, String>? headers, dynamic body, Encoding? encoding}) {
+    return _client.post(Uri.parse(defaultUrl + url.toString()),
         headers: _defaultHeaders, body: jsonEncode(body), encoding: encoding);
   }
 
   @override
   Future<http.Response> patch(url,
-      {Map<String, String> headers, dynamic body, Encoding encoding}) {
-    return _client.patch(defaultUrl + url,
+      {Map<String, String>? headers, dynamic body, Encoding? encoding}) {
+    return _client.patch(Uri.parse(defaultUrl + url.toString()),
         headers: _defaultHeaders, body: jsonEncode(body), encoding: encoding);
   }
 
   @override
   Future<http.Response> put(url,
-      {Map<String, String> headers, dynamic body, Encoding encoding}) {
-    return _client.put(defaultUrl + url,
+      {Map<String, String>? headers, dynamic body, Encoding? encoding}) {
+    return _client.put(Uri.parse(defaultUrl + url.toString()),
         headers: _defaultHeaders, body: jsonEncode(body), encoding: encoding);
   }
 
   @override
-  Future<http.Response> head(url, {Map<String, String> headers}) {
-    return _client.head(defaultUrl + url, headers: _defaultHeaders);
+  Future<http.Response> head(url, {Map<String, String>? headers}) {
+    return _client.head(Uri.parse(defaultUrl + url.toString()), headers: _defaultHeaders);
   }
 
-  @override
-  Future<http.Response> delete(url, {Map<String, String> headers}) {
-    return _client.delete(defaultUrl + url, headers: _defaultHeaders);
-  }
+  // @override
+  // Future<http.Response> delete(url, {Map<String, String>? headers}) {
+  //   return _client.delete(Uri.parse(defaultUrl + url.toString()), headers: _defaultHeaders);
+  // }
 
   Future<http.Response> auth(url,
-      {Map<String, String> headers, dynamic body, Encoding encoding}) {
+      {Map<String, String>? headers, dynamic body, Encoding? encoding}) {
     print("asdasd " + authUrl + url);
-    return _client.post(authUrl + url, headers: _defaultHeaders);
+    return _client.post(Uri.parse(authUrl + url), headers: _defaultHeaders);
   }
 
-  Future<http.Response> postWithParam(url, {Map<String, String> headers}) {
-    return _client.post(defaultUrl + url, headers: _defaultHeaders);
+  Future<http.Response> postWithParam(url, {Map<String, String>? headers}) {
+    return _client.post(Uri.parse(defaultUrl + url), headers: _defaultHeaders);
   }
 
   Future<http.StreamedResponse> updateProfile(url, File file) async {

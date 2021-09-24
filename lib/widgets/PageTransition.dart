@@ -7,11 +7,11 @@ class PageTransitioned<T> extends PageRouteBuilder<T> {
   final Duration durationRev;
 
   PageTransitioned({
-    this.child,
-    @required this.curves,
-    @required this.duration,
-    this.durationRev,
-    RouteSettings settings,
+    required this.child,
+    required this.curves,
+    required this.duration,
+    required this.durationRev,
+    RouteSettings? settings,
   }): super(
           pageBuilder: (c, a1, a2) => child,
           transitionsBuilder: (c, anim, a2, child) {

@@ -4,7 +4,7 @@ import 'package:share_product_v2/consts/textStyle.dart';
 class CustomOnlyTextContainer extends StatelessWidget {
   final String title;
 
-  CustomOnlyTextContainer({this.title});
+  CustomOnlyTextContainer({required this.title});
 
   @override
   Widget build(BuildContext context) {

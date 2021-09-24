@@ -21,7 +21,7 @@ class _NoticePageState extends State<NoticePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar.appBarWithPrev("알림", 1.0, context),
+      appBar: AppBarWithPrev(appBar: AppBar(), title: "알림", elevation: 1.0,),
       body: FutureBuilder(
         future: _noticeLoad(),
         builder: (context, snapshot){

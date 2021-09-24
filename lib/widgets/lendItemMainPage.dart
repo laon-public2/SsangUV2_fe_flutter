@@ -17,9 +17,9 @@ class LendItemMainPage extends StatelessWidget {
   final String distance;
   final int idx;
   final String picture;
-  final int receiverIdx;
+  final int? receiverIdx;
 
-  LendItemMainPage({this.idx, this.category, this.title, this.name, this.price, this.distance, this.picture, this.receiverIdx});
+  LendItemMainPage({required this.idx, required this.category, required this.title, required this.name, required this.price, required this.distance, required this.picture, this.receiverIdx});
 
 
   // Future<void> _loadLocator() async {

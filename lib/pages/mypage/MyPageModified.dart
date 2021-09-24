@@ -16,8 +16,8 @@ class MyPageModified extends StatefulWidget {
 class _MyPageModifiedState extends State<MyPageModified> with SingleTickerProviderStateMixin{
   TextEditingController userNameContorller = TextEditingController();
 
-  AnimationController _aniController;
-  Animation<Offset> _offsetAnimation;
+  late AnimationController _aniController;
+  late Animation<Offset> _offsetAnimation;
   double _visible = 0.0;
 
   void initState() {
@@ -49,11 +49,11 @@ class _MyPageModifiedState extends State<MyPageModified> with SingleTickerProvid
 
   final picker = ImagePicker();
 
-  List<Asset> images = List<Asset>();
-  String _isDialogText;
+  List<Asset> images = List<Asset>.empty();
+  late String _isDialogText;
 
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>();
+    List<Asset> resultList = List<Asset>.empty();
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -229,8 +229,7 @@ class _MyPageModifiedState extends State<MyPageModified> with SingleTickerProvid
                       });
                       _showDialog();
                     } else {
-                      String status =
-                          await _user.userInfoChange(userNameContorller.text);
+                      String? status = await _user.userInfoChange(userNameContorller.text);
                       if (status == 'false') {
                         setState(() {
                           _isDialogText = "유저이름이 변경중 에러가 발생했습니다.";

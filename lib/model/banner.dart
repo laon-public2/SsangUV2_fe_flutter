@@ -1,17 +1,29 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'banner.g.dart';
+
+@JsonSerializable()
+
 class BannerModel {
   int id;
   String title;
   String url;
-  // String bannerType;
+ // String bannerType;
   // BannerFile bannerFile;
   String bannerFile;
 
-  BannerModel.fromJson(Map<String, dynamic> json)
-      : id = json["banner_id"],
-        title = json["title"],
-        url = json["url"],
-        // bannerType = json["bannerType"],
-        bannerFile = json['path'];
+  BannerModel(this.id, this.title, this.url, this.bannerFile);
+
+  factory BannerModel.fromJson(Map<String, dynamic> json) => _$BannerModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BannerModelToJson(this);
+
+  // BannerModel.fromJson(Map<String, dynamic> json)
+  //     : id = json["banner_id"],
+  //       title = json["title"],
+  //       url = json["url"],
+  //       // bannerType = json["bannerType"],
+  //       bannerFile = json['path'];
 }
 
 // class BannerFile {

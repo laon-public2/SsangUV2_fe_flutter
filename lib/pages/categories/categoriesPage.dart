@@ -21,18 +21,18 @@ class CategoryProductList extends StatefulWidget {
 }
 
 class _CategoryProductListState extends State<CategoryProductList> {
-  Geolocator geolocator;
+  Geolocator? geolocator;
   bool _want = false;
   bool _rent = true;
   bool _help = false;
   String userType = "Rent";
   var category = "";
   var keyword = "";
-  double latitude;
-  double longitude;
+  double? latitude;
+  double? longitude;
   int page = 0;
-  Paging paging;
-  var categoryIdx = "";
+  Paging? paging;
+  String? categoryIdx;
 
   ScrollController categoryScroll = ScrollController();
 
@@ -44,12 +44,12 @@ class _CategoryProductListState extends State<CategoryProductList> {
       if (this.userType == "Rent") {
         if (pvm.paging.totalCount != pvm.categoryProducts.length) {
           this.page++;
-          pvm.categoryRent(categoryIdx, page, userType);
+          pvm.categoryRent(categoryIdx!, page, userType);
         }
       } else {
         if (pvm.paging.totalCount != pvm.categoryProducts.length) {
           this.page++;
-          pvm.categoryWant(categoryIdx, page, userType);
+          pvm.categoryWant(categoryIdx!, page, userType);
         }
       }
     }
@@ -57,14 +57,14 @@ class _CategoryProductListState extends State<CategoryProductList> {
 
   _getProduct() async {
     Provider.of<ProductProvider>(context, listen: false)
-        .categoryRent(categoryIdx, page, userType);
+        .categoryRent(categoryIdx!, page, userType);
   }
 
   @override
   void initState() {
     super.initState();
     categoryScroll.addListener(categoryScrollerListener);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       _getProduct();
       print(
           "배열 갯수 === ${Provider.of<ProductProvider>(context, listen: false).categoryProducts.length}");
@@ -78,7 +78,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, String> args = ModalRoute.of(context).settings.arguments;
+    final Map<String, String> args = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
     setState(() {
       categoryIdx = args['categoryIdx'];
     });
@@ -145,7 +145,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
   }
 
   _body() {
-    final Map<String, String> args = ModalRoute.of(context).settings.arguments;
+    final Map<String, String> args = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
     return SingleChildScrollView(
       controller: categoryScroll,
       child: Consumer<ProductProvider>(builder: (_, product, __) {
@@ -180,7 +180,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                           userType = "Rent";
                         });
                         Provider.of<ProductProvider>(context, listen: false)
-                            .categoryRent(categoryIdx, page, userType);
+                            .categoryRent(categoryIdx!, page, userType);
                       },
                     ),
                     Text(
@@ -200,7 +200,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                           userType = "Want";
                         });
                         Provider.of<ProductProvider>(context, listen: false)
-                            .categoryWant(categoryIdx, page, userType);
+                            .categoryWant(categoryIdx!, page, userType);
                       },
                       child: Text(
                         '빌려주세요',
@@ -228,7 +228,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                           userType = "HELP";
                         });
                         Provider.of<ProductProvider>(context, listen: false)
-                            .categoryWant(categoryIdx, page, userType);
+                            .categoryWant(categoryIdx!, page, userType);
                       },
                       child: Text(
                         '도와드려요',
@@ -260,7 +260,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                           userType = "Rent";
                         });
                         Provider.of<ProductProvider>(context, listen: false)
-                            .categoryRent(categoryIdx, page, userType);
+                            .categoryRent(categoryIdx!, page, userType);
                       },
                     ),
                     Text(
@@ -279,7 +279,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                           userType = "Want";
                         });
                         Provider.of<ProductProvider>(context, listen: false)
-                            .categoryWant(categoryIdx, page, userType);
+                            .categoryWant(categoryIdx!, page, userType);
                       },
                       child: Text(
                         '빌려주세요',

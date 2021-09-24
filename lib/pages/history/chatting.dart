@@ -12,7 +12,7 @@ import 'package:share_product_v2/widgets/PageTransition.dart';
 import 'package:share_product_v2/widgets/customText.dart';
 
 class Chatting extends StatelessWidget {
-  const Chatting({Key key}) : super(key: key);
+  const Chatting({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

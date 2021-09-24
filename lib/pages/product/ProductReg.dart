@@ -50,11 +50,11 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
 
   bool _otherLocation = false;
 
-  List<RadioModel> LocationData = new List<RadioModel>(); //커스텀 라디오 버튼
-  FocusNode descriptionFocus;
+  List<RadioModel> LocationData = new List<RadioModel>.empty(); //커스텀 라디오 버튼
+  late FocusNode descriptionFocus;
 
-  AnimationController _aniController;
-  Animation<Offset> _offsetAnimation;
+  late AnimationController _aniController;
+  late Animation<Offset> _offsetAnimation;
   double _visible = 0.0;
 
   @override
@@ -83,12 +83,12 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
     });
   }
 
-  String _isDialogText;
+  String? _isDialogText;
   final picker = ImagePicker();
-  List<Asset> images = List<Asset>();
+  List<Asset> images = List<Asset>.empty();
 
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>();
+    List<Asset> resultList = List<Asset>.empty();
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -184,11 +184,11 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
     );
   }
 
-  String adressType;
+  String? adressType;
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       await Provider.of<ProductProvider>(context, listen: false).resetAddress();
     });
     return Scaffold(
@@ -783,7 +783,7 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return CustomDialogApply(Center(child: Text(_isDialogText)), '확인');
+          return CustomDialogApply(Center(child: Text(_isDialogText!)), '확인');
         });
   }
 

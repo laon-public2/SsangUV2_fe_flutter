@@ -83,7 +83,7 @@ class _CustomPopupState extends State<CustomPopup> {
                                           Theme.of(context).primaryColor,
                                       value: isCheck,
                                       onChanged: (value) => setState(() {
-                                            isCheck = value;
+                                            isCheck = value!;
                                           }))),
                               SizedBox(
                                 width: 10,

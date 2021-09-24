@@ -15,10 +15,10 @@ class LoginPageNode extends StatefulWidget {
 class _LoginPageNodeState extends State<LoginPageNode> with SingleTickerProviderStateMixin {
   TextEditingController _phNum = TextEditingController();
   TextEditingController _password = TextEditingController();
-  String phNum;
+  String? phNum;
 
-  AnimationController _aniController;
-  Animation<Offset> _offsetAnimation;
+  late AnimationController _aniController;
+  late Animation<Offset> _offsetAnimation;
   double _visible = 0.0;
 
   @override

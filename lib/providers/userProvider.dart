@@ -25,32 +25,32 @@ class UserProvider extends ChangeNotifier {
   final UserService userService = UserService();
   final PushService pushService = PushService();
   bool isLoggenIn = false;
-  int userIdx;
-  String userFBtoken;
-  String originalFBtoken;
-  String phNum;
-  String accessToken;
-  String userProfileImg;
-  String username;
-  String userNum;
-  String userType;
-  String comNum;
-  String comIdentity;
-  String address;
-  String addressDetail;
-  double userLocationX;
-  double userLocationY;
-  bool userPush;
+  late int userIdx;
+  late String userFBtoken;
+  late String originalFBtoken;
+  late String phNum;
+  late String accessToken;
+  late String userProfileImg;
+  late String username;
+  late String userNum;
+  late String userType;
+  late String comNum;
+  late String comIdentity;
+  late String address;
+  late String addressDetail;
+  late double userLocationX;
+  late double userLocationY;
+  late bool userPush;
 
-  Paging userNotice;
+  late Paging userNotice;
   List<UserNoticeModel> userNoticeList = [];
 
-  MemberWithContractCount loginMember;
+  MemberWithContractCount? loginMember;
   bool isFirstLogin = false;
 
   Future<void> getAccessToken(String phone, String password) async {
     print('로그인하기');
-    Map<String, dynamic> accessToken =
+    Map<String, dynamic>? accessToken =
     await userService.getAccessToken(phone, password);
     if (accessToken != null) {
       if (accessToken['success'] == true) {
@@ -74,7 +74,7 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> getAccessTokenReg(String phone, String password) async {
     print('로그인하기');
-    Map<String, dynamic> accessToken =
+    Map<String, dynamic>? accessToken =
     await userService.getAccessToken(phone, password);
     if (accessToken != null) {
       if (accessToken['success'] == true) {
@@ -110,8 +110,8 @@ class UserProvider extends ChangeNotifier {
     if (jsonMap['success'] == true) {
       this.address = address;
       this.addressDetail = addressDetail;
-      this.userLocationY = la;
-      this.userLocationX = lo;
+      this.userLocationY = la.toDouble();
+      this.userLocationX = lo.toDouble();
     }
     notifyListeners();
   }
@@ -130,7 +130,7 @@ class UserProvider extends ChangeNotifier {
 
   void fBToken() async {
     print('FCM토큰');
-    Map<String, dynamic> fbToken = await userService.updateFBtoken(
+    Map<String, dynamic>? fbToken = await userService.updateFBtoken(
         this.userIdx, this.originalFBtoken, this.accessToken);
     if (fbToken != null) {
       print('fcm토큰이 수정되었음');
@@ -143,7 +143,7 @@ class UserProvider extends ChangeNotifier {
   Future<String> getMyInfo() async {
     print('내정보 확인하기');
     print("${this.accessToken} ${this.phNum}");
-    Map<String, dynamic> myinfo =
+    Map<String, dynamic>? myinfo =
     await userService.myInfo(this.accessToken, this.phNum);
     if (myinfo != null) {
       if (myinfo['success'] == true) {
@@ -167,13 +167,13 @@ class UserProvider extends ChangeNotifier {
         if(myinfo['data']['user_location'] != null){
           this.userLocationX = myinfo['data']['user_location']['x'];
         } else {
-          var currentPosition = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
+          var currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
           this.userLocationX = currentPosition.latitude;
         }
         if(myinfo['data']['user_location'] != null){
           this.userLocationY = myinfo['data']['user_location']['y'];
         } else {
-          var currentPosition = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
+          var currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
           this.userLocationY = currentPosition.longitude;
         }
 
@@ -184,6 +184,10 @@ class UserProvider extends ChangeNotifier {
           print("fcm토큰 수정");
           fBToken();
         }
+        return 'success';
+      }
+      else {
+        return 'fail';
       }
     } else {
       this.username = "정보없음";
@@ -194,13 +198,14 @@ class UserProvider extends ChangeNotifier {
       this.userLocationX = 37;
       this.userLocationY = 126;
       this.userProfileImg = "userImgNot";
+      return 'none';
     }
     notifyListeners();
   }
 
   Future<void> refreshToken(String refreshToken) async {
     print("refreshToken");
-    Map<String, dynamic> accessToken =
+    Map<String, dynamic>? accessToken =
     await userService.refresh_token(refreshToken);
     print('$accessToken');
     if (accessToken != null) {
@@ -220,15 +225,15 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<bool> phone(String phone) async {
-    Map<String, dynamic> returnMap = await userService.checkLogin(phone);
-    if (returnMap['statusCode'] == 200) {
-      if (returnMap['data'] != null) {
+    Map<String, dynamic>? returnMap = await userService.checkLogin(phone);
+    if (returnMap!['statusCode'] == 200) {
+      if (returnMap!['data'] != null) {
         isFirstLogin = true;
-        setAccessToken(returnMap['data']['access_token']);
+        setAccessToken(returnMap!['data']['access_token']);
         SharedPref()
-            .save("access_token", returnMap['data']['access_token'].toString());
+            .save("access_token", returnMap!['data']['access_token'].toString());
         SharedPref().save(
-            "refresh_token", returnMap['data']['refresh_token'].toString());
+            "refresh_token", returnMap!['data']['refresh_token'].toString());
         this.isLoggenIn = true;
         notifyListeners();
       }
@@ -246,7 +251,7 @@ class UserProvider extends ChangeNotifier {
 
   Future setAccessToken(String token) async {
     print("accessToken with myInfo");
-    Map<String, dynamic> accessToken = await userService.set_token(token);
+    Map<String, dynamic>? accessToken = await userService.set_token(token);
     if (accessToken != null) {
       if (accessToken['success'] == true) {
         this.isLoggenIn = true;
@@ -356,7 +361,7 @@ class UserProvider extends ChangeNotifier {
     await getMyInfo();
   }
 
-  Future<String> userInfoChange(String name) async {
+  Future<String?> userInfoChange(String name) async {
     try {
       print("유저 이름 변경");
       final res = await userService.changeUserName(name, phNum, accessToken);
@@ -370,7 +375,7 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String> userChangePwd(String currentPwd, String newPwd) async {
+  Future<String?> userChangePwd(String currentPwd, String newPwd) async {
     try{
       print("유저 비밀번호 변경");
       final res = await userService.changePassword(this.phNum, currentPwd, newPwd, accessToken);

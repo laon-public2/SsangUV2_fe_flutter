@@ -20,8 +20,8 @@ class ChangeAddress extends StatefulWidget {
 class _ChangeAddressState extends State<ChangeAddress> with SingleTickerProviderStateMixin{
   TextEditingController _addressDetail = TextEditingController();
 
-  AnimationController _aniController;
-  Animation<Offset> _offsetAnimation;
+  late AnimationController _aniController;
+  late Animation<Offset> _offsetAnimation;
   double _visible = 0.0;
 
   @override

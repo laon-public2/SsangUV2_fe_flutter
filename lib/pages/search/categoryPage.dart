@@ -126,7 +126,7 @@ class CategoryOnlyText extends StatelessWidget {
   final String currentTitle;
   final ValueChanged<String> onClick;
 
-  CategoryOnlyText({this.title, this.currentTitle, this.onClick});
+  CategoryOnlyText({required this.title, required this.currentTitle, required this.onClick});
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +161,7 @@ class CategoryOnlyText extends StatelessWidget {
 class ToItem extends StatelessWidget {
   final String value;
 
-  ToItem({this.value});
+  ToItem({required this.value});
 
   @override
   Widget build(BuildContext context) {

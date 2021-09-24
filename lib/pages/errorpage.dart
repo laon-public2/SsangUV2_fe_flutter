@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ErrorPage extends StatelessWidget {
   final String message;
 
-  ErrorPage({this.message});
+  ErrorPage({required this.message});
 
   @override
   Widget build(BuildContext context) {

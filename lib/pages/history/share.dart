@@ -11,7 +11,7 @@ import '../../providers/productProvider.dart';
 import '../../widgets/CustomDropdown.dart';
 
 class Share extends StatefulWidget {
-  const Share({Key key}) : super(key: key);
+  const Share({Key? key}) : super(key: key);
 
   @override
   _ShareState createState() => _ShareState();

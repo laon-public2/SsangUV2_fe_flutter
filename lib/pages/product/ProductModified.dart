@@ -17,8 +17,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 
 class ProductModified extends StatefulWidget {
-  final productDetailWant originalInfo;
-  final String categoryString;
+  final productDetailWant? originalInfo;
+  final String? categoryString;
 
   ProductModified({this.originalInfo, this.categoryString});
 
@@ -29,8 +29,8 @@ class ProductModified extends StatefulWidget {
 class _ProductRegState extends State<ProductModified> with SingleTickerProviderStateMixin{
 
   //애니메이션
-  AnimationController _animationController;
-  Animation<Offset> _offsetAnimaiton;
+  late AnimationController _animationController;
+  late Animation<Offset> _offsetAnimaiton;
   double _visible = 0.0;
 
   List<String> categories = [
@@ -57,25 +57,25 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
   TextEditingController _priceController = TextEditingController();
 
   bool _otherLocation = false;
-  FocusNode descriptionFocus;
+  late FocusNode descriptionFocus;
 
-  List<ProductFile> original_images = List<ProductFile>();
-  List<int> deleteImages = List<int>();
+  List<ProductFile> original_images = List<ProductFile>.empty();
+  List<int> deleteImages = List<int>.empty();
 
   @override
   void initState() {
     super.initState();
     setState(() {
-      _productName.text = this.widget.originalInfo.title;
-      _selectedCategory = this.widget.categoryString;
-      _priceController.text = "${this.widget.originalInfo.price}";
+      _productName.text = this.widget.originalInfo!.title;
+      _selectedCategory = this.widget.categoryString!;
+      _priceController.text = "${this.widget.originalInfo!.price}";
       _dateController.text =
-      "${_dateFormat(this.widget.originalInfo.startDate)} ~ ${_dateFormat(this.widget.originalInfo.endDate)}";
-      _minMoneyController.text = "${this.widget.originalInfo.minPrice}";
-      _maxMoneyController.text = "${this.widget.originalInfo.maxPrice}";
-      descriptionTextController.text = this.widget.originalInfo.description;
-      original_images = this.widget.originalInfo.productFiles.toList();
-      _otherAddressDetail.text = this.widget.originalInfo.addressDetail;
+      "${_dateFormat(this.widget.originalInfo!.startDate)} ~ ${_dateFormat(this.widget.originalInfo!.endDate)}";
+      _minMoneyController.text = "${this.widget.originalInfo!.minPrice}";
+      _maxMoneyController.text = "${this.widget.originalInfo!.maxPrice}";
+      descriptionTextController.text = this.widget.originalInfo!.description;
+      original_images = this.widget.originalInfo!.productFiles.toList();
+      _otherAddressDetail.text = this.widget.originalInfo!.addressDetail;
     });
     //애니메이션
     _animationController = AnimationController(
@@ -96,12 +96,12 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
     });
   }
 
-  String _isDialogText;
+  String? _isDialogText;
   final picker = ImagePicker();
-  List<Asset> images = List<Asset>();
+  List<Asset> images = List<Asset>.empty();
 
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>();
+    List<Asset> resultList = List<Asset>.empty();
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -227,16 +227,16 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
     );
   }
 
-  String adressType;
+  String? adressType;
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       await Provider.of<ProductProvider>(context, listen: false).changeAddress(
         "lend1",
-        this.widget.originalInfo.lati,
-        this.widget.originalInfo.longti,
-        this.widget.originalInfo.address,
+        this.widget.originalInfo!.lati,
+        this.widget.originalInfo!.longti,
+        this.widget.originalInfo!.address,
       );
     });
     return Scaffold(
@@ -308,7 +308,7 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
                       controller: _dateController,
                     ),
                     SizedBox(height: 10),
-                    this.widget.originalInfo.type == "RENT" ?
+                    this.widget.originalInfo!.type == "RENT" ?
                     textField(
                       "가격입력 (1일 기준)",
                       _priceController,
@@ -537,7 +537,7 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
                           } else {
                             List<String> date = _dateController.text.split("~");
                             await _myProduct.productModified(
-                                this.widget.originalInfo.id,
+                                this.widget.originalInfo!.id,
                                 _selectCategory(this.widget.categoryString),
                                 _productName.text,
                                 descriptionTextController.text,
@@ -734,7 +734,7 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return CustomDialogApply(Center(child: Text(_isDialogText)), '확인');
+          return CustomDialogApply(Center(child: Text(_isDialogText!)), '확인');
         });
   }
 
@@ -753,7 +753,7 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
   }
 
   //카테고리 숫자 변환기
-  _selectCategory(String category) {
+  _selectCategory(String? category) {
     if (category == "생활용품") {
       return 2;
     }

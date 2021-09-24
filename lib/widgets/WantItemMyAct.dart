@@ -20,15 +20,15 @@ class WantItemMyAct extends StatelessWidget {
   // final String longti;
 
   WantItemMyAct(
-      {this.idx,
-      this.category,
-      this.title,
-      this.name,
-      this.minPrice,
-      this.maxPrice,
-      this.startDate,
-      this.endDate,
-      this.picture
+      {required this.idx,
+      required this.category,
+      required this.title,
+      required this.name,
+      required this.minPrice,
+      required this.maxPrice,
+      required this.startDate,
+      required this.endDate,
+      required this.picture
       // this.lati,
       // this.longti
       });

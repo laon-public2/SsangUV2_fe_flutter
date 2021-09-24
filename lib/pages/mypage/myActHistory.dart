@@ -15,13 +15,13 @@ import 'package:share_product_v2/pages/mypage/categories/category9.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
 
 class MyActHistory extends StatefulWidget {
-  const MyActHistory({Key key}) : super(key:key);
+  const MyActHistory({Key? key}) : super(key:key);
   @override
   _MyActHistoryState createState() => _MyActHistoryState();
 }
 
 class _MyActHistoryState extends State<MyActHistory> with SingleTickerProviderStateMixin{
-  TabController controller;
+  late TabController controller;
 
   List<Tab> myTabs = <Tab> [
     Tab(text: '전체'),
@@ -45,75 +45,72 @@ class _MyActHistoryState extends State<MyActHistory> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: _appBar(),
-      body: _body(),
-    );
-  }
-
-  Widget _appBar() {
-    return AppBar(
-      bottom: TabBar(
-        isScrollable: true,
-        unselectedLabelColor: Color(0xff999999),
-        labelColor: Color(0xff333333),
-        indicatorColor: Color(0xffff0066),
-        controller: controller,
-        tabs: myTabs.map((Tab tab){
-          return Tab(child: _CustomTabBarText(tab.text));
-        }).toList(),
-      ),
-      elevation: 1.0,
-      centerTitle: true,
-      title: Container(
-        padding: const EdgeInsets.only(right: 60),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 27.w,
-              height: 27.h,
-              child: Consumer<UserProvider>(
+      appBar: AppBar(
+        bottom: TabBar(
+          isScrollable: true,
+          unselectedLabelColor: Color(0xff999999),
+          labelColor: Color(0xff333333),
+          indicatorColor: Color(0xffff0066),
+          controller: controller,
+          tabs: myTabs.map((Tab tab){
+            return Tab(child: _CustomTabBarText(tab.text!));
+          }).toList(),
+        ),
+        elevation: 1.0,
+        centerTitle: true,
+        title: Container(
+          padding: const EdgeInsets.only(right: 60),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 27.w,
+                height: 27.h,
+                child: Consumer<UserProvider>(
+                  builder: (_, myact, __) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: Image.network(
+                        "http://115.91.73.66:15066/assets/images/user/${myact.userProfileImg}",
+                        height: 27.h,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(
+                width: 5.w,
+              ),
+              Consumer<UserProvider>(
                 builder: (_, myact, __) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: Image.network(
-                      "http://115.91.73.66:15066/assets/images/user/${myact.userProfileImg}",
-                      height: 27.h,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
+                  return Text(
+                    myact.username,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Color(0xff666666),
                     ),
                   );
                 },
               ),
-            ),
-            SizedBox(
-              width: 5.w,
-            ),
-            Consumer<UserProvider>(
-              builder: (_, myact, __) {
-                return Text(
-                  myact.username,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Color(0xff666666),
-                  ),
-                );
-              },
-            ),
-          ],
+            ],
+          ),
+        ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            size: 24,
+            color: Colors.black,
+          ),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
-      leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back_ios,
-          size: 24,
-          color: Colors.black,
-        ),
-        onPressed: () => Navigator.pop(context),
-      ),
+      body: _body(),
     );
   }
+
 
   Widget _body() {
     return TabBarView(

@@ -17,7 +17,7 @@ import 'package:share_product_v2/widgets/customdialog.dart';
 class ModifyProduct extends StatefulWidget {
   final Product product;
 
-  ModifyProduct({this.product});
+  ModifyProduct({required this.product});
 
   @override
   _ModifyProductState createState() => _ModifyProductState();
@@ -47,14 +47,14 @@ class _ModifyProductState extends State<ModifyProduct> {
   final descriptionTextController = TextEditingController();
 
   // TextField Focus
-  FocusNode titleFocus;
-  FocusNode priceFocus;
-  FocusNode descriptionFocus;
+  late FocusNode titleFocus;
+  late FocusNode priceFocus;
+  late FocusNode descriptionFocus;
 
-  List<Asset> images = List<Asset>();
+  List<Asset> images = List<Asset>.empty();
 
-  List<ProductFile> original_images = List<ProductFile>();
-  List<int> deleteImages = List<int>();
+  List<ProductFile> original_images = List<ProductFile>.empty();
+  List<int> deleteImages = List<int>.empty();
 
   @override
   void initState() {
@@ -80,7 +80,7 @@ class _ModifyProductState extends State<ModifyProduct> {
   }
 
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>();
+    List<Asset> resultList = List<Asset>.empty();
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -129,8 +129,7 @@ class _ModifyProductState extends State<ModifyProduct> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar:
-          CustomAppBar.appBarWithPrev("${widget.product.title}", 1.0, context),
+      appBar: AppBarWithPrev(appBar: AppBar(), title: "${widget.product.title}", elevation: 1.0,),
       body: body(context),
     );
   }
@@ -397,7 +396,7 @@ class _ModifyProductState extends State<ModifyProduct> {
   Widget userAddress() {
     return Consumer<UserProvider>(builder: (_, user, __) {
       print(123);
-      print(user.loginMember.member.address);
+      print(user.loginMember!.member.address);
       return InkWell(
         onTap: () {
           Navigator.of(context).pushNamed("/address");
@@ -411,7 +410,7 @@ class _ModifyProductState extends State<ModifyProduct> {
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 10),
           child: Text(
-            user.loginMember.member.address.address ?? "",
+            user.loginMember!.member.address.address ?? "",
             style: TextStyle(fontSize: 14, color: Color(0xff333333)),
           ),
         ),

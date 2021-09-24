@@ -1,0 +1,81 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'KopoModel.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+KopoModel _$KopoModelFromJson(Map<String, dynamic> json) {
+  return KopoModel(
+    json['postcode'] as String,
+    json['postcode1'] as String,
+    json['postcode2'] as String,
+    json['postcodeSeq'] as String,
+    json['zonecode'] as String,
+    json['address'] as String,
+    json['addressEnglish'] as String,
+    json['addressType'] as String,
+    json['bcode'] as String,
+    json['bname'] as String,
+    json['bname1'] as String,
+    json['bname2'] as String,
+    json['sido'] as String,
+    json['sigungu'] as String,
+    json['sigunguCode'] as String,
+    json['userLanguageType'] as String,
+    json['query'] as String,
+    json['buildingName'] as String,
+    json['buildingCode'] as String,
+    json['apartment'] as String,
+    json['jibunAddress'] as String,
+    json['jibunAddressEnglish'] as String,
+    json['roadAddress'] as String,
+    json['roadAddressEnglish'] as String,
+    json['autoRoadAddress'] as String,
+    json['autoRoadAddressEnglish'] as String,
+    json['autoJibunAddress'] as String,
+    json['autoJibunAddressEnglish'] as String,
+    json['userSelectedType'] as String,
+    json['noSelected'] as String,
+    json['hname'] as String,
+    json['roadnameCode'] as String,
+    json['roadname'] as String,
+  );
+}
+
+Map<String, dynamic> _$KopoModelToJson(KopoModel instance) => <String, dynamic>{
+      'postcode': instance.postcode,
+      'postcode1': instance.postcode1,
+      'postcode2': instance.postcode2,
+      'postcodeSeq': instance.postcodeSeq,
+      'zonecode': instance.zonecode,
+      'address': instance.address,
+      'addressEnglish': instance.addressEnglish,
+      'addressType': instance.addressType,
+      'bcode': instance.bcode,
+      'bname': instance.bname,
+      'bname1': instance.bname1,
+      'bname2': instance.bname2,
+      'sido': instance.sido,
+      'sigungu': instance.sigungu,
+      'sigunguCode': instance.sigunguCode,
+      'userLanguageType': instance.userLanguageType,
+      'query': instance.query,
+      'buildingName': instance.buildingName,
+      'buildingCode': instance.buildingCode,
+      'apartment': instance.apartment,
+      'jibunAddress': instance.jibunAddress,
+      'jibunAddressEnglish': instance.jibunAddressEnglish,
+      'roadAddress': instance.roadAddress,
+      'roadAddressEnglish': instance.roadAddressEnglish,
+      'autoRoadAddress': instance.autoRoadAddress,
+      'autoRoadAddressEnglish': instance.autoRoadAddressEnglish,
+      'autoJibunAddress': instance.autoJibunAddress,
+      'autoJibunAddressEnglish': instance.autoJibunAddressEnglish,
+      'userSelectedType': instance.userSelectedType,
+      'noSelected': instance.noSelected,
+      'hname': instance.hname,
+      'roadnameCode': instance.roadnameCode,
+      'roadname': instance.roadname,
+    };
