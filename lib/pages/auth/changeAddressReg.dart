@@ -107,13 +107,12 @@ class _ChangeAddressState extends State<ChangeAddressReg> {
                         userType,
                         '1',
                         comNum.text,
-                        regimage,
-                        Provider.of<FCMModel>(context, listen: false).mbToken,
+                        regimage!,
+                        Provider.of<FCMModel>(context, listen: false).mbToken!,
                       );
                       await Provider.of<UserProvider>(context, listen: false)
                           .getAccessTokenReg(
-                        Provider.of<RegUserProvider>(context, listen: false)
-                            .phNum,
+                        Provider.of<RegUserProvider>(context, listen: false).phNum!,
                         pwd.text,
                       );
                       if (Provider.of<RegUserProvider>(context, listen: false)

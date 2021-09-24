@@ -66,7 +66,7 @@ class _MySSangUState extends State<MySSangU> {
   }
 
   _appBar() {
-    return CustomAppBar.appBarWithPrev("빌려줄게요", 1.0, context);
+    return AppBarWithPrev(appBar: AppBar(), title: "빌려줄게요", elevation: 1.0,);
   }
 
   _body() {

@@ -22,10 +22,9 @@ import 'KakaoMap.dart';
 import 'chat/CustomerMessage.dart';
 
 class HomePage extends StatefulWidget {
-  double lati;
-  double longti;
+  double? lati;
+  double? longti;
 
-  HomePage({this.lati, this.longti});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -42,10 +41,10 @@ class _HomePageState extends State<HomePage> {
   ];
   String _currentItem = "";
 
-  List<String> myLocation;
+  late List<String> myLocation;
   String _currentLocation = "";
 
-  List<String> address;
+  late List<String> address;
 
   ScrollController homeScroller = ScrollController();
   double _visible = 0.0;
@@ -75,7 +74,7 @@ class _HomePageState extends State<HomePage> {
     _currentItem = itemKind.first;
     homeScroller.addListener(homeScrollerListener);
     super.initState();
-    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print('on message $message');
@@ -257,7 +256,7 @@ class ToItem extends StatelessWidget {
   final String value;
   int page;
 
-  ToItem({this.value, this.page});
+  ToItem({required this.value, required this.page});
 
   @override
   Widget build(BuildContext context) {

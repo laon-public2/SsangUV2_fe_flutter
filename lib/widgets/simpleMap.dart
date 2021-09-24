@@ -9,7 +9,7 @@ class SimpleGoogleMaps extends StatefulWidget {
   final double longitude;
 
 
-  const SimpleGoogleMaps({this.longitude, this.latitude});
+  const SimpleGoogleMaps({required this.longitude, required this.latitude});
 
   @override
   State<SimpleGoogleMaps> createState() => _SimpleGoogleMapsState();
@@ -17,9 +17,9 @@ class SimpleGoogleMaps extends StatefulWidget {
 
 
 class _SimpleGoogleMapsState extends State<SimpleGoogleMaps> {
-  double latitude;
-  double longitude;
-  GoogleMapController mapController;
+  double? latitude;
+  double? longitude;
+  GoogleMapController? mapController;
 
   List<Marker> _markers = <Marker>[];
   // CameraPosition cameraPosition;

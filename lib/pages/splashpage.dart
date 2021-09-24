@@ -63,8 +63,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void setAuthToken() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String token = pref.get("access_token");
-    String reToken = pref.get("refresh_token");
+    String token = pref.get("access_token").toString();
+    String reToken = pref.get("refresh_token").toString();
     print("token : $token");
     print("reToken : $reToken");
     if (token != null && token != "" && reToken != null && reToken != "") {

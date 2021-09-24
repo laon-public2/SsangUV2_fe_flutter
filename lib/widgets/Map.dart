@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/KakaoMap.dart';
@@ -25,9 +26,9 @@ class GoogleMaps extends StatefulWidget {
 }
 
 class _GoogleMapsState extends State<GoogleMaps> {
-  SharedPreferences pref;
-  static LatLng _initialPosition;
-  LatLng _cameraPosition;
+  SharedPreferences? pref;
+  late LatLng _initialPosition;
+  LatLng? _cameraPosition;
 
   Completer<GoogleMapController> _controller = Completer();
 
@@ -43,10 +44,9 @@ class _GoogleMapsState extends State<GoogleMaps> {
   }
 
   void _getUserLocation() async {
-    Position position = await Geolocator()
+    Position position = await Geolocator
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    List<Placemark> placemark = await Geolocator()
-        .placemarkFromCoordinates(position.latitude, position.longitude);
+    List<Placemark> placemark = await placemarkFromCoordinates(position.latitude, position.longitude);
     setState(() {
       _initialPosition = LatLng(position.latitude, position.longitude);
       print('${placemark[0].name}');
@@ -76,7 +76,7 @@ class _GoogleMapsState extends State<GoogleMaps> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       pref = await SharedPreferences.getInstance();
     });
     print("map build");
@@ -117,11 +117,11 @@ class _GoogleMapsState extends State<GoogleMaps> {
                     func: () async {
                       String address =
                           await Provider.of<MapProvider>(context, listen: false)
-                              .getAddress(_cameraPosition.latitude,
-                                  _cameraPosition.longitude);
+                              .getAddress(_cameraPosition!.latitude,
+                                  _cameraPosition!.longitude);
                       print("address : $address");
                       await Provider.of<ProductProvider>(context, listen: false)
-                          .changeAddress(this.widget.type, _cameraPosition.latitude, _cameraPosition.longitude, address);
+                          .changeAddress(this.widget.type, _cameraPosition!.latitude, _cameraPosition!.longitude, address);
                       Navigator.of(context).pop(true);
                     },
                   ),

@@ -9,7 +9,7 @@ class BannerService {
   Dio dio = ApiUtils.instance.dio;
 
   Future<List> getBanners() async {
-    ApiResponse defaultJson;
+    ApiResponse? defaultJson;
     try {
       // final bannerTypeString = bannerType.toShortString();
 
@@ -34,11 +34,11 @@ class BannerService {
       // print(defaultJson);
     } on DioError catch (e) {
       print('배너 서비스 접속 에러');
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      print(e.response!.statusCode);
+      print(e.response!.data.toString());
       print(e.message);
     }
 
-    return defaultJson.data;
+    return defaultJson!.data;
   }
 }

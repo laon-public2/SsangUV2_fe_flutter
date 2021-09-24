@@ -13,13 +13,13 @@ class RentItem extends StatelessWidget {
   final String endDate;
 
   RentItem(
-      {this.category,
-      this.title,
-      this.name,
-      this.startPrice,
-      this.endPrice,
-      this.startDate,
-      this.endDate});
+      {required this.category,
+      required this.title,
+      required this.name,
+      required this.startPrice,
+      required this.endPrice,
+      required this.startDate,
+      required this.endDate});
 
   @override
   Widget build(BuildContext context) {

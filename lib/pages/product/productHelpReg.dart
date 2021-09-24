@@ -52,15 +52,15 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
   TextEditingController _dateController = TextEditingController();
 
   // TextField Focus
-  FocusNode titleFocus;
-  FocusNode priceFocus;
-  FocusNode descriptionFocus;
+  late FocusNode titleFocus;
+  late FocusNode priceFocus;
+  late FocusNode descriptionFocus;
 
-  List<Asset> images = List<Asset>();
-  List<RadioModel> LocationData = new List<RadioModel>();
+  List<Asset> images = List<Asset>.empty();
+  List<RadioModel> LocationData = new List<RadioModel>.empty();
 
-  AnimationController _animationController;
-  Animation<Offset> _offsetAnimation;
+  late AnimationController _animationController;
+  late Animation<Offset> _offsetAnimation;
   double _visible = 0.0;
 
   @override
@@ -103,7 +103,7 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
   }
 
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>();
+    List<Asset> resultList = List<Asset>.empty();
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -152,7 +152,7 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar.appBarWithPrev("", 0, context),
+      appBar: AppBarWithPrev(appBar: AppBar(), title: "", elevation: 0.0,),
       body: body(context),
     );
   }
@@ -713,12 +713,14 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
       ],
     );
   }
-  Widget notBack(){
-    return WillPopScope(
-        child: Loading(),
-        onWillPop: () {},
-    );
-  }
+  // Widget notBack(){
+  //   return WillPopScope(
+  //       child: Loading(),
+  //       // onWillPop: () {
+  //       //   return true;
+  //       // },
+  //   );
+  // }
 }
 
 class RadioItem extends StatelessWidget {

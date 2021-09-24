@@ -5,7 +5,7 @@ import "package:flutter_screenutil/flutter_screenutil.dart";
 class CustomTextFieldContainer extends StatelessWidget {
   final String title;
   TextEditingController controller;
-  CustomTextFieldContainer({this.title, this.controller});
+  CustomTextFieldContainer({required this.title, required this.controller});
 
   @override
   Widget build(BuildContext context) {

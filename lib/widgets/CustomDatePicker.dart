@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:date_range_picker/date_range_picker.dart' as DateRangePicker;
 import 'package:share_product_v2/consts/textStyle.dart';
 import 'package:intl/intl.dart';
 
 class CustomDate extends StatefulWidget {
   TextEditingController controller;
-  CustomDate({this.controller});
+  CustomDate({required this.controller});
   @override
   _CustomDateState createState() => _CustomDateState();
 }
@@ -47,31 +46,32 @@ class _CustomDateState extends State<CustomDate> {
                 hintStyle: TextStyle(fontSize: 14, color: Color(0xffaaaaaa)),
               ),
               onTap: () async {
-                final List<DateTime> selectedDate =
-                    await DateRangePicker.showDatePicker(
-                  locale: const Locale('ko', "KO"),
-                  context: context,
-                  initialFirstDate: new DateTime.now(),
-                  initialLastDate:
-                      (new DateTime.now()).add(new Duration(days: 7)),
-                  firstDate: new DateTime(2015),
-                  lastDate: new DateTime(2050),
-                );
-                if (selectedDate != null) {
-                  for (var i = 0; i < selectedDate.length; i++) {
-                    String formatDate(DateTime date) =>
-                        new DateFormat("yyyy-MM-dd").format(date);
-                    dateItems[i] = formatDate(selectedDate[i]);
-                  }
-                  setState(() {
-                    date = "${dateItems[0]} ~ ${dateItems[1]}";
-                    widget.controller.text = date;
-                  });
-                } else {
-                  setState(() {
-                    date = date;
-                  });
-                }
+                // 데이트레인지피커
+                // final List<DateTime> selectedDate =
+                //     await DateRangePicker.showDatePicker(
+                //   locale: const Locale('ko', "KO"),
+                //   context: context,
+                //   initialFirstDate: new DateTime.now(),
+                //   initialLastDate:
+                //       (new DateTime.now()).add(new Duration(days: 7)),
+                //   firstDate: new DateTime(2015),
+                //   lastDate: new DateTime(2050),
+                // );
+                // if (selectedDate != null) {
+                //   for (var i = 0; i < selectedDate.length; i++) {
+                //     String formatDate(DateTime date) =>
+                //         new DateFormat("yyyy-MM-dd").format(date);
+                //     dateItems[i] = formatDate(selectedDate[i]);
+                //   }
+                //   setState(() {
+                //     date = "${dateItems[0]} ~ ${dateItems[1]}";
+                //     widget.controller.text = date;
+                //   });
+                // } else {
+                //   setState(() {
+                //     date = date;
+                //   });
+                // }
               },
             ),
           ),

@@ -20,16 +20,16 @@ class ContractProvider extends ChangeNotifier {
 
   final ChattingService chatService = ChattingService();
 
-  List<ContractModel> contracts = new List<ContractModel>();
+  List<ContractModel> contracts = new List<ContractModel>.empty();
 
-  List<ContractModel> contractsDo = new List<ContractModel>();
-  List<ContractModel> contractsReceive = new List<ContractModel>();
-  List<StompSendDTO> chatHistories = new List<StompSendDTO>();
-  Paging chatHistoriesCounter;
+  List<ContractModel> contractsDo = new List<ContractModel>.empty();
+  List<ContractModel> contractsReceive = new List<ContractModel>.empty();
+  List<StompSendDTO> chatHistories = new List<StompSendDTO>.empty();
+  late Paging chatHistoriesCounter;
 
-  ContractModel contractModel;
+  late ContractModel contractModel;
 
-  Paging paging;
+  late Paging paging;
 
 
   Future<void> getChatHistory(String uuid, int page) async {
@@ -67,7 +67,7 @@ class ContractProvider extends ChangeNotifier {
     print(res.toString());
   }
 
-  Future<void> addChat(StompSendDTO dto) {
+  Future<void> addChat(StompSendDTO dto) async {
     this.chatHistories.insert(0, dto);
     notifyListeners();
   }

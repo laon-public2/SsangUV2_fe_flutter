@@ -17,8 +17,8 @@ class WriteReview extends StatefulWidget {
 
 class _WriteReviewState extends State<WriteReview> {
   TextEditingController descriptionContorller = TextEditingController();
-  num ratingCount;
-  String _isDialogText;
+  late num ratingCount;
+  late String _isDialogText;
 
   @override
   Widget build(BuildContext context) {

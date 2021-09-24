@@ -22,15 +22,15 @@ class LendItemMyAct extends StatefulWidget {
   int arrayNum;
 
   LendItemMyAct({
-    this.token,
-    this.idx,
-    this.category,
-    this.title,
-    this.name,
-    this.price,
-    this.status,
-    this.picFile,
-    this.arrayNum,
+    required this.token,
+    required this.idx,
+    required this.category,
+    required this.title,
+    required this.name,
+    required this.price,
+    required this.status,
+    required this.picFile,
+    required this.arrayNum,
   });
 
   @override

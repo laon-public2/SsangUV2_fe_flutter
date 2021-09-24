@@ -29,11 +29,11 @@ class _Category1State extends State<Category0> {
 
   final List<String> itemKind = ["빌려드려요", "빌려주세요"];
 
-  int page;
+  late int page;
   int category = 1;
-  int totalCount;
+  late int totalCount;
 
-  String _currentItem = "";
+  String _currentItem = '';
 
   @override
   void initState() {
@@ -161,6 +161,9 @@ class _Category1State extends State<Category0> {
                       endDate: _dateFormat(_myActHistory.proWant[idx].endDate),
                       picture: _myActHistory.proWant[idx].productFiles[0].path,
                     );
+                }
+                else{
+                  return Container();
                 }
               },
               separatorBuilder: (context, idx) {

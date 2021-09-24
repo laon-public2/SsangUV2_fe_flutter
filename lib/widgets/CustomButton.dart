@@ -4,7 +4,7 @@ class CustomButton extends StatelessWidget {
   final String title;
   final bool enable;
   final VoidCallback onClick;
-  CustomButton({this.title = "", this.enable = true, this.onClick});
+  CustomButton({this.title = "", this.enable = true, required this.onClick});
 
   @override
   Widget build(BuildContext context) {

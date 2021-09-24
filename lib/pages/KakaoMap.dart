@@ -13,7 +13,7 @@ class KakaoMap extends StatefulWidget {
   static const String PATH = '/kopo';
 
   KakaoMap({
-    Key key,
+    Key? key,
     this.title = '주소검색',
     this.colour = Colors.white,
     this.apiKey = '',
@@ -31,7 +31,7 @@ final assetPath = "lib/assets/daum_search.html";
 
 class KakaoMapState extends State<KakaoMap> {
 
-  WebViewController _controller;
+  late WebViewController _controller;
   WebViewController get controller => _controller;
   @override
   Widget build(BuildContext context) {

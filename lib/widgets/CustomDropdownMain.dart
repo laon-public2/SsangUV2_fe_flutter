@@ -7,14 +7,14 @@ class CustomDropdownMain extends StatefulWidget {
   final List<String> items;
   final ValueChanged<String> onChange;
 
-  CustomDropdownMain({this.value, this.items, this.onChange});
+  CustomDropdownMain({required this.value, required this.items, required this.onChange});
 
   @override
   _CustomDropdownState createState() => _CustomDropdownState();
 }
 
 class _CustomDropdownState extends State<CustomDropdownMain> {
-  List<DropdownMenuItem<String>> items = List();
+  late List<DropdownMenuItem<String>> items;
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _CustomDropdownState extends State<CustomDropdownMain> {
             return items.map((e) {
               return Center(
                   child: Text(
-                e.value,
+                e.value!,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -55,7 +55,7 @@ class _CustomDropdownState extends State<CustomDropdownMain> {
             }).toList();
           },
           onChanged: (value) {
-            widget.onChange(value);
+            widget.onChange(value!);
             print(value);
           },
       ),

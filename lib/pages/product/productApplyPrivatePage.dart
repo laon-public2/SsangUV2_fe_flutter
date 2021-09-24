@@ -75,11 +75,11 @@ class _ProductApplyPageState extends State<ProductApplyPrivatePage> {
   final dateTextController = TextEditingController();
 
   // TextField Focus
-  FocusNode titleFocus;
-  FocusNode priceFocus;
-  FocusNode descriptionFocus;
+  late FocusNode titleFocus;
+  late FocusNode priceFocus;
+  late FocusNode descriptionFocus;
 
-  List<Asset> images = List<Asset>();
+  List<Asset> images = List<Asset>.empty();
 
   _dateFormat(String date) {
     String formatDate(DateTime date) => new DateFormat("yyyy/MM/dd").format(date);
@@ -109,7 +109,7 @@ class _ProductApplyPageState extends State<ProductApplyPrivatePage> {
   }
 
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>();
+    List<Asset> resultList = List<Asset>.empty();
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -158,7 +158,7 @@ class _ProductApplyPageState extends State<ProductApplyPrivatePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar.appBarWithPrev("", 0, context),
+      appBar: AppBarWithPrev(appBar: AppBar(), title: "", elevation: 0.0,),
       body: body(context),
     );
   }

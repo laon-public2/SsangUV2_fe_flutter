@@ -39,10 +39,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ProductProvider extends ChangeNotifier {
   final ProductService productService = ProductService();
 
-  Paging paging;
-  ReviewPaging reviewPaging;
+  late Paging paging;
+  late ReviewPaging reviewPaging;
 
-  Product product;
+  Product? product;
 
   List<Product> products = [];
 
@@ -54,89 +54,89 @@ class ProductProvider extends ChangeNotifier {
   String currentLocation = "";
   List<Geolocation> geoLocation = [];
   List<Geolocation> geoUserLocation = [];
-  productDetailWant productDetail;
-  List<productReview> productReviewnot;
+  productDetailWant? productDetail;
+  List<productReview>? productReviewnot;
   List<PrivateRent> privateRentList = [];
-  Paging privateRentCounter;
+  late Paging privateRentCounter;
 
   List<ChatListModel> chatListItem = [];
-  Paging chatListCounter;
+  late Paging chatListCounter;
   List<ChatListModel> rentListItem = [];
   List<ChatListModel> rentListItemRent = [];
-  Paging rentListCounter;
-  String productStart;
+  late Paging rentListCounter;
+  late String productStart;
 
   String firstAddress = '기본 주소로 사용함';
   String secondAddress = '기타 주소 설정';
-  num firstLa;
-  num firstLo;
-  num secondLa;
-  num secondLo;
+  late num firstLa;
+  late num firstLo;
+  late num secondLa;
+  late num secondLo;
 
-  String searchingWord;
-  num la;
-  num lo;
-  num laDefault;
-  num loDefault;
-  num laSecondDefault;
-  num loSecondDefault;
-  num laUser;
-  num loUser;
+  late String searchingWord;
+  late num la;
+  late num lo;
+  late num laDefault;
+  late num loDefault;
+  late num laSecondDefault;
+  late num loSecondDefault;
+  late num laUser;
+  late num loUser;
 
   List<SpecialProduct> specialProduct = [];
 
   //검색 카테고리 1
   List<SearchDataProduct> searchDataProduct = [];
   List<SearchDataProduct> searchDataProductWant = [];
-  Paging searchPaging;
+  late Paging searchPaging;
 
   //검색 카테고리 2
   List<SearchDataProduct> searchDataProductCa2 = [];
   List<SearchDataProduct> searchDataProductWantCa2 = [];
-  Paging searchPagingCa2;
+  late Paging searchPagingCa2;
 
   //검색 카테고리 3
   List<SearchDataProduct> searchDataProductCa3 = [];
   List<SearchDataProduct> searchDataProductWantCa3 = [];
-  Paging searchPagingCa3;
+  late Paging searchPagingCa3;
 
   //검색 카테고리 4
   List<SearchDataProduct> searchDataProductCa4 = [];
   List<SearchDataProduct> searchDataProductWantCa4 = [];
-  Paging searchPagingCa4;
+  late Paging searchPagingCa4;
 
   //검색 카테고리 5
   List<SearchDataProduct> searchDataProductCa5 = [];
   List<SearchDataProduct> searchDataProductWantCa5 = [];
-  Paging searchPagingCa5;
+  late Paging searchPagingCa5;
 
   //검색 카테고리 6
   List<SearchDataProduct> searchDataProductCa6 = [];
   List<SearchDataProduct> searchDataProductWantCa6 = [];
-  Paging searchPagingCa6;
+  late Paging searchPagingCa6;
 
   //검색 카테고리 7
   List<SearchDataProduct> searchDataProductCa7 = [];
   List<SearchDataProduct> searchDataProductWantCa7 = [];
-  Paging searchPagingCa7;
+  late Paging searchPagingCa7;
 
   //검색 카테고리 8
   List<SearchDataProduct> searchDataProductCa8 = [];
   List<SearchDataProduct> searchDataProductWantCa8 = [];
-  Paging searchPagingCa8;
+  late Paging searchPagingCa8;
 
   //검색 카테고리 9
   List<SearchDataProduct> searchDataProductCa9 = [];
   List<SearchDataProduct> searchDataProductWantCa9 = [];
-  Paging searchPagingCa9;
+  late Paging searchPagingCa9;
 
   //검색 카테고리 10
   List<SearchDataProduct> searchDataProductCa10 = [];
   List<SearchDataProduct> searchDataProductWantCa10 = [];
-  Paging searchPagingCa10;
+  late Paging searchPagingCa10;
 
 
-  Future<void> resetAddress() {
+  Future<void> resetAddress() async {
     this.firstAddress = '기본 주소 설정';
     this.secondAddress = '기타 주소 설정';
     this.firstLa = 0;
@@ -148,14 +148,14 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> changeUserPosition(num la, num lo) {
+  Future<void> changeUserPosition(num la, num lo) async {
     print("$la, $lo");
     this.laUser = la;
     this.loUser = lo;
     notifyListeners();
   }
 
-  Future<void> changeAddress(String type, num la, num lo, String address) {
+  Future<void> changeAddress(String type, num la, num lo, String address) async {
     print(type);
     if (type == "lend1") {
       this.firstAddress = address;
@@ -176,7 +176,7 @@ class ProductProvider extends ChangeNotifier {
   Future<void> getGeolocator() async {
     this.currentLocation = myLocation.first;
     int page = 0;
-    var currentPosition = await Geolocator().getCurrentPosition(
+    var currentPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
     await getGeo(currentPosition.latitude, currentPosition.longitude);
     if (this.laUser != null) {
@@ -291,15 +291,12 @@ class ProductProvider extends ChangeNotifier {
       Product product = Product.fromJson(json['data']);
       this.product = product;
 
-      print(this.product.productFiles);
-      print(this.product.productFiles.length);
-      print(this.product.productFiles[0]);
 
       notifyListeners();
     } catch (e) {
       print(e);
     } finally {
-      latestProduct(product.id.toString(), product, context);
+      latestProduct(product!.id.toString(), product!, context);
     }
   }
 
@@ -370,10 +367,9 @@ class ProductProvider extends ChangeNotifier {
 
       // formData.files.add(fileList);
       Navigator.of(context).pop();
-      Response response = await productService.postProduct(
-          categoryName, title, description, price, formData);
+      Response? response = await productService.postProduct(categoryName, title, description, price, formData);
 
-      print(response.statusCode);
+      print(response!.statusCode);
 
       Navigator.of(context).pop();
     } catch (e) {
@@ -774,10 +770,10 @@ class ProductProvider extends ChangeNotifier {
       print(formData.files);
       Navigator.of(context).pop();
 
-      Response response = await productService.putProduct(
+      Response? response = await productService.putProduct(
           id, categoryName, title, description, price, formData, deleteFiles);
 
-      print(response.statusCode);
+      print(response!.statusCode);
       Navigator.of(context).pop();
 
       Map<String, dynamic> json = jsonDecode(response.toString());
@@ -821,8 +817,8 @@ class ProductProvider extends ChangeNotifier {
 
   latestProduct(String idx, Product product, BuildContext context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    List<String> idxList = pref.getStringList("idx");
-    if (idxList == null) idxList = List<String>();
+    List<String>? idxList = pref.getStringList("idx");
+    if (idxList == null) idxList = List<String>.empty();
 
     if (idxList.contains(idx)) {
       idxList.remove(idx);
@@ -865,7 +861,7 @@ class ProductProvider extends ChangeNotifier {
       this.mainProducts = [];
     }
     print("메인페이지 상품 로딩");
-    final res = await productService.getMainRent(this.la, this.lo, page);
+    final res = await productService.getMainRent(this.la.toDouble(), this.lo.toDouble(), page);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     try {
       print(jsonMap['data']);
@@ -894,7 +890,7 @@ class ProductProvider extends ChangeNotifier {
       this.mainProductsWant = [];
     }
     print("메인페이지 상품 로딩 빌려주세요.");
-    final res = await productService.getMainWant(this.la, this.lo, page);
+    final res = await productService.getMainWant(this.la.toDouble(), this.lo.toDouble(), page);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     try {
       print("에러찾기");
@@ -1019,7 +1015,7 @@ class ProductProvider extends ChangeNotifier {
         print(list[0].createAt);
       } else {
         for (var e in list) {
-          this.productReviewnot.add(e);
+          this.productReviewnot!.add(e);
         }
       }
     } catch (e) {
@@ -1851,17 +1847,18 @@ class ProductProvider extends ChangeNotifier {
 
   Future<String> rentInit(int senderIdx, int receiverIdx, int productIdx, String token) async {
     print("대여문의 하기");
-    try{
+    try {
       print("${senderIdx}, ${receiverIdx}, ${productIdx}, ${token}");
       final res = await productService.productInit(senderIdx, receiverIdx, productIdx, token);
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
       this.productStart = jsonMap['data'];
       return jsonMap['data'];
-    }catch(e){
+    } catch(e){
       print(e);
+      notifyListeners();
+      return '';
     }
-    notifyListeners();
   }
 
   Future<void> rentStatus(String token, int sender, int receiver, int productIdx, String status, String uuid) async {
@@ -1872,11 +1869,10 @@ class ProductProvider extends ChangeNotifier {
       var rentFinishRes;
       switch(status){
         case "INIT" :
-          return rentStartRes = await productService.historyStart(
-              token, sender, receiver, productIdx, status, uuid);
+          rentStartRes = await productService.historyStart(token, sender, receiver, productIdx, status, uuid);
           break;
         case "START" :
-          return rentFinishRes = await productService.historyFinish(token, productIdx, uuid);
+          rentFinishRes = await productService.historyFinish(token, productIdx, uuid);
           break;
       }
       Map<String, dynamic> startMap = json.decode(rentStartRes.toString());

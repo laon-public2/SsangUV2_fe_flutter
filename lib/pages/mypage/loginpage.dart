@@ -9,11 +9,11 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage_not_use extends StatelessWidget {
-  SharedPreferences pref;
-  BuildContext context;
+  late SharedPreferences pref;
+  late BuildContext context;
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       pref = await SharedPreferences.getInstance();
     });
     this.context = context;

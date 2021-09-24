@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class CategoryContainer extends StatelessWidget {
   final String category;
 
-  CategoryContainer({this.category});
+  CategoryContainer({required this.category});
 
   @override
   Widget build(BuildContext context) {

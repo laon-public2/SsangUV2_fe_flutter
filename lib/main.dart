@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_screenutil/screenutil_init.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/models/IOSLocaliztionsDelegate.dart';
 import 'package:share_product_v2/pages/KakaoMap.dart';
@@ -77,7 +77,6 @@ class _MyAppState extends State<MyApp> {
         ],
         child: ScreenUtilInit(
           designSize: Size(360, 680),
-          allowFontScaling: false,
           builder: () => ScrollConfiguration(
             behavior: MyBehavior(),
             child: MaterialApp(

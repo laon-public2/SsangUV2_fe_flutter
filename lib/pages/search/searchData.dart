@@ -28,123 +28,118 @@ class _SearchDataState extends State<SearchData> {
     return DefaultTabController(
       length: 10,
       child: Scaffold(
-        appBar: _appBar(),
+        appBar: AppBar(
+          bottom: TabBar(
+            physics: NeverScrollableScrollPhysics(),
+            isScrollable: true,
+            unselectedLabelColor: Color(0xff444444),
+            labelColor: Color(0xffff0066),
+            indicatorColor: Color(0xffff0066),
+            tabs: <Widget>[
+              Tab(
+                child: _CustomTabBarText('생활용품'),
+              ),
+              Tab(
+                child: _CustomTabBarText('여행'),
+              ),
+              Tab(
+                child: _CustomTabBarText('스포츠/레저'),
+              ),
+              Tab(
+                child: _CustomTabBarText('육아'),
+              ),
+              Tab(
+                child: _CustomTabBarText('반려동물'),
+              ),
+              Tab(
+                child: _CustomTabBarText('가전제품'),
+              ),
+              Tab(
+                child: _CustomTabBarText('의류/잡화'),
+              ),
+              Tab(
+                child: _CustomTabBarText('가구/인테리어'),
+              ),
+              Tab(
+                child: _CustomTabBarText('자동차용품'),
+              ),
+              Tab(
+                child: _CustomTabBarText('기타'),
+              ),
+            ],
+          ),
+          elevation: 1.0,
+          // centerTitle: true,
+          title: Container(
+            width: double.infinity,
+            height: 35.h,
+            decoration: BoxDecoration(
+              color: Color(0xfff2f2f2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.1,
+                  child: Center(
+                    child: IconButton(
+                      icon: Image.asset('assets/icon/newSearch.png'),
+                      onPressed: () {
+                        Provider.of<ProductProvider>(context, listen: false)
+                            .SearchingDataProduct(0, _searchWord.text, _category, "RENT");
+                      },
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: TextField(
+                      controller: _searchWord,
+                      decoration: InputDecoration.collapsed(
+                        hintText: '검색어를 입력하세요.',
+                        border: InputBorder.none,
+                      ),
+                      textInputAction: TextInputAction.go,
+                      onSubmitted: _handleSubmitted,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          leadingWidth: 30.w,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_sharp,
+              color: Colors.black,
+              size: 30.0,
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
+          actions: <Widget>[
+            Container(
+              margin: const EdgeInsets.only(right: 12),
+              child: Center(
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      _searchWord.text = "";
+                    });
+                  },
+                  child: Text(
+                    '취소',
+                    style: TextStyle(color: Color(0xff666666), fontSize: 16),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
         body: _body(),
       ),
     );
   }
-
-  Widget _appBar() {
-    return AppBar(
-      bottom: TabBar(
-        physics: NeverScrollableScrollPhysics(),
-        isScrollable: true,
-        unselectedLabelColor: Color(0xff444444),
-        labelColor: Color(0xffff0066),
-        indicatorColor: Color(0xffff0066),
-        tabs: <Widget>[
-          Tab(
-            child: _CustomTabBarText('생활용품'),
-          ),
-          Tab(
-            child: _CustomTabBarText('여행'),
-          ),
-          Tab(
-            child: _CustomTabBarText('스포츠/레저'),
-          ),
-          Tab(
-            child: _CustomTabBarText('육아'),
-          ),
-          Tab(
-            child: _CustomTabBarText('반려동물'),
-          ),
-          Tab(
-            child: _CustomTabBarText('가전제품'),
-          ),
-          Tab(
-            child: _CustomTabBarText('의류/잡화'),
-          ),
-          Tab(
-            child: _CustomTabBarText('가구/인테리어'),
-          ),
-          Tab(
-            child: _CustomTabBarText('자동차용품'),
-          ),
-          Tab(
-            child: _CustomTabBarText('기타'),
-          ),
-        ],
-      ),
-      elevation: 1.0,
-      // centerTitle: true,
-      title: Container(
-        width: double.infinity,
-        height: 35.h,
-        decoration: BoxDecoration(
-          color: Color(0xfff2f2f2),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.1,
-              child: Center(
-                child: IconButton(
-                  icon: Image.asset('assets/icon/newSearch.png'),
-                  onPressed: () {
-                    Provider.of<ProductProvider>(context, listen: false)
-                        .SearchingDataProduct(0, _searchWord.text, _category, "RENT");
-                  },
-                ),
-              ),
-            ),
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: TextField(
-                  controller: _searchWord,
-                  decoration: InputDecoration.collapsed(
-                    hintText: '검색어를 입력하세요.',
-                    border: InputBorder.none,
-                  ),
-                  textInputAction: TextInputAction.go,
-                  onSubmitted: _handleSubmitted,
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-      leadingWidth: 30.w,
-      leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back_sharp,
-          color: Colors.black,
-          size: 30.0,
-        ),
-        onPressed: () => Navigator.pop(context),
-      ),
-      actions: <Widget>[
-        Container(
-          margin: const EdgeInsets.only(right: 12),
-          child: Center(
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  _searchWord.text = "";
-                });
-              },
-              child: Text(
-                '취소',
-                style: TextStyle(color: Color(0xff666666), fontSize: 16),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _body() {
     return TabBarView(
       children: [

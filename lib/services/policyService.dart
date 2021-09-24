@@ -9,7 +9,7 @@ class PolicyService {
   Dio dio = ApiUtils.instance.dio;
 
   Future<List> getPolicies() async {
-    ApiResponse defaultJson;
+    ApiResponse? defaultJson;
     try {
       Response response = await dio.get("/policy");
 
@@ -24,12 +24,12 @@ class PolicyService {
     } catch (e) {
       print(e);
     }
-    return defaultJson.data;
+    return defaultJson!.data;
   }
 
   // NOTICE: 안씁니당..~~!!!
   getPolicy(String title) async {
-    ApiResponse defaultJson;
+    ApiResponse? defaultJson;
     try {
       Response response = await dio.get("/policies/$title");
 
@@ -39,6 +39,6 @@ class PolicyService {
     } catch (e) {
       print(e);
     }
-    return defaultJson.data;
+    return defaultJson!.data;
   }
 }

@@ -6,12 +6,12 @@ import 'package:share_product_v2/services/policyService.dart';
 class PolicyProvider extends ChangeNotifier {
   final PolicyService policyService = PolicyService();
 
-  PolicyModel policy;
+  late PolicyModel policy;
 
   List<PolicyModel> policies = [];
 
   void getPolicies() async {
-    List<PolicyModel> list = await policyService.getPolicies();
+    List<PolicyModel> list = await policyService.getPolicies() as List<PolicyModel>;
     this.policies = list;
     notifyListeners();
   }

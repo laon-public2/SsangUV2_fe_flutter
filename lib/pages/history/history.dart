@@ -5,14 +5,14 @@ import 'package:share_product_v2/pages/history/share.dart';
 import 'package:share_product_v2/pages/history/shared.dart';
 
 class History extends StatefulWidget {
-  const History({Key key}) : super(key: key);
+  const History({Key? key}) : super(key: key);
 
   @override
   _HistoryState createState() => _HistoryState();
 }
 
 class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
-  TabController controller;
+  late TabController controller;
   double _visible = 0.0;
   @override
   void initState() {

@@ -6,7 +6,7 @@ import 'package:share_product_v2/utils/APIUtil.dart';
 class RegUserService {
   Dio dio = ApiUtils.instance.dio;
 
-  Future<Map<String, dynamic>> phone_act(String phone_act) async {
+  Future<Map<String, dynamic>?> phone_act(String phone_act) async {
     try {
       dio.options.contentType = 'application/x-www-form-urlencoded';
       Response response = await dio.post(
@@ -22,7 +22,7 @@ class RegUserService {
     }
   }
 
-  Future<Map<String, dynamic>> phone_actCon(
+  Future<Map<String, dynamic>?> phone_actCon(
       String phone_actCon, String verify) async {
     try {
       dio.options.contentType = 'application/x-www-form-urlencoded';
@@ -40,7 +40,7 @@ class RegUserService {
     }
   }
 
-  Future<Map<String, dynamic>> user_chk(String phoneNumber) async {
+  Future<Map<String, dynamic>?> user_chk(String phoneNumber) async {
     try {
       dio.options.contentType = "application/x-www-form-urlencoded";
       Response response = await dio.post(
@@ -57,7 +57,7 @@ class RegUserService {
     }
   }
 
-  Future<Map<String, dynamic>> RegUser(
+  Future<Map<String, dynamic>?> RegUser(
     String phoneNum,
     String password,
     String name,
@@ -89,7 +89,7 @@ class RegUserService {
         data: data,
       );
       print("response ===== ${response.statusCode}");
-      Map<String, dynamic> jsonMap;
+      Map<String, dynamic>? jsonMap;
       if (response.statusCode == 204) {
         return jsonMap;
       } else {
@@ -98,12 +98,10 @@ class RegUserService {
 
       // return jsonMap;
     } on DioError catch (e) {
-      print(e.response.statusCode);
-      print(e.response.data.toString());
     }
   }
 
-  Future<Map<String, dynamic>> RegUserNormal(
+  Future<Map<String, dynamic>?> RegUserNormal(
       String phoneNum,
       String password,
       String name,
@@ -134,7 +132,7 @@ class RegUserService {
       }
       );
       print("response ===== ${response.statusCode}");
-      Map<String, dynamic> jsonMap;
+      Map<String, dynamic>? jsonMap;
       if (response.statusCode == 204) {
         return jsonMap;
       } else {
@@ -143,8 +141,6 @@ class RegUserService {
 
       // return jsonMap;
     } on DioError catch (e) {
-      print(e.response.statusCode);
-      print(e.response.data.toString());
     }
   }
 }

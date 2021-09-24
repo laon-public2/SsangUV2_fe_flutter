@@ -18,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -29,44 +29,46 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.0
-  flutter_screenutil: ^4.0.2+3
-  date_range_picker: ^1.0.6
-  intl: ^0.16.1
-  google_maps_flutter: ^1.2.0
-  http:
-  provider: ^4.3.3
-  image_picker:
-  multi_image_picker: ^4.7.15
-  shared_preferences: ^0.5.12
-  carousel_slider: ^2.2.1
-  url_launcher: ^5.7.0
-  flutter_rating_bar: ^3.0.1+1
-  package_info: ^0.4.3
-  stomp_dart_client: ^0.3.7
-  dio: ^3.0.10
-  sign_in_with_apple: ^2.5.2
-  json_serializable: ^3.5.0
-  flutter_date_time_picker_mb: ^1.3.9
-  flutter_keyboard_visibility: ^3.2.2
-  geolocator: ^5.3.1
-  permission_handler: ^5.0.1+1
-  kopo: ^0.1.1
-  mask_text_input_formatter: ^1.1.0
-  firebase_auth: ^0.18.1+1
-  firebase_core: ^0.5.0
-  firebase_messaging: ^7.0.3
-  lazy_loading_list: ^1.0.0+1
-  page_transition: ^1.1.7+6
-  pull_to_refresh: ^1.6.3
-  extended_image: ^0.7.3
-  flutter_native_image: ^0.0.5
-  fluttertoast: ^3.1.3
-  connectivity: ^2.0.2
-  firebase_dynamic_links: ^0.6.2
-  webview_flutter: ^1.0.7
-  flutter_html: ^1.2.0
-  flutter_inappwebview: ^4.0.0+4
+  cupertino_icons: ^1.0.3
+  flutter_screenutil: ^5.0.0+2
+  # date_range_picker: ^1.0.6
+  intl: ^0.17.0
+  google_maps_flutter: ^2.0.9
+  http: ^0.13.3
+  provider: ^6.0.0
+  image_picker: ^0.8.4+1
+  multi_image_picker: ^4.8.01
+  shared_preferences: ^2.0.7
+  carousel_slider: ^4.0.0
+  url_launcher: ^6.0.10
+  flutter_rating_bar: ^4.0.0
+  package_info: ^2.0.2
+  stomp_dart_client: ^0.4.3
+  dio: ^4.0.0
+  sign_in_with_apple: ^3.1.0
+  json_serializable: ^4.1.4
+  # flutter_date_time_picker_mb: ^1.3.9
+  flutter_keyboard_visibility: ^5.0.3
+  geolocator: ^7.6.2
+  permission_handler: ^8.1.6
+  mask_text_input_formatter: ^2.0.0
+  firebase_auth: ^3.1.1
+  firebase_core: ^1.6.0
+  firebase_messaging: ^10.0.7
+  lazy_loading_list: ^1.0.1
+  page_transition: ^2.0.2
+  pull_to_refresh: ^2.0.0
+  extended_image: ^5.0.0
+  flutter_native_image: ^0.0.6+1
+  fluttertoast: ^8.0.8
+  connectivity: ^3.0.6
+  firebase_dynamic_links: ^2.0.9
+  webview_flutter: ^2.0.13
+  flutter_html: ^2.1.2
+  flutter_inappwebview: ^5.3.2
+  json_annotation: ^4.0.1
+  build_runner: ^2.1.2
+  geocoding: ^2.0.1
 
 dev_dependencies:
   flutter_test:

@@ -10,7 +10,7 @@ class ChangePassword extends StatefulWidget {
 }
 
 class _ChangePasswordState extends State<ChangePassword> {
-  String _isDialogText;
+  late String _isDialogText;
   TextEditingController currentPassword = TextEditingController();
   TextEditingController newPassword = TextEditingController();
   TextEditingController chkPassword = TextEditingController();
@@ -242,7 +242,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       });
                       _showDialog();
                     } else {
-                      String status = await _user.userChangePwd(this.currentPassword.text, this.newPassword.text);
+                      String? status = await _user.userChangePwd(this.currentPassword.text, this.newPassword.text);
                       if (status == 'false') {
                         setState(() {
                           _isDialogText = "비밀번호 변경중 오류가 발생했습니다.";

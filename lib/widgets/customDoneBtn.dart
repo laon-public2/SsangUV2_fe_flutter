@@ -8,7 +8,7 @@ class CustomDoneBtn extends StatelessWidget {
   final String text;
   final Function() func;
 
-  CustomDoneBtn({this.text, this.func});
+  CustomDoneBtn({required this.text, required this.func});
 
   @override
   Widget build(BuildContext context) {

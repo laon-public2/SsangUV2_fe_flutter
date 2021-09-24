@@ -54,12 +54,13 @@ class CustomerMessage extends StatefulWidget {
 
 class _CustomerMessage extends State<CustomerMessage>
     with WidgetsBindingObserver, TickerProviderStateMixin{
-  Map<String, String> headers;
+  late Map<String, String> headers;
   int page = 0;
   final picker = ImagePicker();
   List<Asset> images = [];
   bool _imageView = false;
   int imgQuality = 100;
+  var keyboardVisibilityController = KeyboardVisibilityController();
 
 
   //스크롤 컨트롤러 애니메이션
@@ -68,7 +69,7 @@ class _CustomerMessage extends State<CustomerMessage>
 
   //사진 선택
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>();
+    List<Asset> resultList = List<Asset>.empty();
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -137,25 +138,25 @@ class _CustomerMessage extends State<CustomerMessage>
   }
 
   // File _image;
-  StompClient client;
+  StompClient? client;
   final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _textController = new TextEditingController();
   bool _isComposing = false;
 
-  Future<void> setClient() {
+  Future<void> setClient() async {
     print(this.widget.uuid);
     //웹 소켓을 연결하기 위한 설정 코드
     client = StompClient(
       config: StompConfig(
         url: "ws://115.91.73.66:11111/ws-stomp/websocket",
         // websocket를 꼭 필수로 적어야 함.
-        onConnect: (StompClient _client, StompFrame connectFrame) async {
-          print(
-              "채팅방 connect ${_client.connected} , /sub/chat/rooms/${this.widget.uuid}");
-          _client.subscribe(
+        onConnect: ( StompFrame connectFrame) async {
+          // print(
+          //     "채팅방 connect ${client!.connected} , /sub/chat/rooms/${this.widget.uuid}");
+          client!.subscribe(
             destination: '/sub/chat/rooms/${this.widget.uuid}',
             callback: (frame) async {
-              var jsonRes = json.decode(frame.body);
+              var jsonRes = json.decode(frame.body!);
               print("frame.body : $jsonRes");
               StompSendDTO dto = StompSendDTO.fromJson(jsonRes);
               await Provider.of<ContractProvider>(context, listen: false)
@@ -184,8 +185,7 @@ class _CustomerMessage extends State<CustomerMessage>
         onWebSocketError: (error) => print("error : ${error.toString()}"),
       ),
     );
-    client.activate();
-    return null;
+    client!.activate();
   }
 
   _sendMsg(String text) {
@@ -196,7 +196,7 @@ class _CustomerMessage extends State<CustomerMessage>
       content: _textController.text,
       type: "TEXT",
     );
-    client.send(
+    client!.send(
       destination: '/pub/chat/message',
       body: json.encode(data.toJson()),
     );
@@ -287,10 +287,10 @@ class _CustomerMessage extends State<CustomerMessage>
   }
   //인터넷 연결 상태 작업
   final Connectivity _connectivity = Connectivity();
-  StreamSubscription<ConnectivityResult> _connSub;
+  late StreamSubscription<ConnectivityResult> _connSub;
 
   Future<void> initConnectivity() async {
-    ConnectivityResult result;
+    ConnectivityResult? result;
     try{
       result = await _connectivity.checkConnectivity();
     } on PlatformException catch(e) {
@@ -299,7 +299,7 @@ class _CustomerMessage extends State<CustomerMessage>
     if(!mounted) {
       return Future.value(null);
     }
-    return _updateConnectionStatus(result);
+    return _updateConnectionStatus(result!);
   }
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
@@ -331,7 +331,7 @@ class _CustomerMessage extends State<CustomerMessage>
         );
         break;
       case ConnectivityResult.none:
-        if (client != null) client.deactivate();
+        if (client != null) client!.deactivate();
         print("인터넷연결이 안됨 $result");
         Fluttertoast.showToast(
             msg: "네트워크 상태가 원할하지 않습니다.",
@@ -343,7 +343,7 @@ class _CustomerMessage extends State<CustomerMessage>
         );
         break;
       default:
-        if (client != null) client.deactivate();
+        if (client != null) client!.deactivate();
         print("기본 $result");
         Fluttertoast.showToast(
             msg: "네트워크 상태가 원할하지 않습니다.",
@@ -360,7 +360,7 @@ class _CustomerMessage extends State<CustomerMessage>
 
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     super.initState();
     //인터넷 연결 상태
     initConnectivity();
@@ -372,7 +372,7 @@ class _CustomerMessage extends State<CustomerMessage>
     _talking();
     bottomScrollController.addListener(_scrollerListener);
     bottomScrollController.addListener(chatScroller);
-    KeyboardVisibility.onChange.listen((bool visible) {
+    keyboardVisibilityController.onChange.listen((bool visible) {
       print('키보드 상태가 업데이트 되었습니다. Is visible: ${visible}');
       if (visible){
         print("키보드가 올라와 있습니다.");
@@ -392,8 +392,8 @@ class _CustomerMessage extends State<CustomerMessage>
     _textController.dispose();
     bottomScrollController.dispose();
     //채팅방 연결 해제
-    if (client != null) client.deactivate();
-    WidgetsBinding.instance.addObserver(this);
+    if (client != null) client!.deactivate();
+    WidgetsBinding.instance!.addObserver(this);
     //연결 해제
     _connSub.cancel();
     super.dispose();
@@ -480,7 +480,7 @@ class _CustomerMessage extends State<CustomerMessage>
                 ),
               );
             } else {
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
                 if (bottomScrollController.hasClients) {
                   double _position =
                       50.0 + bottomScrollController.position.maxScrollExtent;
@@ -519,12 +519,10 @@ class _CustomerMessage extends State<CustomerMessage>
                                             reverse: true,
                                             itemBuilder: (context, idx) {
                                               return ChatMessage(
-                                                text: chat.chatHistories[idx].content,
-                                                date:
-                                                chat.chatHistories[idx].createAt,
-                                                sender:
-                                                chat.chatHistories[idx].sender,
-                                                type: chat.chatHistories[idx].type,
+                                                text: chat.chatHistories[idx].content!,
+                                                date: chat.chatHistories[idx].createAt!,
+                                                sender: chat.chatHistories[idx].sender!,
+                                                type: chat.chatHistories[idx].type!,
                                                 uuid: this.widget.uuid,
                                               );
                                             },
@@ -639,7 +637,7 @@ class _CustomerMessage extends State<CustomerMessage>
                                   ],
                                 ),
                                 onTap: () {
-                                  client.deactivate();
+                                  client!.deactivate();
                                   Navigator.push(
                                     context,
                                     PageTransitioned(
@@ -992,7 +990,7 @@ class _CustomerMessage extends State<CustomerMessage>
           size: 25.sp,
         ),
         onPressed: () {
-          client.deactivate();
+          client!.deactivate();
           Navigator.pop(context);
         },
       ),
@@ -1008,7 +1006,7 @@ class _CustomerMessage extends State<CustomerMessage>
 }
 
 class ChatMessage extends StatelessWidget {
-  ChatMessage({this.text, this.date, this.sender, this.type, this.uuid});
+  ChatMessage({required this.text, required this.date, required this.sender, required this.type, required this.uuid});
 
   final String sender;
   final String text;

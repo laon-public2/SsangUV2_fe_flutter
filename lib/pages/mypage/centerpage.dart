@@ -16,7 +16,8 @@ class CenterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar.appBarWithPrev("고객센터", 1.0, context),
+      appBar: AppBarWithPrev(appBar: AppBar(), title: "고객센터", elevation: 1.0,),
+      // appBar: AppBarWithPrev(appAppBar(), "고객센터", 1.0, context),
       body: body(context),
     );
   }
@@ -24,7 +25,7 @@ class CenterPage extends StatelessWidget {
   Widget body(context) {
     return Column(
       children: centerList
-          .map((e) => menuItem(context, e["title"], e["type"]))
+          .map((e) => menuItem(context, e["title"]!, e["type"]!))
           .toList(),
     );
   }
@@ -74,7 +75,7 @@ class CenterPage extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return CustomDialog(
-              dialogChild(title), "확인", () => _goToContact(urls[type]));
+              dialogChild(title), "확인", () => _goToContact(urls[type]!));
         });
   }
 

@@ -5,7 +5,7 @@ class CustomLinkTextContainer extends StatelessWidget {
   final String title;
   final String link;
 
-  CustomLinkTextContainer({this.title, this.link});
+  CustomLinkTextContainer({required this.title, required this.link});
 
   @override
   Widget build(BuildContext context) {

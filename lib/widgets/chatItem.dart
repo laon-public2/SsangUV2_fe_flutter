@@ -5,7 +5,7 @@ class ChatItem extends StatelessWidget {
   final String text;
   final Color color;
   final Alignment alignment;
-  ChatItem({this.text, this.color, this.alignment});
+  ChatItem({required this.text, required this.color, required this.alignment});
 
   @override
   Widget build(BuildContext context) {

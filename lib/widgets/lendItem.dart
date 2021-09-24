@@ -10,7 +10,7 @@ class LendItem extends StatelessWidget {
   final String name;
   final String price;
 
-  LendItem({this.category, this.title, this.name, this.price});
+  LendItem({required this.category, required this.title, required this.name, required this.price});
 
   @override
   Widget build(BuildContext context) {

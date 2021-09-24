@@ -15,8 +15,8 @@ class UsePhone extends StatefulWidget {
 class _UsePhoneState extends State<UsePhone>
     with SingleTickerProviderStateMixin {
 
-  AnimationController _aniController;
-  Animation<Offset> _offsetAnimation;
+  late AnimationController _aniController;
+  late Animation<Offset> _offsetAnimation;
 
   @override
   void initState() {
@@ -48,7 +48,7 @@ class _UsePhoneState extends State<UsePhone>
 
   TextEditingController _myPh = TextEditingController();
   TextEditingController _myPhact = TextEditingController();
-  String _isDialogText;
+  String? _isDialogText;
   bool isPhAct = false;
   double _height = 290;
   String phActString = "인증번호 발송";
@@ -282,7 +282,7 @@ class _UsePhoneState extends State<UsePhone>
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return CustomDialogApply(Center(child: Text(_isDialogText)), '확인');
+          return CustomDialogApply(Center(child: Text(_isDialogText!)), '확인');
         });
   }
 

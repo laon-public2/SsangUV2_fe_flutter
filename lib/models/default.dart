@@ -1,9 +1,11 @@
 class ApiResponse<T> {
-  int statusCode;
-  String message;
-  T data;
+  late int statusCode;
+  late String message;
+  late T data;
 
-  ApiResponse({this.statusCode, this.message, this.data});
+  ApiResponse({int? statusCode, String? message, T? data });
+
+
 
   ApiResponse.fromJson(Map json)
       : statusCode = json['statusCode'],

@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'productMyActRent.g.dart';
+
+@JsonSerializable()
 class ProductMyActRent {
   int id;
   String title = "";
@@ -13,41 +18,44 @@ class ProductMyActRent {
   String address;
   String addressDetail;
   List<ProductFile> productFiles;
-  // String productFiles;
 
-  ProductMyActRent.fromJson(Map<String, dynamic> json)
-      : id = json["idx"],
-        name = json['name'],
-        title = json["title"],
-        startDate = json['start_date'],
-        endDate = json['end_date'],
-        minPrice = json['min_price'],
-        maxPrice = json['max_price'],
-        price = json["price"],
-        status = json['status'],
-        type = json['type'],
-        productFiles = json['image'] != null
-            ? (json['image'] as List)
-                .map((e) => ProductFile.fromJson(e))
-                .toList()
-            : List<ProductFile>.empty();
+  ProductMyActRent(
+      this.id,
+      this.title,
+      this.price,
+      this.date,
+      this.startDate,
+      this.endDate,
+      this.name,
+      this.minPrice,
+      this.maxPrice,
+      this.type,
+      this.status,
+      this.address,
+      this.addressDetail,
+      this.productFiles);
+// String productFiles;
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'price': price,
-        'status': status,
-        'title': title,
-        'image': productFiles.isEmpty ? null : productFiles,
-        // 'productFiles': productFiles
-      };
+  factory ProductMyActRent.fromJson(Map<String, dynamic> json) => _$ProductMyActRentFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProductMyActRentToJson(this);
+
+
 }
 
+@JsonSerializable()
 class ProductFile {
   int id;
   String path;
 
-  ProductFile.fromJson(Map<String, dynamic> json)
-      : id = json["file_idx"],
-        path = json["file"];
+  ProductFile(this.id, this.path);
+
+  factory ProductFile.fromJson(Map<String, dynamic> json) => _$ProductFileFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProductFileToJson(this);
+
+//
+  // ProductFile.fromJson(Map<String, dynamic> json)
+  //     : id = json["file_idx"],
+  //       path = json["file"];
 }

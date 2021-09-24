@@ -6,7 +6,7 @@ import 'package:share_product_v2/providers/policyProvider.dart';
 import 'package:share_product_v2/widgets/customAppBar%20copy.dart';
 
 class PolicyPage extends StatelessWidget {
-  const PolicyPage({Key key}) : super(key: key);
+  const PolicyPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class PolicyPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar.appBarWithPrev("약관 및 정책", 1.0, context),
+      appBar: AppBarWithPrev(appBar: AppBar(), title: "약관 및 정책", elevation: 1.0,),
       body: body(context),
     );
   }

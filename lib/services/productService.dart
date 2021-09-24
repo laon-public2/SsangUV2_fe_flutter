@@ -11,7 +11,7 @@ import 'package:share_product_v2/utils/APIUtil.dart';
 class ProductService {
   Dio dio = ApiUtils.instance.dio;
 
-  Future<Map<String, dynamic>> addWantProduct(
+  Future<Map<String, dynamic>?> addWantProduct(
     String token,
     String phNum,
     String userIdx,
@@ -49,7 +49,7 @@ class ProductService {
     Response res = await dio.post('/product/add', data: {});
   }
 
-  Future<Response> searchProduct(
+  Future<Response?> searchProduct(
       int page, String searchData, num lati, num longti, num category, String type) async {
     print("검색 조회 서비스");
     try {
@@ -65,17 +65,17 @@ class ProductService {
       return res;
     } on DioError catch (e) {
       print("검색조회 서비스 접속 에러");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      print(e.response!.statusCode);
+      print(e.response!.data.toString());
     }
   }
 
-  Future<Response> getProduct(int id) async {
+  Future<Response?> getProduct(int id) async {
     Response response = await dio.get("/products/$id");
     return response;
   }
 
-  Future<Response> getProductByCategory(
+  Future<Response?> getProductByCategory(
       double lati, double longti, int page, int category) async {
     Response response = await dio.get("/product/list", queryParameters: {
       'category': category,
@@ -89,7 +89,7 @@ class ProductService {
     return response;
   }
 
-  Future<Response> getSearch(
+  Future<Response?> getSearch(
       String keyword, int page, double latitude, double longitude) async {
     Response response = await dio.get("/products/search", queryParameters: {
       "keyword": keyword,
@@ -101,7 +101,7 @@ class ProductService {
     return response;
   }
 
-  Future<Response> postProduct(String categoryName, String title,
+  Future<Response?> postProduct(String categoryName, String title,
       String description, int price, FormData formData) async {
     Response response = await dio.post("/products",
         queryParameters: {
@@ -116,26 +116,26 @@ class ProductService {
     return response;
   }
 
-  Future<Response> getSpecialProduct() async {
+  Future<Response?> getSpecialProduct() async {
     Response response = await dio.get("/products/special");
 
     return response;
   }
 
-  Future<Response> getMyProduct(int page) async {
+  Future<Response?> getMyProduct(int page) async {
     Response response =
         await dio.get("/members/product", queryParameters: {"page": page});
 
     return response;
   }
 
-  Future<Response> deleteProduct(int id) async {
+  Future<Response?> deleteProduct(int id) async {
     Response response = await dio.delete("/products/$id");
 
     return response;
   }
 
-  Future<Response> putProduct(
+  Future<Response?> putProduct(
       int id,
       String categoryName,
       String title,
@@ -158,22 +158,22 @@ class ProductService {
   }
 
   //
-  // Future<Response> rentingProduct(int id) async {
+  // Future<Response?> rentingProduct(int id) async {
   //   Response response = await dio.patch("/products/renting/$id");
   //   return response;
   // }
   //
-  // Future<Response> rentableProduct(int id) async {
+  // Future<Response?> rentableProduct(int id) async {
   //   Response response = await dio.patch("/products/rentable/$id");
   //   return response;
   // }
   //
-  // Future<Response> stopProduct(int id) async {
+  // Future<Response?> stopProduct(int id) async {
   //   Response response = await dio.patch("/products/stop/$id");
   //   return response;
   // }
 
-  Future<Response> getProRent(int userIdx, int page, int category, String type) async {
+  Future<Response?> getProRent(int userIdx, int page, int category, String type) async {
     try {
       print("$type 접속");
       Response res = await dio.get(
@@ -188,14 +188,12 @@ class ProductService {
       print('$type 접속 상태 === > ${res.statusCode}');
       return res;
     } on DioError catch (e) {
-      print(e.response.statusCode);
-      print(e.response.headers);
-      print(e.response.request);
-      print(e.request);
+      print(e.response!.statusCode);
+      print(e.response!.headers);
     }
   }
 
-  Future<Response> rentStatusModified(int idx, String token) async {
+  Future<Response?> rentStatusModified(int idx, String token) async {
     try {
       print('빌려드려요 상태 수정');
       print(token);
@@ -207,13 +205,11 @@ class ProductService {
       print('빌려드려요 상태 수정 상태 ====  ${res.statusCode}');
       return res;
     } on DioError catch (e) {
-      print(e.response.statusCode);
-      print(e.request);
-      print(e.response.data.toString());
+      print(e.response!.statusCode);
     }
   }
 
-  Future<Response> getMainRent(double lati, double longti, int page) async {
+  Future<Response?> getMainRent(double lati, double longti, int page) async {
     // ApiResponse defaultJson;
     try {
       print("메인페이지 빌려드려요 접속");
@@ -233,15 +229,12 @@ class ProductService {
       // defaultJson = ApiResponse<List<MainPageRentWithCounter>>.fromJson(jsonMap);
       return res;
     } on DioError catch (e) {
-      print(e.response.statusCode);
-      print(e.response.headers);
-      print(e.response.request);
-      print(e.request);
+      print(e.response!.statusCode);
     }
     // return defaultJson.data;
   }
 
-  Future<Response> getMainWant(double lati, double longti, int page) async {
+  Future<Response?> getMainWant(double lati, double longti, int page) async {
     // ApiResponse defaultJson;
     try {
       print("메인페이지 빌려주세요 접속");
@@ -261,15 +254,11 @@ class ProductService {
       // defaultJson = ApiResponse<List<MainPageRentWithCounter>>.fromJson(jsonMap);
       return res;
     } on DioError catch (e) {
-      print(e.response.statusCode);
-      print(e.response.headers);
-      print(e.response.request);
-      print(e.request);
     }
     // return defaultJson.data;
   }
 
-  Future<Response> getCategoryProducts(String category, int page, String type,
+  Future<Response?> getCategoryProducts(String category, int page, String type,
       double lati, double longti) async {
     try {
       print(category);
@@ -292,12 +281,10 @@ class ProductService {
       return res;
     } on DioError catch (e) {
       print("카테고리 접속 에러");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
     }
   }
 
-  Future<Response> productDetail(int productIdx, var lati, var longti) async {
+  Future<Response?> productDetail(int productIdx, var lati, var longti) async {
     try {
       print("상품 상세정보 접속");
       Response res = await dio.get(
@@ -311,12 +298,10 @@ class ProductService {
       return res;
     } on DioError catch (e) {
       print("상품 상세정보 접속 에러");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
     }
   }
 
-  Future<Response> productReview(int productIdx, int page) async {
+  Future<Response?> productReview(int productIdx, int page) async {
     try {
       print('물품 리뷰 가져오기 접속');
       Response res = await dio.get(
@@ -329,12 +314,11 @@ class ProductService {
       return res;
     } on DioError catch (e) {
       print("물품 리뷰 가져오기 실패");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
     }
   }
 
-  Future<Response> productAddRent(
+  Future<Response?> productAddRent(
     String userPh,
     int userIdx,
     int categoryIdx,
@@ -383,12 +367,12 @@ class ProductService {
       return res;
     } on DioError catch (e) {
       print("상품 등록 에러 빌려주기");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> productAddHelp(
+  Future<Response?> productAddHelp(
       String userPh,
       int userIdx,
       int categoryIdx,
@@ -437,12 +421,12 @@ class ProductService {
       return res;
     } on DioError catch (e) {
       print("상품 등록 에러 빌려주기");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> productAddWant(
+  Future<Response?> productAddWant(
       String userPh,
       int userIdx,
       int categoryIdx,
@@ -490,12 +474,12 @@ class ProductService {
       return res;
     } on DioError catch (e) {
       print("상품 등록 에러 빌려주기");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> productModifiedText(
+  Future<Response?> productModifiedText(
       int productIdx,
       int categoryIdx,
       String title,
@@ -536,12 +520,12 @@ class ProductService {
       return res;
     } on DioError catch (e) {
       print("상품 수정 오류 (텍스트)");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> productModifiedDelPic(int imgIdx, String token) async {
+  Future<Response?> productModifiedDelPic(int imgIdx, String token) async {
     print("$imgIdx");
     print("$token");
     print("상품 이미지 수정(삭제)");
@@ -556,12 +540,12 @@ class ProductService {
       return res;
     }on DioError catch(e){
       print("상품 이미지 수정 에러 (삭제)");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> productModifiedAddPic(int productIdx, dynamic file, String token)async{
+  Future<Response?> productModifiedAddPic(int productIdx, dynamic file, String token)async{
     print("상품 이미지 수정(추가)");
     print(productIdx);
     print(token);
@@ -579,13 +563,13 @@ class ProductService {
       return res;
     }on DioError catch(e){
       print("상품 이미지 수정 추가 에러");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
 
   }
 
-  Future<Response> productAddpri(
+  Future<Response?> productAddpri(
       String userPh,
       int userIdx,
       int categoryIdx,
@@ -627,12 +611,12 @@ class ProductService {
       return res;
     } on DioError catch (e) {
       print("상품 등록 에러 빌려주기");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> sendReview(int userIdx, int productIdx, String description,
+  Future<Response?> sendReview(int userIdx, int productIdx, String description,
       int grade, String token) async {
     try {
       print(userIdx);
@@ -653,12 +637,12 @@ class ProductService {
       return res;
     } on DioError catch (e) {
       print("리뷰 보내기 접속 에러");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> getGeo(num la, num long) async {
+  Future<Response?> getGeo(num la, num long) async {
     print("주소값 불러오기");
     print(la);
     print(long);
@@ -677,14 +661,14 @@ class ProductService {
           backgroundColor: Color(0xffff0066),
           textColor: Colors.white,
           fontSize: 16.0,
-          timeInSecForIos: 10,
+          timeInSecForIosWeb: 10,
       );
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> delProduct(int productIdx, String token) async {
+  Future<Response?> delProduct(int productIdx, String token) async {
     print("$productIdx 물품 삭제 접속");
     print(token);
     try{
@@ -699,12 +683,12 @@ class ProductService {
       return res;
     }on DioError catch(e){
       print("물품삭제 접속 에러");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> privateList(int productIdx, num la, num lo, int page, String token) async{
+  Future<Response?> privateList(int productIdx, num la, num lo, int page, String token) async{
     print("대여 제공 리스트 접속");
     try{
       dio.options.headers['x-access-token'] = token;
@@ -720,12 +704,12 @@ class ProductService {
       return res;
     }on DioError catch(e){
       print("대여 제공 리스트 접속 에러");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> chatList(int userIdx, int page, String token) async {
+  Future<Response?> chatList(int userIdx, int page, String token) async {
     print('채팅내역 접속');
     try{
       dio.options.headers['x-access-token'] = token;
@@ -739,12 +723,12 @@ class ProductService {
       return res;
     }on DioError catch(e) {
       print("채팅내역 접속 에러");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> rentHistory(int userIdx, int page, String token, String type) async {
+  Future<Response?> rentHistory(int userIdx, int page, String token, String type) async {
     print('대여 물품 접속');
     try{
       dio.options.headers['x-access-token'] = token;
@@ -758,12 +742,12 @@ class ProductService {
       );
       return res;
     }on DioError catch(e){
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> productInit(int senderIdx, int receiverIdx, int productIdx, String token) async {
+  Future<Response?> productInit(int senderIdx, int receiverIdx, int productIdx, String token) async {
     print("대여 문의 하기 접속");
     try{
       dio.options.headers['x-access-token'] = token;
@@ -777,12 +761,12 @@ class ProductService {
       );
       return res;
     }on DioError catch(e) {
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> historyStart(String token, int sender, int receiver, int productIdx, String status, String uuid) async {
+  Future<Response?> historyStart(String token, int sender, int receiver, int productIdx, String status, String uuid) async {
     print("대여 물품 대여 시작");
     try{
       dio.options.headers["x-access-token"] = token;
@@ -800,12 +784,12 @@ class ProductService {
       return res;
     }on DioError catch(e){
       print("대여시작 접속 에러");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 
-  Future<Response> historyFinish(String token, int productIdx, String uuid) async {
+  Future<Response?> historyFinish(String token, int productIdx, String uuid) async {
     print("대여 물품 대여 시작");
     try{
       dio.options.headers["x-access-token"] = token;
@@ -819,8 +803,8 @@ class ProductService {
       return res;
     }on DioError catch(e){
       print("대여종료 접속 에러");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      
+      
     }
   }
 }

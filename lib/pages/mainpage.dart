@@ -28,7 +28,7 @@ int bottomSelectedIndex = 0;
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       // SharedPreferences pref = await SharedPreferences.getInstance();
       // String token = pref.get("access_token");
       // print("token : $token");
@@ -42,8 +42,8 @@ class MainPage extends StatelessWidget {
 }
 
 class MyStatefulWidget extends StatefulWidget {
-  MyStatefulWidget({Key key}) : super(key: key);
-  static MyStatefulWidgetState of(BuildContext context) => context.findAncestorStateOfType<MyStatefulWidgetState>();
+  MyStatefulWidget({Key? key}) : super(key: key);
+  static MyStatefulWidgetState? of(BuildContext context) => context.findAncestorStateOfType<MyStatefulWidgetState>();
   @override
   MyStatefulWidgetState createState() => MyStatefulWidgetState();
 
@@ -51,9 +51,9 @@ class MyStatefulWidget extends StatefulWidget {
 
 class MyStatefulWidgetState extends State<MyStatefulWidget> {
   // final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
-  SharedPreferences pref;
+  late SharedPreferences pref;
   int page = 0;
-  OverlayEntry overlayEntry;
+  OverlayEntry? overlayEntry;
 
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -73,8 +73,8 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   Future setAuthToken() async {
     SharedPreferences  pref = await SharedPreferences.getInstance();
-    String token = pref.get("access_token");
-    String reToken = pref.get("refresh_token");
+    String token = pref.get("access_token").toString();
+    String reToken = pref.get("refresh_token").toString();
     print("token : $token");
     print("reToken : $reToken");
     if (token != null && token != "" && reToken != null && reToken != "") {
@@ -393,7 +393,7 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   getPopUp(context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    int myTimestamp = pref.getInt("timestamp");
+    int myTimestamp = pref.getInt("timestamp")!.toInt();
 
     if (myTimestamp == null || myTimestamp == 0) {
       showDialog(
@@ -427,10 +427,11 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   void initState() {
     super.initState();
+    var keyboardVisibilityController = KeyboardVisibilityController();
     Future.delayed(Duration.zero, () async {
       await Provider.of<FCMModel>(context, listen: false).getMbToken();
       await Provider.of<UserProvider>(context, listen: false)
-          .AddFCMtoken(Provider.of<FCMModel>(context, listen: false).mbToken);
+          .AddFCMtoken(Provider.of<FCMModel>(context, listen: false).mbToken!);
       bool getBanners = await Provider.of<BannerProvider>(context, listen: false).getBanners();
       if(getBanners == false){
         _showDialogErr("서버와의 통신에 문제가 있습니다\n만약 서비스가 계속 작동되지 않는다면 고객센터로 문의 주십시오.");
@@ -441,14 +442,14 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
       Provider.of<UserProvider>(context, listen: false).me();
     }
 
-    KeyboardVisibility.onChange.listen((bool visible) {
+    keyboardVisibilityController.onChange.listen((bool visible) {
       print('Keyboard visibility update. Is visible: ${visible}');
       if (visible)
         showOverlay(context);
       else
         removeOverlay();
     });
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       pref = await SharedPreferences.getInstance();
       setAuthToken();
     });
@@ -458,7 +459,7 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   showOverlay(BuildContext context) {
     if (overlayEntry == null) return;
-    OverlayState overlayState = Overlay.of(context);
+    OverlayState? overlayState = Overlay.of(context);
     overlayEntry = OverlayEntry(builder: (context) {
       return Positioned(
         bottom: MediaQuery.of(context).viewInsets.bottom + 10,
@@ -466,13 +467,12 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
         child: InputDoneView(),
       );
     });
-    overlayState.insert(overlayEntry);
+    overlayState!.insert(overlayEntry!);
   }
 
   removeOverlay() {
     if (overlayEntry != null) {
-      overlayEntry.remove();
-      overlayEntry = null;
+      overlayEntry!.remove();
     }
   }
 

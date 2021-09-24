@@ -30,7 +30,7 @@ class ContractService {
     return response;
   }
 
-  Future<Response> getChatHistory(String uuid, int page) async {
+  Future<Response?> getChatHistory(String uuid, int page) async {
     print("uuid : $uuid");
     print("page : $page");
     try {
@@ -43,8 +43,8 @@ class ContractService {
       return response;
     } on DioError catch (e) {
       print("챗 기록 접속 에러");
-      print(e.response.statusCode);
-      print(e.response.data.toString());
+      print(e.response!.statusCode);
+      print(e.response!.data.toString());
     }
   }
 
@@ -117,7 +117,7 @@ class ContractService {
     return response;
   }
 
-  Future<http.StreamedResponse> sendImgFile(List<Asset> imgFiles, String uuid, String sender) async {
+  Future<http.StreamedResponse?> sendImgFile(List<Asset> imgFiles, String uuid, String sender) async {
     var url = Uri.parse("http://115.91.73.66:11111/chat/image");
     var imgInfo = jsonEncode({
       "orderId": uuid,

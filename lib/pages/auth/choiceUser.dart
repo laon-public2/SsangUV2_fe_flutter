@@ -23,7 +23,7 @@ TextEditingController pwd = TextEditingController();
 TextEditingController chkPwd = TextEditingController();
 TextEditingController comNum = TextEditingController();
 bool _company = false;
-File regimage;
+File? regimage;
 
 String userType = "NOMAL";
 
@@ -40,14 +40,13 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
 
 
   Future _getImage() async {
-    PickedFile image;
+    PickedFile? image;
     setState(() {
       image = null;
     });
-    image =
-        await _picker.getImage(source: ImageSource.gallery, imageQuality: 100);
+    image = (await _picker.getImage(source: ImageSource.gallery, imageQuality: 100))!;
     setState(() {
-      regimage = File(image.path);
+      regimage = File(image!.path);
     });
   }
 
@@ -335,7 +334,7 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
             userType,
             '1',
             comNum.text,
-            regimage,
+            regimage!,
             Provider.of<UserProvider>(context, listen: false).userFBtoken,
           );
           if (Provider.of<RegUserProvider>(context, listen: false).regUserTruth) {
