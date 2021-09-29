@@ -109,7 +109,7 @@ class _MyInfo extends State<MyInfo> {
                     ),
                   ),
                   subtitle: Text(
-                    _numberFormat(myInfo.phNum),
+                    _numberFormat(myInfo.phNum!),
                     style: TextStyle(
                       fontSize: 15,
                       color: Color(0xff666666),
@@ -135,7 +135,7 @@ class _MyInfo extends State<MyInfo> {
                           _showDialog("${myInfo.comIdentity}");
                         },
                         child: Text(
-                          myInfo.comNum,
+                          myInfo.comNum!,
                           style: TextStyle(
                             fontSize: 15,
                             color: Color(0xff666666),
@@ -151,7 +151,7 @@ class _MyInfo extends State<MyInfo> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => MyComModified(comName: myInfo.comIdentity, comNum: myInfo.comNum))
+                              MaterialPageRoute(builder: (context) => MyComModified(comName: myInfo.comIdentity!, comNum: myInfo.comNum!))
                             );
                           },
                         ),
@@ -248,7 +248,7 @@ class _MyInfo extends State<MyInfo> {
                       onTap: () async{
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => RemoveAccount(phNum: myInfo.phNum))
+                          MaterialPageRoute(builder: (context) => RemoveAccount(phNum: myInfo.phNum!))
                         );
                       },
                       child: Center(

@@ -56,8 +56,8 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
   late FocusNode priceFocus;
   late FocusNode descriptionFocus;
 
-  List<Asset> images = List<Asset>.empty();
-  List<RadioModel> LocationData = new List<RadioModel>.empty();
+  late List<Asset> images = [];
+  late List<RadioModel> LocationData = [];
 
   late AnimationController _animationController;
   late Animation<Offset> _offsetAnimation;
@@ -103,7 +103,7 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
   }
 
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>.empty();
+    late List<Asset> resultList = [];
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -403,8 +403,8 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
                         List<String> date = _dateController.text.split("~");
                         if(this.LocationData[0].isSelected){
                           await _product.productApplyHelp(
-                            _user.phNum,
-                            _user.userIdx,
+                            _user.phNum!,
+                            _user.userIdx!,
                             _selectCategory(_selectedCategory),
                             titleTextController.text,
                             descriptionTextController.text,
@@ -416,14 +416,14 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
                             "${_product.geoLocation[1].depth3} ${_product.geoLocation[1].depth4}",
                             _product.la,
                             _product.lo,
-                            _user.accessToken,
+                            _user.accessToken!,
                             _otherLocation,
                           );
                           _showDialogSuccess("글이 등록되었습니다.");
                         }else if(this.LocationData[1].isSelected){
                           await _product.productApplyRent(
-                            _user.phNum,
-                            _user.userIdx,
+                            _user.phNum!,
+                            _user.userIdx!,
                             _selectCategory(_selectedCategory),
                             titleTextController.text,
                             descriptionTextController.text,
@@ -433,16 +433,16 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
                             date[1],
                             "${_user.address}",
                             "${_user.addressDetail}",
-                            _product.laUser,
+                            _product.laUser!,
                             _product.loUser,
-                            _user.accessToken,
+                            _user.accessToken!,
                             _otherLocation,
                           );
                           _showDialogSuccess("글이 등록되었습니다.");
                         }else{
                           await _product.productApplyRent(
-                            _user.phNum,
-                            _user.userIdx,
+                            _user.phNum!,
+                            _user.userIdx!,
                             _selectCategory(_selectedCategory),
                             titleTextController.text,
                             descriptionTextController.text,
@@ -454,7 +454,7 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
                             "${this._otherAddressDetail.text}",
                             _product.secondLa,
                             _product.secondLo,
-                            _user.accessToken,
+                            _user.accessToken!,
                             _otherLocation,
                           );
                           _showDialogSuccess("글이 등록되었습니다.");

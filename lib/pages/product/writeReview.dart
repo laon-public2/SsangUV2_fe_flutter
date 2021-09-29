@@ -127,11 +127,11 @@ class _WriteReviewState extends State<WriteReview> {
                         _showDialog();
                       } else {
                         _myProduct.sendReview(
-                            _myInfo.userIdx,
+                            _myInfo.userIdx!,
                             this.widget.productIdx,
                             this.descriptionContorller.text,
                             this.ratingCount.toInt(),
-                            _myInfo.accessToken);
+                            _myInfo.accessToken!);
                         Navigator.pop(context);
                       }
                     },

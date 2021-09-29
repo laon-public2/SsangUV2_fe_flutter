@@ -14,16 +14,21 @@ class CustomDropdownMain extends StatefulWidget {
 }
 
 class _CustomDropdownState extends State<CustomDropdownMain> {
-  late List<DropdownMenuItem<String>> items;
+
+
+  late List<DropdownMenuItem<String>> items = [];
 
   @override
   void initState() {
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    items.clear();
+    if(items.length > 0){
+      items.clear();
+    }
     for (String item in widget.items) {
       items.add(
         DropdownMenuItem(

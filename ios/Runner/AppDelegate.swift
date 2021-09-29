@@ -1,7 +1,6 @@
 import UIKit
 import Flutter
 import GoogleMaps
-import Firebase
 //import UserNotifications
 
 @UIApplicationMain
@@ -10,9 +9,12 @@ import Firebase
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    FirebaseApp.configure()
+    if #available(iOS 10.0, *){
+            UNUserNotificationCenter.current().delegate = self
+        }
     GMSServices.provideAPIKey("AIzaSyB1fGTkELSe_FGtwbzpTY8J7kKJZrio3fk")
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
+    
 }

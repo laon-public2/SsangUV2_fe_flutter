@@ -100,14 +100,13 @@ class _ChangeAddressState extends State<ChangeAddressReg> {
                       return;
                     } else {
                       _showDialogLoading();
-                      await Provider.of<RegUserProvider>(context, listen: false)
-                          .regUserForm(
+                      await Provider.of<RegUserProvider>(context, listen: false).regUserForm(
                         pwd.text,
                         name.text,
                         userType,
                         '1',
                         comNum.text,
-                        regimage!,
+                        regimage == null ? File('') : regimage!,
                         Provider.of<FCMModel>(context, listen: false).mbToken!,
                       );
                       await Provider.of<UserProvider>(context, listen: false)
@@ -131,10 +130,8 @@ class _ChangeAddressState extends State<ChangeAddressReg> {
                           Provider.of<UserProvider>(context, listen: false)
                               .userLocationY,
                         );
-                        await Provider.of<ProductProvider>(context, listen: false)
-                            .getGeolocator();
-                        await Provider.of<UserProvider>(context, listen: false)
-                            .getMyInfo();
+                        await Provider.of<ProductProvider>(context, listen: false).getGeolocator();
+                        await Provider.of<UserProvider>(context, listen: false).getMyInfo();
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => SuccessReg()),

@@ -8,10 +8,10 @@ part of 'paging.dart';
 
 Paging _$PagingFromJson(Map<String, dynamic> json) {
   return Paging(
-    json['size'] as int,
-    json['totalPage'] as int,
-    json['currentPage'] as int,
-    json['totalCount'] as int,
+    json['size'] as int?,
+    json['totalPage'] as int?,
+    json['currentPage'] as int?,
+    json['totalCount'] as int?,
   );
 }
 

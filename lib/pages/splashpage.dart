@@ -29,8 +29,10 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigationPage(){
-    Route route = MaterialPageRoute(builder: (context) => MainPage());
-    Navigator.pushReplacement(context, route);
+    // Route route = MaterialPageRoute(builder: (context) => MainPage());
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (BuildContext context) => MainPage()));
+    // Navigator.pushReplacement(context, route);
     // Navigator.of(context).push(
     //   PageTransition(
     //     child: MainPage(),
@@ -44,6 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     startTime();
   }
+
 
   // void initializeFlutterFire() async {
   //   try {

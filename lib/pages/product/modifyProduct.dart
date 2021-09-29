@@ -51,10 +51,10 @@ class _ModifyProductState extends State<ModifyProduct> {
   late FocusNode priceFocus;
   late FocusNode descriptionFocus;
 
-  List<Asset> images = List<Asset>.empty();
+  late List<Asset> images = [];
 
-  List<ProductFile> original_images = List<ProductFile>.empty();
-  List<int> deleteImages = List<int>.empty();
+  late List<ProductFile> original_images = [];
+  late List<int> deleteImages = [];
 
   @override
   void initState() {
@@ -80,7 +80,7 @@ class _ModifyProductState extends State<ModifyProduct> {
   }
 
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>.empty();
+    late List<Asset> resultList = [];
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(

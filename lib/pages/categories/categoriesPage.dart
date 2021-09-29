@@ -316,7 +316,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
             if (!_want) {
               return LendItemMainPage(
                 category:
-                    "${_category(_myList.categoryProducts[idx].category)}",
+                    "${_category(_myList.categoryProducts[idx].category!)}",
                 idx: _myList.categoryProducts[idx].id,
                 title: "${_myList.categoryProducts[idx].title}",
                 name: "${_myList.categoryProducts[idx].name}",
@@ -330,7 +330,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
               return WantItemMainPage(
                 idx: _myList.categoryProductsWant[idx].id,
                 category:
-                    "${_category(_myList.categoryProductsWant[idx].category)}",
+                    "${_category(_myList.categoryProductsWant[idx].category!)}",
                 title: "${_myList.categoryProductsWant[idx].title}",
                 name: "${_myList.categoryProductsWant[idx].name}",
                 minPrice:

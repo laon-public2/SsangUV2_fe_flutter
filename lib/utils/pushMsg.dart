@@ -8,7 +8,7 @@ import 'package:share_product_v2/providers/userProvider.dart';
 class PushManager {
   static final PushManager _manager = PushManager._internal();
 
-  final _firebaseMessaging = FirebaseMessaging();
+  final _firebaseMessaging = FirebaseMessaging.instance;
 
   factory PushManager() {
     return _manager;
@@ -19,13 +19,21 @@ class PushManager {
   }
 
   void _requestIOSPermission() {
-    _firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true));
+    _firebaseMessaging.requestPermission(
+        // IosNotificationSettings(sound: true, badge: true, alert: true)
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
 
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
-    });
+    );
+
+    // _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
+    //   print("Settings registered: $settings");
+    // });
   }
 
   void registerToken(BuildContext context) {
@@ -35,24 +43,24 @@ class PushManager {
 
     _firebaseMessaging.getToken().then((token) {
       print('파베 $token');
-      Provider.of<UserProvider>(context, listen: false).userFBtoken = token;
+      Provider.of<UserProvider>(context, listen: false).userFBtoken = token!;
     });
   }
 
   void listenFirebaseMessaging(BuildContext context) {
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        // Triggered if a message is received whilst the app is in foreground
-        print('on message $message');
-      },
-      onResume: (Map<String, dynamic> message) async {
-        // Triggered if a message is received whilst the app is in background
-        print('on resume $message');
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        // Triggered if a message is received if the app was terminated
-        print('on launch $message');
-      },
-    );
+    // _firebaseMessaging.configure(
+    //   onMessage: (Map<String, dynamic> message) async {
+    //     // Triggered if a message is received whilst the app is in foreground
+    //     print('on message $message');
+    //   },
+    //   onResume: (Map<String, dynamic> message) async {
+    //     // Triggered if a message is received whilst the app is in background
+    //     print('on resume $message');
+    //   },
+    //   onLaunch: (Map<String, dynamic> message) async {
+    //     // Triggered if a message is received if the app was terminated
+    //     print('on launch $message');
+    //   },
+    // );
   }
 }

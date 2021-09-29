@@ -69,7 +69,7 @@ class _CustomerMessage extends State<CustomerMessage>
 
   //사진 선택
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>.empty();
+    late List<Asset> resultList = [];
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -704,8 +704,8 @@ class _CustomerMessage extends State<CustomerMessage>
                                           return null;
                                         }else{
                                           await _product.rentStatus(
-                                            Provider.of<UserProvider>(context, listen: false).accessToken,
-                                            Provider.of<UserProvider>(context, listen: false).userIdx,
+                                            Provider.of<UserProvider>(context, listen: false).accessToken!,
+                                            Provider.of<UserProvider>(context, listen: false).userIdx!,
                                             this.widget.receiverIdx,
                                             this.widget.productIdx,
                                             this.widget.status,
@@ -821,7 +821,7 @@ class _CustomerMessage extends State<CustomerMessage>
                                       this.widget.uuid,
                                       Provider.of<UserProvider>(context,
                                           listen: false)
-                                          .username,
+                                          .username!,
                                     );
                                     setState(() {
                                       this.images = [];

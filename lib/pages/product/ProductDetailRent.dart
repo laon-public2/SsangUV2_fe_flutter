@@ -183,8 +183,8 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                       InkWell(
                         onTap: () async {
                           await _product.delProduct(
-                              _product.productDetail!.id,
-                              _myUser.accessToken);
+                              _product.productDetail!.idx,
+                              _myUser.accessToken!);
                           await _product.getMainWant(0);
                           await _product.getMainWant(0);
                           _showDialogSuccess("삭제가 완료되었습니다.");
@@ -276,12 +276,10 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                           context,
                           listen: false)
                           .rentInit(
-                        Provider.of<UserProvider>(context, listen: false)
-                            .userIdx,
-                        _product.productDetail!.receiverIdx,
+                        Provider.of<UserProvider>(context, listen: false).userIdx!,
+                        _product.productDetail!.receiver_idx!,
                         this.widget.productIdx,
-                        Provider.of<UserProvider>(context, listen: false)
-                            .accessToken,
+                        Provider.of<UserProvider>(context, listen: false).accessToken!,
                       );
                       print("에러체크");
                       print(uuid);
@@ -296,12 +294,12 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                 _product.productDetail!.name,
                                 _product.productDetail!.price,
                                 _product
-                                    .productDetail!.productFiles[0].path,
+                                    .productDetail!.image[0].file,
                                 "INIT",
-                                _product.productDetail!.receiverIdx,
-                                _product.productDetail!.fcmToken,
-                                Provider.of<UserProvider>(context, listen: false).userFBtoken,
-                                Provider.of<UserProvider>(context, listen: false).userIdx,
+                                _product.productDetail!.receiver_idx!,
+                                _product.productDetail!.fcm_token,
+                                Provider.of<UserProvider>(context, listen: false).userFBtoken!,
+                                Provider.of<UserProvider>(context, listen: false).userIdx!,
                               )));
                     }
                   },
@@ -348,12 +346,10 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                           context,
                           listen: false)
                           .rentInit(
-                        Provider.of<UserProvider>(context, listen: false)
-                            .userIdx,
-                        _product.productDetail!.receiverIdx,
+                        Provider.of<UserProvider>(context, listen: false).userIdx!,
+                        _product.productDetail!.receiver_idx!,
                         this.widget.productIdx,
-                        Provider.of<UserProvider>(context, listen: false)
-                            .accessToken,
+                        Provider.of<UserProvider>(context, listen: false).accessToken!,
                       );
                       print("에러체크");
                       print(uuid);
@@ -368,12 +364,12 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                 _product.productDetail!.name,
                                 _product.productDetail!.price,
                                 _product
-                                    .productDetail!.productFiles[0].path,
+                                    .productDetail!.image[0].file,
                                 "INIT",
-                                _product.productDetail!.receiverIdx,
-                                _product.productDetail!.fcmToken,
-                                Provider.of<UserProvider>(context, listen: false).userFBtoken,
-                                Provider.of<UserProvider>(context, listen: false).userIdx,
+                                _product.productDetail!.receiver_idx!,
+                                _product.productDetail!.fcm_token,
+                                Provider.of<UserProvider>(context, listen: false).userFBtoken!,
+                                Provider.of<UserProvider>(context, listen: false).userIdx!,
                               )));
                     }
                   },
@@ -449,7 +445,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                               Navigator.push(
                                 context,
                                 PageTransition(
-                                  child: ImageView(_myProduct.productDetail!.productFiles),
+                                  child: ImageView(_myProduct.productDetail!.image),
                                   type: PageTransitionType.fade,
                                 ),
                               );
@@ -463,7 +459,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                 child: _myProduct.productDetail != null
                                     ? BannerItemProduct(
                                   false,
-                                  _myProduct.productDetail!.productFiles,
+                                  _myProduct.productDetail!.image,
                                 )
                                     : SizedBox(),
                               ),
@@ -530,7 +526,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                           right: 0,
                           bottom: 10,
                           child: Text(
-                            '${_dateFormat(_myProduct.productDetail!.startDate)}~${_dateFormat(_myProduct.productDetail!.endDate)}',
+                            '${_dateFormat(_myProduct.productDetail!.start_date)}~${_dateFormat(_myProduct.productDetail!.end_date)}',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 13.sp,
@@ -610,7 +606,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                     Container(
                                       child: Center(
                                         child: Text(
-                                          "${(_myProduct.productDetail!.distance).toStringAsFixed(2)}km",
+                                          "${(_myProduct.productDetail!.distance)!.toStringAsFixed(2)}km",
                                           style: TextStyle(
                                             color: Color(0xff888888),
                                           ),
@@ -709,7 +705,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${_myProduct.productDetail!.address} ${_myProduct.productDetail!.addressDetail}',
+                                '${_myProduct.productDetail!.address} ${_myProduct.productDetail!.address_detail}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
@@ -722,8 +718,8 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                     Container(
                                       height: 200,
                                       child: SimpleGoogleMaps(
-                                        latitude: _myProduct.productDetail!.lati.toDouble(),
-                                        longitude: _myProduct.productDetail!.longti.toDouble(),
+                                        latitude: _myProduct.productDetail!.lati!.toDouble(),
+                                        longitude: _myProduct.productDetail!.longti!.toDouble(),
                                       ),
                                     ),
                                     InkWell(
@@ -732,9 +728,9 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                             .push(MaterialPageRoute(builder: (_) {
                                           return DetailMapPage(
                                             address:
-                                            "${_myProduct.productDetail!.address} ${_myProduct.productDetail!.addressDetail}",
-                                            latitude: _myProduct.productDetail!.lati.toDouble(),
-                                            longitude: _myProduct.productDetail!.longti.toDouble(),
+                                            "${_myProduct.productDetail!.address} ${_myProduct.productDetail!.address_detail}",
+                                            latitude: _myProduct.productDetail!.lati!.toDouble(),
+                                            longitude: _myProduct.productDetail!.longti!.toDouble(),
                                           );
                                         }));
                                       },
@@ -793,8 +789,8 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                       )
                                     ],
                                   ),
-                                  _myProduct.productDetail!.review != null
-                                      ? _myProduct.productDetail!.review
+                                  _myProduct.productDetail!.review_possible != null
+                                      ? _myProduct.productDetail!.review_possible!
                                       ? InkWell(
                                     onTap: () {
                                       Navigator.push(

@@ -86,7 +86,7 @@ class _MyActHistoryState extends State<MyActHistory> with SingleTickerProviderSt
               Consumer<UserProvider>(
                 builder: (_, myact, __) {
                   return Text(
-                    myact.username,
+                    myact.username!,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,

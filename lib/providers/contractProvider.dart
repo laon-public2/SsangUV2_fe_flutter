@@ -20,11 +20,11 @@ class ContractProvider extends ChangeNotifier {
 
   final ChattingService chatService = ChattingService();
 
-  List<ContractModel> contracts = new List<ContractModel>.empty();
+  late List<ContractModel> contracts = [];
 
-  List<ContractModel> contractsDo = new List<ContractModel>.empty();
-  List<ContractModel> contractsReceive = new List<ContractModel>.empty();
-  List<StompSendDTO> chatHistories = new List<StompSendDTO>.empty();
+  late List<ContractModel> contractsDo = [];
+  late List<ContractModel> contractsReceive = [];
+  late List<StompSendDTO> chatHistories = [];
   late Paging chatHistoriesCounter;
 
   late ContractModel contractModel;

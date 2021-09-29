@@ -28,6 +28,7 @@ import 'package:share_product_v2/model/specialProduct.dart';
 import 'package:share_product_v2/models/default.dart';
 import 'package:share_product_v2/pages/search/searchData.dart';
 import 'package:share_product_v2/providers/mainProvider.dart';
+import 'package:share_product_v2/providers/userProvider.dart';
 
 import 'package:share_product_v2/services/policyService.dart';
 import 'package:share_product_v2/services/productService.dart';
@@ -76,11 +77,11 @@ class ProductProvider extends ChangeNotifier {
   late String searchingWord;
   late num la;
   late num lo;
-  late num laDefault;
-  late num loDefault;
+  late num laDefault = 37.4869535;
+  late num loDefault = 126.8956429;
   late num laSecondDefault;
   late num loSecondDefault;
-  late num laUser;
+  num? laUser;
   late num loUser;
 
   List<SpecialProduct> specialProduct = [];
@@ -180,7 +181,7 @@ class ProductProvider extends ChangeNotifier {
         desiredAccuracy: LocationAccuracy.bestForNavigation);
     await getGeo(currentPosition.latitude, currentPosition.longitude);
     if (this.laUser != null) {
-      await getUserGeo( this.laUser, this.loUser);
+      await getUserGeo( this.laUser!, this.loUser);
     }
     print("la 좌표${currentPosition.latitude}");
     print("lo 좌표${currentPosition.longitude}");
@@ -196,7 +197,7 @@ class ProductProvider extends ChangeNotifier {
       myLocation[0] = geoLocation[1].depth3;
       this.currentLocation = myLocation.first;
     } catch (e) {
-      print(e);
+      print('geodrop' + e.toString());
     }
     notifyListeners();
   }
@@ -207,7 +208,7 @@ class ProductProvider extends ChangeNotifier {
         myLocation[1] = geoUserLocation[1].depth3;
       }
     } catch (e) {
-      print(e);
+      print('usergeodrop' + e.toString());
     }
     notifyListeners();
   }
@@ -276,7 +277,7 @@ class ProductProvider extends ChangeNotifier {
 
       notifyListeners();
     } catch (e) {
-      print(e);
+      print('getSearch' + e.toString());
     }
   }
 
@@ -818,7 +819,7 @@ class ProductProvider extends ChangeNotifier {
   latestProduct(String idx, Product product, BuildContext context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     List<String>? idxList = pref.getStringList("idx");
-    if (idxList == null) idxList = List<String>.empty();
+    if (idxList == null) idxList = [];
 
     if (idxList.contains(idx)) {
       idxList.remove(idx);
@@ -864,7 +865,7 @@ class ProductProvider extends ChangeNotifier {
     final res = await productService.getMainRent(this.la.toDouble(), this.lo.toDouble(), page);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     try {
-      print(jsonMap['data']);
+      print(jsonMap);
       print("에러찾기");
       List<MainPageRent> list = (jsonMap['data'] as List)
           .map((e) => MainPageRent.fromJson(e))
@@ -880,7 +881,7 @@ class ProductProvider extends ChangeNotifier {
         }
       }
     } catch (e) {
-      print(e);
+      print('mainrent ' + e.toString());
     }
     notifyListeners();
   }
@@ -972,7 +973,7 @@ class ProductProvider extends ChangeNotifier {
         }
       }
     } catch (e) {
-      print(e);
+      print('categotyWant' + e.toString());
     }
     notifyListeners();
   }
@@ -988,7 +989,7 @@ class ProductProvider extends ChangeNotifier {
       productDetailWant list = productDetailWant.fromJson(jsonMap['data']);
       this.productDetail = list;
     } catch (e) {
-      print(e);
+      print('getproductDetail $e');
     }
     notifyListeners();
   }
@@ -1095,7 +1096,7 @@ class ProductProvider extends ChangeNotifier {
         this.myLocation[1] = value;
         this.currentLocation = value;
         this.la = this.loUser;
-        this.lo = this.laUser;
+        this.lo = this.laUser!;
         await getMainRent(page);
         await getMainWant(page);
       } else {
@@ -1742,7 +1743,7 @@ class ProductProvider extends ChangeNotifier {
       final res = await productService.delProduct(productIdx, token);
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
-      mainProducts.removeWhere((item) => item.id == productIdx);
+      mainProducts.removeWhere((item) => item.idx == productIdx);
     } catch (e) {
       print(e);
     }

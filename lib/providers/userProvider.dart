@@ -25,28 +25,36 @@ class UserProvider extends ChangeNotifier {
   final UserService userService = UserService();
   final PushService pushService = PushService();
   bool isLoggenIn = false;
-  late int userIdx;
-  late String userFBtoken;
-  late String originalFBtoken;
-  late String phNum;
-  late String accessToken;
-  late String userProfileImg;
-  late String username;
-  late String userNum;
-  late String userType;
-  late String comNum;
-  late String comIdentity;
-  late String address;
-  late String addressDetail;
+  int? userIdx;
+  String? userFBtoken;
+  String? originalFBtoken;
+  String? phNum;
+  String? accessToken;
+  String? userProfileImg;
+  String? username;
+  String? userNum;
+  String? userType;
+  String? comNum;
+  String? comIdentity;
+  String? address;
+  String? addressDetail;
+
   late double userLocationX;
   late double userLocationY;
-  late bool userPush;
+  bool? userPush;
 
   late Paging userNotice;
   List<UserNoticeModel> userNoticeList = [];
 
+
   MemberWithContractCount? loginMember;
   bool isFirstLogin = false;
+
+  Future<void> initialUserLocation() async {
+    var currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
+    this.userLocationX = currentPosition.latitude;
+    this.userLocationY = currentPosition.longitude;
+  }
 
   Future<void> getAccessToken(String phone, String password) async {
     print('로그인하기');
@@ -105,7 +113,7 @@ class UserProvider extends ChangeNotifier {
       num lo) async {
     print("유저 주소 변경");
     final res = await userService.changeUserAddress(
-        phNum, address, addressDetail, la, lo, accessToken);
+        phNum!, address, addressDetail, la, lo, accessToken!);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     if (jsonMap['success'] == true) {
       this.address = address;
@@ -117,11 +125,11 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> changePush() async {
-    this.userPush = !this.userPush;
+    this.userPush = !this.userPush!;
     print('유저 알림 서비스 변경');
     print(this.userIdx);
     final res = await userService.changePushService(
-        this.accessToken, this.userIdx);
+        this.accessToken!, this.userIdx!);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap);
 
@@ -131,7 +139,7 @@ class UserProvider extends ChangeNotifier {
   void fBToken() async {
     print('FCM토큰');
     Map<String, dynamic>? fbToken = await userService.updateFBtoken(
-        this.userIdx, this.originalFBtoken, this.accessToken);
+        this.userIdx!, this.originalFBtoken!, this.accessToken!);
     if (fbToken != null) {
       print('fcm토큰이 수정되었음');
     } else {
@@ -144,7 +152,7 @@ class UserProvider extends ChangeNotifier {
     print('내정보 확인하기');
     print("${this.accessToken} ${this.phNum}");
     Map<String, dynamic>? myinfo =
-    await userService.myInfo(this.accessToken, this.phNum);
+    await userService.myInfo(this.accessToken!, this.phNum!);
     if (myinfo != null) {
       if (myinfo['success'] == true) {
         print(myinfo);
@@ -227,13 +235,13 @@ class UserProvider extends ChangeNotifier {
   Future<bool> phone(String phone) async {
     Map<String, dynamic>? returnMap = await userService.checkLogin(phone);
     if (returnMap!['statusCode'] == 200) {
-      if (returnMap!['data'] != null) {
+      if (returnMap['data'] != null) {
         isFirstLogin = true;
-        setAccessToken(returnMap!['data']['access_token']);
+        setAccessToken(returnMap['data']['access_token']);
         SharedPref()
-            .save("access_token", returnMap!['data']['access_token'].toString());
+            .save("access_token", returnMap['data']['access_token'].toString());
         SharedPref().save(
-            "refresh_token", returnMap!['data']['refresh_token'].toString());
+            "refresh_token", returnMap['data']['refresh_token'].toString());
         this.isLoggenIn = true;
         notifyListeners();
       }
@@ -292,7 +300,7 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> DeleteUser(String userPh) async {
-    final res = await userService.delete_user(userPh, accessToken);
+    final res = await userService.delete_user(userPh, accessToken!);
     print(res.toString());
     this.isLoggenIn = false;
     notifyListeners();
@@ -312,7 +320,7 @@ class UserProvider extends ChangeNotifier {
     print("알림 페이지 프로바이더");
     try {
       final res = await userService.noticeViewService(
-          userIdx, page, accessToken);
+          userIdx!, page, accessToken!);
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
       List<UserNoticeModel> list = (jsonMap['data'] as List)
@@ -334,7 +342,7 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> userComChange(File images) async {
     print("대여업체 유저 사업자등록증 사진변경");
-    final res = await userService.changeCompanyImg(images, this.accessToken, this.userIdx);
+    final res = await userService.changeCompanyImg(images, this.accessToken!, this.userIdx!);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap);
     await getMyInfo();
@@ -355,7 +363,7 @@ class UserProvider extends ChangeNotifier {
       // formData.files.add(entry);
     }
     final res = await userService.changeUserPic(
-        fileList, this.accessToken, this.userIdx, this.username);
+        fileList, this.accessToken!, this.userIdx!, this.username!);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap);
     await getMyInfo();
@@ -364,7 +372,7 @@ class UserProvider extends ChangeNotifier {
   Future<String?> userInfoChange(String name) async {
     try {
       print("유저 이름 변경");
-      final res = await userService.changeUserName(name, phNum, accessToken);
+      final res = await userService.changeUserName(name, phNum!, accessToken!);
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
       this.username = name;
@@ -378,7 +386,7 @@ class UserProvider extends ChangeNotifier {
   Future<String?> userChangePwd(String currentPwd, String newPwd) async {
     try{
       print("유저 비밀번호 변경");
-      final res = await userService.changePassword(this.phNum, currentPwd, newPwd, accessToken);
+      final res = await userService.changePassword(this.phNum!, currentPwd, newPwd, accessToken!);
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
       return jsonMap['success'];

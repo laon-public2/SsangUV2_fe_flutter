@@ -41,7 +41,7 @@ class _Category1State extends State<Category1> {
   }
 
   Future<bool>_loadingProduct() async {
-    int userIdx = Provider.of<UserProvider>(context, listen: false).userIdx;
+    int userIdx = Provider.of<UserProvider>(context, listen: false).userIdx!;
     await Provider.of<MyPageProvider>(context, listen: false)
         .getProWantCa1(userIdx, page, category);
     await Provider.of<MyPageProvider>(context, listen: false)
@@ -144,7 +144,7 @@ class _Category1State extends State<Category1> {
                     idx: _myActHistory.proRentCa1[idx].id,
                     picFile: _myActHistory.proRentCa1[idx].productFiles[0].path,
                     arrayNum: idx,
-                    token: _myInfo.accessToken,
+                    token: _myInfo.accessToken!,
                   );
                 } else if (_currentItem == '빌려주세요') {
                   return WantItemMyAct(
