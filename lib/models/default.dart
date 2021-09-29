@@ -1,9 +1,9 @@
 class ApiResponse<T> {
-  late int statusCode;
-  late String message;
-  late T data;
+  int? statusCode;
+  String? message;
+  T? data;
 
-  ApiResponse({int? statusCode, String? message, T? data });
+  ApiResponse({required int statusCode, required String message, required T data });
 
 
 

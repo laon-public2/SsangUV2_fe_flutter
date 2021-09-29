@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,101 +43,112 @@ class _MyAppState extends State<MyApp> {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.white)
     );
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProvider<MyPageProvider>(
-            create: (_) => MyPageProvider(),
-          ),
-          ChangeNotifierProvider<RegUserProvider>(
-            create: (_) => RegUserProvider(),
-          ),
-          ChangeNotifierProvider<UserProvider>(
-            create: (_) => UserProvider(),
-          ),
-          ChangeNotifierProvider<PolicyProvider>(
-            create: (_) => PolicyProvider(),
-          ),
-          ChangeNotifierProvider<ProductProvider>(
-            create: (_) => ProductProvider(),
-          ),
-          ChangeNotifierProvider<BannerProvider>(
-            create: (_) => BannerProvider(),
-          ),
-          ChangeNotifierProvider<ContractProvider>(
-            create: (_) => ContractProvider(),
-          ),
-          ChangeNotifierProvider<MapProvider>(
-            create: (_) => MapProvider(),
-          ),
-          ChangeNotifierProvider<MainProvider>(
-            create: (_) => MainProvider(),
-          ),
-          ChangeNotifierProvider<FCMModel>(
-            create: (_) => FCMModel(),
-          ),
-        ],
-        child: ScreenUtilInit(
-          designSize: Size(360, 680),
-          builder: () => ScrollConfiguration(
-            behavior: MyBehavior(),
-            child: MaterialApp(
-              navigatorKey: navigatorKey,
-              title: '쌩유',
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: [
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                CupertinoLocalizationsDelegate(),
+    return FutureBuilder(
+      future: Firebase.initializeApp(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Container();
+        }
+        if (snapshot.connectionState == ConnectionState.done) {
+          return MultiProvider(
+              providers: [
+                ChangeNotifierProvider<MyPageProvider>(
+                  create: (_) => MyPageProvider(),
+                ),
+                ChangeNotifierProvider<RegUserProvider>(
+                  create: (_) => RegUserProvider(),
+                ),
+                ChangeNotifierProvider<UserProvider>(
+                  create: (_) => UserProvider(),
+                ),
+                ChangeNotifierProvider<PolicyProvider>(
+                  create: (_) => PolicyProvider(),
+                ),
+                ChangeNotifierProvider<ProductProvider>(
+                  create: (_) => ProductProvider(),
+                ),
+                ChangeNotifierProvider<BannerProvider>(
+                  create: (_) => BannerProvider(),
+                ),
+                ChangeNotifierProvider<ContractProvider>(
+                  create: (_) => ContractProvider(),
+                ),
+                ChangeNotifierProvider<MapProvider>(
+                  create: (_) => MapProvider(),
+                ),
+                ChangeNotifierProvider<MainProvider>(
+                  create: (_) => MainProvider(),
+                ),
+                ChangeNotifierProvider<FCMModel>(
+                  create: (_) => FCMModel(),
+                ),
               ],
-              supportedLocales: [
-                const Locale('en', "US"),
-                const Locale('ko', "KO"),
-              ],
-              theme: ThemeData(
-                fontFamily: "NotoSans",
-                primarySwatch: Colors.blue,
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-                primaryColor: Color(0xffFF0066),
-                brightness: Brightness.light,
-                appBarTheme: AppBarTheme(
-                    brightness: Brightness.light,
-                    color: Colors.white,
-                    elevation: 0.0),
-              ),
-              // home: SplashScreen(),
-              // DefaultTabController(
-              //   length: 3,
-              //   child: Scaffold(
-              //     body: TabBarView(
-              //       physics: NeverScrollableScrollPhysics(),
-              //       children: <Widget>[
-              //         MainPage(),
-              //         ProductReg(),
-              //         LoginMyPage(),
-              //       ],
-              //     ),
-              //     bottomNavigationBar: BottomBar(),
-              //   ),
-              // ),
-              initialRoute: "/",
-              routes: routes,
-              // onGenerateRoute: (routeSettings) {
-              //   if (routeSettings.name == "/product" ||
-              //       routeSettings.name == "/product/detail") {
-              //     Map<String, dynamic> args = routeSettings.arguments;
-              //     return MaterialPageRoute(
-              //       builder: (context) {
-              //         return DetailProduct(
-              //           id: args['id'],
-              //         );
-              //       },
-              //     );
-              //   }
-              //   return null;
-              // },
-            ),
-          ),
-        ));
+              child: ScreenUtilInit(
+                designSize: Size(360, 680),
+                builder: () => ScrollConfiguration(
+                  behavior: MyBehavior(),
+                  child: MaterialApp(
+                    navigatorKey: navigatorKey,
+                    title: '쌩유',
+                    debugShowCheckedModeBanner: false,
+                    localizationsDelegates: [
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      CupertinoLocalizationsDelegate(),
+                    ],
+                    supportedLocales: [
+                      const Locale('en', "US"),
+                      const Locale('ko', "KO"),
+                    ],
+                    theme: ThemeData(
+                      fontFamily: "NotoSans",
+                      primarySwatch: Colors.blue,
+                      visualDensity: VisualDensity.adaptivePlatformDensity,
+                      primaryColor: Color(0xffFF0066),
+                      brightness: Brightness.light,
+                      appBarTheme: AppBarTheme(
+                          brightness: Brightness.light,
+                          color: Colors.white,
+                          elevation: 0.0),
+                    ),
+                    // home: SplashScreen(),
+                    // DefaultTabController(
+                    //   length: 3,
+                    //   child: Scaffold(
+                    //     body: TabBarView(
+                    //       physics: NeverScrollableScrollPhysics(),
+                    //       children: <Widget>[
+                    //         MainPage(),
+                    //         ProductReg(),
+                    //         LoginMyPage(),
+                    //       ],
+                    //     ),
+                    //     bottomNavigationBar: BottomBar(),
+                    //   ),
+                    // ),
+                    initialRoute: "/",
+                    routes: routes,
+                    // onGenerateRoute: (routeSettings) {
+                    //   if (routeSettings.name == "/product" ||
+                    //       routeSettings.name == "/product/detail") {
+                    //     Map<String, dynamic> args = routeSettings.arguments;
+                    //     return MaterialPageRoute(
+                    //       builder: (context) {
+                    //         return DetailProduct(
+                    //           id: args['id'],
+                    //         );
+                    //       },
+                    //     );
+                    //   }
+                    //   return null;
+                    // },
+                  ),
+                ),
+              ));
+        }
+        return CircularProgressIndicator();
+      }
+    );
   }
 }
 

@@ -79,7 +79,7 @@ class _ProductApplyPageState extends State<ProductApplyPrivatePage> {
   late FocusNode priceFocus;
   late FocusNode descriptionFocus;
 
-  List<Asset> images = List<Asset>.empty();
+  late List<Asset> images = [];
 
   _dateFormat(String date) {
     String formatDate(DateTime date) => new DateFormat("yyyy/MM/dd").format(date);
@@ -109,7 +109,7 @@ class _ProductApplyPageState extends State<ProductApplyPrivatePage> {
   }
 
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>.empty();
+    late List<Asset> resultList = [];
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -336,8 +336,8 @@ class _ProductApplyPageState extends State<ProductApplyPrivatePage> {
                           return;
                         }
                         await _product.productApplyPrivate(
-                          _user.phNum,
-                          _user.userIdx,
+                          _user.phNum!,
+                          _user.userIdx!,
                           _selectCategory(_selectedCategory),
                           this.widget.productIdx,
                           titleTextController.text,
@@ -348,7 +348,7 @@ class _ProductApplyPageState extends State<ProductApplyPrivatePage> {
                           this.widget.endDate,
                           this.widget.address,
                           this.widget.addressDetail,
-                          _user.accessToken,
+                          _user.accessToken!,
                           this.widget.latitude,
                           this.widget.longitude,
                         );

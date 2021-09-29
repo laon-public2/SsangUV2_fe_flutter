@@ -327,15 +327,14 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
           _showDialog('사업자 등록번호가 비어 있습니다.');
           return;
         } else {
-          await Provider.of<RegUserProvider>(context, listen: false)
-              .regUserForm(
+          await Provider.of<RegUserProvider>(context, listen: false).regUserForm(
             pwd.text,
             name.text,
             userType,
             '1',
             comNum.text,
-            regimage!,
-            Provider.of<UserProvider>(context, listen: false).userFBtoken,
+            regimage == null ? File('') : regimage!,
+            Provider.of<UserProvider>(context, listen: false).userFBtoken!,
           );
           if (Provider.of<RegUserProvider>(context, listen: false).regUserTruth) {
             await localhostServer.close();

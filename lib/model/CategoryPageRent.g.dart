@@ -11,7 +11,7 @@ CategoryPageRent _$CategoryPageRentFromJson(Map<String, dynamic> json) {
     json['id'] as int,
     json['title'] as String,
     json['price'] as int,
-    json['category'] as int,
+    json['category_idx'] as int?,
     json['name'] as String,
     json['distance'] as num,
     (json['productFiles'] as List<dynamic>)
@@ -25,7 +25,7 @@ Map<String, dynamic> _$CategoryPageRentToJson(CategoryPageRent instance) =>
       'id': instance.id,
       'title': instance.title,
       'price': instance.price,
-      'category': instance.category,
+      'category_idx': instance.category,
       'name': instance.name,
       'distance': instance.distance,
       'productFiles': instance.productFiles,

@@ -39,7 +39,7 @@ class RegUserProvider with ChangeNotifier {
     Map<String, dynamic>? phoneActivation = await regUserService.phone_actCon(phoneAct, verify);
     print(phoneActivation.toString());
     print('인증번호 상태 = ${phoneActivation!['message']}');
-    if (phoneActivation!['message'] == "인증번호 검증 성공") {
+    if (phoneActivation['message'] == "인증번호 검증 성공") {
       phoneActive = true;
       this.phNum = phoneAct;
     } else {
@@ -50,13 +50,13 @@ class RegUserProvider with ChangeNotifier {
   }
 
   Future<void> regUserForm(String password, String name, String userType,
-      String push, String comNum, File image, String fcmToken) async {
+      String push, String comNum, File? image, String fcmToken) async {
     print('유저 회원가입');
     print('$password, $name, $userType, $push, $comNum');
     if(userType == "BUSINESS"){
       print("업체 유저 회원가입");
       Map<String, dynamic>? regUser = await regUserService.RegUser(
-          phNum!, password, name, userType, push, comNum, image, fcmToken);
+          phNum!, password, name, userType, push, comNum, image!, fcmToken);
       print(regUser.toString());
       if (regUser != null) {
         if (regUser['message'] == "회원가입에 성공하였습니다") {
@@ -83,7 +83,7 @@ class RegUserProvider with ChangeNotifier {
     print('$phnum');
     Map<String, dynamic>? chkUser = await regUserService.user_chk(phnum);
     print('유저체크 상태 === ${chkUser!['success']}');
-    if (chkUser!['success']) {
+    if (chkUser['success']) {
       chkUserChk = true;
     } else {
       chkUserChk = false;

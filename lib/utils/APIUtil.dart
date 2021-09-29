@@ -14,7 +14,7 @@ final String SERVERURL = "http://${SERVER_ADDRESS}:15000/api"; //개발서버
 final String CHATSERVERURL = "http://${chat_address}:11111";
 final String AUTHSERVERURL = "http://${SERVER_ADDRESS}:15000/api";
 
-GlobalKey globalKey;
+GlobalKey? globalKey = new GlobalKey();
 
 bool isLoading = false;
 
@@ -22,9 +22,10 @@ class ApiUtils {
   late Dio dio;
 
   ApiUtils() {
-    globalKey = new GlobalKey();
+    // globalKey = new GlobalKey();
     dio = new Dio();
     dio.options.baseUrl = SERVERURL;
+    dio.options.headers['Content-Type'] = "application/json";
     // dio
     //   ..interceptors.add(InterceptorsWrapper(
     //       onRequest: (RequestOptions options) => requestInterceptor(options),
@@ -37,7 +38,7 @@ class ApiUtils {
 class ChatUtils {
   late Dio dio;
   ChatUtils() {
-    globalKey = new GlobalKey();
+    // globalKey = new GlobalKey();
     dio = new Dio();
     dio.options.baseUrl = CHATSERVERURL;
     // dio
@@ -89,7 +90,7 @@ dynamic requestInterceptor(RequestOptions options) async {
     print("loading show");
     isLoading = true;
     showDialog(
-        context: globalKey.currentContext,
+        context: globalKey!.currentContext!,
         barrierColor: Colors.black.withOpacity(0.0),
         builder: (BuildContext context) {
           return Loading();
@@ -102,7 +103,7 @@ dynamic responseInterceptor(Response options) async {
   if (isLoading) {
     isLoading = false;
     print("loading show false");
-    Navigator.of(globalKey.currentContext).pop();
+    Navigator.of(globalKey!.currentContext!).pop();
   }
 }
 

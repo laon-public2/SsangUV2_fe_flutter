@@ -8,10 +8,10 @@ part of 'banner.dart';
 
 BannerModel _$BannerModelFromJson(Map<String, dynamic> json) {
   return BannerModel(
-    json['id'] as int,
+    json['banner_id'] as int,
     json['title'] as String,
     json['url'] as String,
-    json['bannerFile'] as String,
+    json['path'] as String,
   );
 }
 

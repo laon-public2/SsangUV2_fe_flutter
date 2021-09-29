@@ -117,7 +117,7 @@ class _LoginMyPageState extends State<LoginMyPage> {
                               Text("알림설정", style: normal_16_000),
                               Spacer(),
                               Switch(
-                                value: _getMyinfo.userPush == null ? false : _getMyinfo.userPush,
+                                value: _getMyinfo.userPush == null ? false : _getMyinfo.userPush!,
                                 onChanged: (bool value) {
                                   _getMyinfo.changePush();
                                   Fluttertoast.showToast(

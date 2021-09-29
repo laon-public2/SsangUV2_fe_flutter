@@ -59,8 +59,8 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
   bool _otherLocation = false;
   late FocusNode descriptionFocus;
 
-  List<ProductFile> original_images = List<ProductFile>.empty();
-  List<int> deleteImages = List<int>.empty();
+  late List<ProductFile> original_images = [];
+  late List<int> deleteImages = [];
 
   @override
   void initState() {
@@ -70,12 +70,12 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
       _selectedCategory = this.widget.categoryString!;
       _priceController.text = "${this.widget.originalInfo!.price}";
       _dateController.text =
-      "${_dateFormat(this.widget.originalInfo!.startDate)} ~ ${_dateFormat(this.widget.originalInfo!.endDate)}";
-      _minMoneyController.text = "${this.widget.originalInfo!.minPrice}";
-      _maxMoneyController.text = "${this.widget.originalInfo!.maxPrice}";
+      "${_dateFormat(this.widget.originalInfo!.start_date)} ~ ${_dateFormat(this.widget.originalInfo!.end_date)}";
+      _minMoneyController.text = "${this.widget.originalInfo!.min_price}";
+      _maxMoneyController.text = "${this.widget.originalInfo!.max_price}";
       descriptionTextController.text = this.widget.originalInfo!.description;
-      original_images = this.widget.originalInfo!.productFiles.toList();
-      _otherAddressDetail.text = this.widget.originalInfo!.addressDetail;
+      original_images = this.widget.originalInfo!.image.toList();
+      _otherAddressDetail.text = this.widget.originalInfo!.address_detail;
     });
     //애니메이션
     _animationController = AnimationController(
@@ -98,10 +98,10 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
 
   String? _isDialogText;
   final picker = ImagePicker();
-  List<Asset> images = List<Asset>.empty();
+  late List<Asset> images = [];
 
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>.empty();
+    late List<Asset> resultList = [];
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -175,7 +175,7 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
-                      "http://115.91.73.66:15066/assets/images/product/${e.path}",
+                      "http://115.91.73.66:15066/assets/images/product/${e.file}",
                       fit: BoxFit.cover,
                       width: 72,
                       height: 72,
@@ -190,7 +190,7 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
                       onPressed: () {
                         setState(() {
                           original_images.remove(e);
-                          deleteImages.add(e.id);
+                          deleteImages.add(e.file_idx);
                         });
                       }),
                 )
@@ -234,8 +234,8 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       await Provider.of<ProductProvider>(context, listen: false).changeAddress(
         "lend1",
-        this.widget.originalInfo!.lati,
-        this.widget.originalInfo!.longti,
+        this.widget.originalInfo!.lati!,
+        this.widget.originalInfo!.longti!,
         this.widget.originalInfo!.address,
       );
     });
@@ -537,7 +537,7 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
                           } else {
                             List<String> date = _dateController.text.split("~");
                             await _myProduct.productModified(
-                                this.widget.originalInfo!.id,
+                                this.widget.originalInfo!.idx,
                                 _selectCategory(this.widget.categoryString),
                                 _productName.text,
                                 descriptionTextController.text,
@@ -552,7 +552,7 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
                                 this._otherAddressDetail.text,
                                 _myProduct.firstLa,
                                 _myProduct.firstLo,
-                                _user.accessToken,
+                                _user.accessToken!,
                             );
                             _showDialogSuccess("글이 수정되었습니다.");
                           }

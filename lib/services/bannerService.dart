@@ -9,7 +9,7 @@ class BannerService {
   Dio dio = ApiUtils.instance.dio;
 
   Future<List> getBanners() async {
-    ApiResponse? defaultJson;
+    late ApiResponse defaultJson;
     try {
       // final bannerTypeString = bannerType.toShortString();
 
@@ -22,14 +22,9 @@ class BannerService {
       // print(json.decode(response.toString()));
       print('banner서비스 접속 상태 === ${response.statusCode}');
       Map<String, dynamic> jsonMap = json.decode(response.toString());
-      // print(jsonMap['data']);
-
-      List<BannerModel> datas = (jsonMap['data'] as List)
-          .map((e) => BannerModel.fromJson(e))
-          .toList();
-      // print(datas);
+      print(jsonMap['data']);
+      List<BannerModel> datas = (jsonMap['data'] as List).map((e) => BannerModel.fromJson(e)).toList();
       jsonMap['data'] = datas;
-
       defaultJson = ApiResponse<List<BannerModel>>.fromJson(jsonMap);
       // print(defaultJson);
     } on DioError catch (e) {
@@ -39,6 +34,6 @@ class BannerService {
       print(e.message);
     }
 
-    return defaultJson!.data;
+    return defaultJson.data;
   }
 }

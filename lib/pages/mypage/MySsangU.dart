@@ -27,7 +27,7 @@ class _MySSangUState extends State<MySSangU> {
     await Provider.of<ProductProvider>(context, listen: false).privateList(
       this.widget.productIdx,
       this.page,
-      Provider.of<UserProvider>(context, listen: false).accessToken,
+      Provider.of<UserProvider>(context, listen: false).accessToken!,
     );
     return false;
   }

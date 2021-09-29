@@ -8,7 +8,7 @@ class CategoryPageWant {
   String title = "";
   int minPrice;
   int maxPrice;
-  int category;
+  int? category;
   String startDate;
   String endDate;
   String name;

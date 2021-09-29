@@ -20,9 +20,9 @@ class Chatting extends StatelessWidget {
 
     Future<bool> chatListLoad() async {
       await Provider.of<ProductProvider>(context, listen: false).chatList(
-        Provider.of<UserProvider>(context, listen: false).userIdx,
+        Provider.of<UserProvider>(context, listen: false).userIdx!,
         page,
-        Provider.of<UserProvider>(context, listen: false).accessToken,
+        Provider.of<UserProvider>(context, listen: false).accessToken!,
       );
       return false;
     }
@@ -66,10 +66,10 @@ class Chatting extends StatelessWidget {
                           Provider.of<ProductProvider>(context, listen: false)
                               .chatList(
                             Provider.of<UserProvider>(context, listen: false)
-                                .userIdx,
+                                .userIdx!,
                             page,
                             Provider.of<UserProvider>(context, listen: false)
-                                .accessToken,
+                                .accessToken!,
                           );
                         }
                       }

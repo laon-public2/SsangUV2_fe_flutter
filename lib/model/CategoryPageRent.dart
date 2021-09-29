@@ -7,7 +7,7 @@ class CategoryPageRent {
   int id;
   String title = "";
   int price;
-  int category;
+  int? category;
   String name;
   num distance;
   List<ProductFile> productFiles;

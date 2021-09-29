@@ -49,11 +49,11 @@ class _MyPageModifiedState extends State<MyPageModified> with SingleTickerProvid
 
   final picker = ImagePicker();
 
-  List<Asset> images = List<Asset>.empty();
+  late List<Asset> images = [];
   late String _isDialogText;
 
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>.empty();
+    late List<Asset> resultList = [];
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(

@@ -28,7 +28,7 @@ class BannerModel {
 
 // class BannerFile {
 //   String path;
-
+//
 //   BannerFile.fromJson(Map<String, dynamic> json) : path = json['path'];
 // }
 

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:share_product_v2/utils/APIUtil.dart';
+import 'package:http/http.dart' as http;
 
 class ProductService {
   Dio dio = ApiUtils.instance.dio;
@@ -284,18 +285,26 @@ class ProductService {
     }
   }
 
-  Future<Response?> productDetail(int productIdx, var lati, var longti) async {
+  Future<String?> productDetail(int productIdx, var lati, var longti) async {
+    print('$productIdx / $lati / $longti ');
     try {
       print("상품 상세정보 접속");
-      Response res = await dio.get(
-        '/product/detail',
-        queryParameters: {
-          'productIdx': productIdx,
-          'latitude': lati,
-          'longitude': longti,
-        },
+      Uri url = Uri.parse('http://115.91.73.66:15000/api/product/detail?productIdx=$productIdx&latitude=$lati&longitude=$longti');
+      // http.Response response = await http.get(url);
+      var request = http.MultipartRequest(
+          'GET', Uri.parse(url.toString())
       );
-      return res;
+      http.StreamedResponse response = await request.send();
+      String responseStream = await response.stream.bytesToString();
+      // Response res = await dio.get(
+      //   '/product/detail',
+      //   queryParameters: {
+      //     'productIdx': productIdx,
+      //     'latitude': lati,
+      //     'longitude': longti,
+      //   },
+      // );
+      return responseStream;
     } on DioError catch (e) {
       print("상품 상세정보 접속 에러");
     }

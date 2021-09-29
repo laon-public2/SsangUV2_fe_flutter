@@ -114,8 +114,8 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                 InkWell(
                                   onTap: () async {
                                     await _myProduct.delProduct(
-                                        _myProduct.productDetail!.id,
-                                        _myUser.accessToken);
+                                        _myProduct.productDetail!.idx,
+                                        _myUser.accessToken!);
                                     await _myProduct.getMainWant(0);
                                     await _myProduct.getMainWant(0);
                                     _showDialogSuccess("삭제가 완료되었습니다.");
@@ -218,19 +218,19 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ProductApplyPrivatePage(
-                                    _myProduct.productDetail!.id,
-                                    _myUser.userIdx,
-                                    _myUser.userNum,
-                                    _myProduct.productDetail!.category,
+                                    _myProduct.productDetail!.idx,
+                                    _myUser.userIdx!,
+                                    _myUser.userNum!,
+                                    _myProduct.productDetail!.category_idx!,
                                     _myProduct.productDetail!.title,
-                                    _myProduct.productDetail!.minPrice,
-                                    _myProduct.productDetail!.maxPrice,
-                                    _myProduct.productDetail!.startDate,
-                                    _myProduct.productDetail!.endDate,
+                                    _myProduct.productDetail!.min_price,
+                                    _myProduct.productDetail!.max_price,
+                                    _myProduct.productDetail!.start_date,
+                                    _myProduct.productDetail!.end_date,
                                     "${_myProduct.productDetail!.address}",
-                                    "${_myProduct.productDetail!.addressDetail}",
-                                    _myProduct.productDetail!.longti,
-                                    _myProduct.productDetail!.lati,
+                                    "${_myProduct.productDetail!.address_detail}",
+                                    _myProduct.productDetail!.longti!,
+                                    _myProduct.productDetail!.lati!,
                                   ),
                                 ),
                               );
@@ -334,7 +334,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ImageView(
-                                      _myProduct.productDetail!.productFiles)));
+                                      _myProduct.productDetail!.image)));
                         },
                         child: Container(
                           width: double.infinity,
@@ -343,7 +343,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                           child: _myProduct.productDetail != null
                               ? BannerItemProduct(
                                   false,
-                                  _myProduct.productDetail!.productFiles,
+                                  _myProduct.productDetail!.image,
                                 )
                               : SizedBox(),
                         ),
@@ -409,7 +409,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                       right: 0,
                       bottom: 10,
                       child: Text(
-                        '${_dateFormat(_myProduct.productDetail!.startDate)}~${_dateFormat(_myProduct.productDetail!.endDate)}',
+                        '${_dateFormat(_myProduct.productDetail!.start_date)}~${_dateFormat(_myProduct.productDetail!.end_date)}',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 13.sp,
@@ -495,7 +495,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                     Container(
                                       child: Center(
                                         child: Text(
-                                          "${(_myProduct.productDetail!.distance).toStringAsFixed(2)}km",
+                                          "${(_myProduct.productDetail!.distance)!.toStringAsFixed(2)}km",
                                           style: TextStyle(
                                             color: Color(0xff888888),
                                           ),
@@ -538,7 +538,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      '${_myProduct.productDetail!.minPrice} ~ ${_myProduct.productDetail!.maxPrice}원',
+                                      '${_myProduct.productDetail!.min_price} ~ ${_myProduct.productDetail!.max_price}원',
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -555,7 +555,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                                       builder: (context) =>
                                                           MySSangU(_myProduct
                                                               .productDetail!
-                                                              .id)));
+                                                              .idx)));
                                             },
                                             child: Container(
                                               width: 170.w,
@@ -629,7 +629,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${_myProduct.productDetail!.address} ${_myProduct.productDetail!.addressDetail}',
+                                '${_myProduct.productDetail!.address} ${_myProduct.productDetail!.address_detail}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
@@ -642,8 +642,8 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                     Container(
                                       height: 200,
                                       child: SimpleGoogleMaps(
-                                        latitude: _myProduct.productDetail!.lati.toDouble(),
-                                        longitude: _myProduct.productDetail!.longti.toDouble(),
+                                        latitude: _myProduct.productDetail!.lati!.toDouble(),
+                                        longitude: _myProduct.productDetail!.longti!.toDouble(),
                                       ),
                                     ),
                                     InkWell(
@@ -652,11 +652,11 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                             MaterialPageRoute(builder: (_) {
                                           return DetailMapPage(
                                             address:
-                                                "${_myProduct.productDetail!.address} ${_myProduct.productDetail!.addressDetail}",
+                                                "${_myProduct.productDetail!.address} ${_myProduct.productDetail!.address_detail}",
                                             latitude:
-                                                _myProduct.productDetail!.lati.toDouble(),
+                                                _myProduct.productDetail!.lati!.toDouble(),
                                             longitude:
-                                                _myProduct.productDetail!.longti.toDouble(),
+                                                _myProduct.productDetail!.longti!.toDouble(),
                                           );
                                         }));
                                       },

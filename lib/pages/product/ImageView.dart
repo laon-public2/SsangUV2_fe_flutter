@@ -46,7 +46,7 @@ class ImageView extends StatelessWidget {
                       ),
                       items: allPath.map((e) {
                         return Image.network(
-                          "http://115.91.73.66:15066/assets/images/product/${e.path}",
+                          "http://115.91.73.66:15066/assets/images/product/${e.file}",
                           fit: BoxFit.contain,
                         );
                       }).toList(),

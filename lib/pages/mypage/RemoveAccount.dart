@@ -181,7 +181,7 @@ class _RemoveAccountState extends State<RemoveAccount> with SingleTickerProvider
                     InkWell(
                       onTap: () async {
                         if(_isDelete) {
-                          await myInfo.DeleteUser(myInfo.phNum);
+                          await myInfo.DeleteUser(myInfo.phNum!);
                           SharedPreferences pref = await SharedPreferences.getInstance();
                           pref.clear();
                           Navigator.of(context).popUntil((route) => route.isFirst);

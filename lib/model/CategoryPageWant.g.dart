@@ -10,11 +10,11 @@ CategoryPageWant _$CategoryPageWantFromJson(Map<String, dynamic> json) {
   return CategoryPageWant(
     json['id'] as int,
     json['title'] as String,
-    json['minPrice'] as int,
-    json['maxPrice'] as int,
-    json['category'] as int,
-    json['startDate'] as String,
-    json['endDate'] as String,
+    json['min_price'] as int,
+    json['max_price'] as int,
+    json['category_idx'] as int?,
+    json['start_date'] as String,
+    json['end_date'] as String,
     json['name'] as String,
     json['distance'] as num,
     (json['productFiles'] as List<dynamic>)

@@ -37,17 +37,17 @@ class _ShareState extends State<Share> {
         if(pvm.rentListCounter.totalCount != pvm.rentListItem.length){
           this.page++;
           await pvm.rentHistory(
-              Provider.of<UserProvider>(context, listen: false).userIdx,
+              Provider.of<UserProvider>(context, listen: false).userIdx!,
               page,
-              Provider.of<UserProvider>(context, listen: false).accessToken);
+              Provider.of<UserProvider>(context, listen: false).accessToken!);
         }
       }else{
         if(pvm.rentListCounter.totalCount != pvm.rentListItem.length){
           this.page++;
           await pvm.rentHistoryRent(
-              Provider.of<UserProvider>(context, listen: false).userIdx,
+              Provider.of<UserProvider>(context, listen: false).userIdx!,
               page,
-              Provider.of<UserProvider>(context, listen: false).accessToken);
+              Provider.of<UserProvider>(context, listen: false).accessToken!);
         }
       }
     }
@@ -55,9 +55,9 @@ class _ShareState extends State<Share> {
 
   Future<bool> loadData() async {
     await Provider.of<ProductProvider>(context, listen: false).rentHistory(
-        Provider.of<UserProvider>(context, listen: false).userIdx,
+        Provider.of<UserProvider>(context, listen: false).userIdx!,
         page,
-        Provider.of<UserProvider>(context, listen: false).accessToken);
+        Provider.of<UserProvider>(context, listen: false).accessToken!);
     return false;
   }
 
@@ -135,19 +135,19 @@ class _ShareState extends State<Share> {
                                   Provider.of<ProductProvider>(context, listen: false)
                                       .rentHistory(
                                     Provider.of<UserProvider>(context, listen: false)
-                                        .userIdx,
+                                        .userIdx!,
                                     0,
                                     Provider.of<UserProvider>(context, listen: false)
-                                        .accessToken,
+                                        .accessToken!,
                                   );
                                 }else{
                                   Provider.of<ProductProvider>(context, listen: false)
                                       .rentHistoryRent(
                                     Provider.of<UserProvider>(context, listen: false)
-                                        .userIdx,
+                                        .userIdx!,
                                     0,
                                     Provider.of<UserProvider>(context, listen: false)
-                                        .accessToken,
+                                        .accessToken!,
                                   );
                                 }
                               },

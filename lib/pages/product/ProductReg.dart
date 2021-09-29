@@ -50,8 +50,8 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
 
   bool _otherLocation = false;
 
-  List<RadioModel> LocationData = new List<RadioModel>.empty(); //커스텀 라디오 버튼
-  late FocusNode descriptionFocus;
+  late List<RadioModel> LocationData = []; //커스텀 라디오 버튼
+  late FocusNode descriptionFocus = new FocusNode();
 
   late AnimationController _aniController;
   late Animation<Offset> _offsetAnimation;
@@ -85,10 +85,10 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
 
   String? _isDialogText;
   final picker = ImagePicker();
-  List<Asset> images = List<Asset>.empty();
+  late List<Asset> images = [];
 
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>.empty();
+    late List<Asset> resultList = [];
     String error = 'No Error Dectected';
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -528,8 +528,8 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
                           if(this.LocationData[0].isSelected == true){
                             List<String> date = _dateController.text.split("~");
                             await _myProduct.productApplyWant(
-                              _user.phNum,
-                              _user.userIdx,
+                              _user.phNum!,
+                              _user.userIdx!,
                               _selectCategory(_selectedCategory),
                               _productName.text,
                               descriptionTextController.text,
@@ -542,15 +542,15 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
                               "${_myProduct.geoLocation[1].depth3} ${_myProduct.geoLocation[1].depth4}",
                               _myProduct.la,
                               _myProduct.lo,
-                              _user.accessToken,
+                              _user.accessToken!,
                               _otherLocation,
                             );
                             _showDialogSuccess("글이 등록되었습니다.");
                           }else if(this.LocationData[1].isSelected == true){
                             List<String> date = _dateController.text.split("~");
                             await _myProduct.productApplyWant(
-                              _user.phNum,
-                              _user.userIdx,
+                              _user.phNum!,
+                              _user.userIdx!,
                               _selectCategory(_selectedCategory),
                               _productName.text,
                               descriptionTextController.text,
@@ -563,15 +563,15 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
                               "${_user.addressDetail}",
                               _user.userLocationX,
                               _user.userLocationY,
-                              _user.accessToken,
+                              _user.accessToken!,
                               _otherLocation,
                             );
                             _showDialogSuccess("글이 등록되었습니다.");
                           }else if(this.LocationData[2].isSelected == true){
                             List<String> date = _dateController.text.split("~");
                             await _myProduct.productApplyWant(
-                              _user.phNum,
-                              _user.userIdx,
+                              _user.phNum!,
+                              _user.userIdx!,
                               _selectCategory(_selectedCategory),
                               _productName.text,
                               descriptionTextController.text,
@@ -584,7 +584,7 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
                               "${this._otherAddressDetail.text}",
                               _myProduct.secondLa,
                               _myProduct.secondLo,
-                              _user.accessToken,
+                              _user.accessToken!,
                               _otherLocation,
                             );
                             _showDialogSuccess("글이 등록되었습니다.");

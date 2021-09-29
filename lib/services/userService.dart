@@ -277,7 +277,7 @@ class UserService {
       return apiResponse;
     } on DioError catch (e) {
       ApiResponse apiResponse = new ApiResponse(
-          statusCode: e.response!.statusCode,
+          statusCode: e.response!.statusCode!,
           message: e.message,
           data: e.response);
       return apiResponse;
@@ -300,7 +300,7 @@ class UserService {
       return apiResponse;
     } on DioError catch (e) {
       ApiResponse apiResponse = new ApiResponse(
-          statusCode: e.response!.statusCode,
+          statusCode: e.response!.statusCode!,
           message: e.message,
           data: e.response);
       return apiResponse;
@@ -320,7 +320,7 @@ class UserService {
       return apiResponse;
     } on DioError catch (e) {
       ApiResponse apiResponse = new ApiResponse(
-          statusCode: e.response!.statusCode,
+          statusCode: e.response!.statusCode!,
           message: e.message,
           data: e.response);
       return apiResponse;

@@ -83,8 +83,7 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
       await Provider.of<UserProvider>(context, listen: false)
           .setAccessToken(token);
       await Provider.of<BannerProvider>(context, listen: false).getBanners();
-      await Provider.of<ProductProvider>(context, listen: false)
-          .changeUserPosition(
+      await Provider.of<ProductProvider>(context, listen: false).changeUserPosition(
         Provider.of<UserProvider>(context, listen: false).userLocationY,
         Provider.of<UserProvider>(context, listen: false).userLocationX,
       );
@@ -393,7 +392,7 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   getPopUp(context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    int myTimestamp = pref.getInt("timestamp")!.toInt();
+    int? myTimestamp = pref.getInt("timestamp") ?? 0.toInt();
 
     if (myTimestamp == null || myTimestamp == 0) {
       showDialog(
@@ -430,14 +429,18 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
     var keyboardVisibilityController = KeyboardVisibilityController();
     Future.delayed(Duration.zero, () async {
       await Provider.of<FCMModel>(context, listen: false).getMbToken();
-      await Provider.of<UserProvider>(context, listen: false)
-          .AddFCMtoken(Provider.of<FCMModel>(context, listen: false).mbToken!);
+      await Provider.of<UserProvider>(context, listen: false).AddFCMtoken(Provider.of<FCMModel>(context, listen: false).mbToken!);
       bool getBanners = await Provider.of<BannerProvider>(context, listen: false).getBanners();
+      await Provider.of<UserProvider>(context, listen: false).initialUserLocation();
       if(getBanners == false){
         _showDialogErr("서버와의 통신에 문제가 있습니다\n만약 서비스가 계속 작동되지 않는다면 고객센터로 문의 주십시오.");
       }
     });
+
     Provider.of<ProductProvider>(context, listen: false).getGeolocator();
+    // if(Provider.of<UserProvider>(context, listen: false).userLocationX == 37.0 && Provider.of<UserProvider>(context, listen: false).userLocationY == 126){
+    //
+    // }
     if (Provider.of<UserProvider>(context, listen: false).isLoggenIn) {
       Provider.of<UserProvider>(context, listen: false).me();
     }

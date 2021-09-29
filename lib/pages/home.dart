@@ -75,50 +75,88 @@ class _HomePageState extends State<HomePage> {
     homeScroller.addListener(homeScrollerListener);
     super.initState();
     final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print('on message $message');
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print('on resume $message');
-        Platform.isIOS ?
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => CustomerMessage(
-              message['uuid'],
-              int.parse(message['productIdx']),
-              message['title'],
-              message['category'],
-              message['productOwner'],
-              int.parse(message['price']),
-              message['pic'],
-              message['status'],
-              int.parse(message['receiverIdx']),
-              message['senderFcm'],
-              message['receiverFcm'],
-              int.parse(message['senderIdx']),
-            )
-        )):
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => CustomerMessage(
-              message['data']['uuid'],
-              int.parse(message['data']['productIdx']),
-              message['data']['title'],
-              message['data']['category'],
-              message['data']['productOwner'],
-              int.parse(message['data']['price']),
-              message['data']['pic'],
-              message['data']['status'],
-              int.parse(message['data']['receiverIdx']),
-              message['data']['senderFcm'],
-              message['data']['receiverFcm'],
-              int.parse(message['data']['senderIdx']),
-            )
-        ));
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print('on launch $message');
-      },
-    );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('on resume $message');
+      Platform.isIOS ?
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => CustomerMessage(
+            message.data['uuid']!,
+            int.parse(message.data['productIdx']),
+            message.data['title'],
+            message.data['category'],
+            message.data['productOwner'],
+            int.parse(message.data['price']),
+            message.data['pic'],
+            message.data['status'],
+            int.parse(message.data['receiverIdx']),
+            message.data['senderFcm'],
+            message.data['receiverFcm'],
+            int.parse(message.data['senderIdx']),
+          )
+      )):
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => CustomerMessage(
+            message.data['data']['uuid'],
+            int.parse(message.data['data']['productIdx']),
+            message.data['data']['title'],
+            message.data['data']['category'],
+            message.data['data']['productOwner'],
+            int.parse(message.data['data']['price']),
+            message.data['data']['pic'],
+            message.data['data']['status'],
+            int.parse(message.data['data']['receiverIdx']),
+            message.data['data']['senderFcm'],
+            message.data['data']['receiverFcm'],
+            int.parse(message.data['data']['senderIdx']),
+          )
+      ));
+    });
+
+    // _firebaseMessaging.configure(
+    //   onMessage: (Map<String, dynamic> message) async {
+    //     print('on message $message');
+    //   },
+    //   onResume: (Map<String, dynamic> message) async {
+    //     print('on resume $message');
+    //     Platform.isIOS ?
+    //     Navigator.push(context, MaterialPageRoute(
+    //         builder: (context) => CustomerMessage(
+    //           message['uuid'],
+    //           int.parse(message['productIdx']),
+    //           message['title'],
+    //           message['category'],
+    //           message['productOwner'],
+    //           int.parse(message['price']),
+    //           message['pic'],
+    //           message['status'],
+    //           int.parse(message['receiverIdx']),
+    //           message['senderFcm'],
+    //           message['receiverFcm'],
+    //           int.parse(message['senderIdx']),
+    //         )
+    //     )):
+    //     Navigator.push(context, MaterialPageRoute(
+    //         builder: (context) => CustomerMessage(
+    //           message['data']['uuid'],
+    //           int.parse(message['data']['productIdx']),
+    //           message['data']['title'],
+    //           message['data']['category'],
+    //           message['data']['productOwner'],
+    //           int.parse(message['data']['price']),
+    //           message['data']['pic'],
+    //           message['data']['status'],
+    //           int.parse(message['data']['receiverIdx']),
+    //           message['data']['senderFcm'],
+    //           message['data']['receiverFcm'],
+    //           int.parse(message['data']['senderIdx']),
+    //         )
+    //     ));
+    //   },
+    //   onLaunch: (Map<String, dynamic> message) async {
+    //     print('on launch $message');
+    //   },
+    // );
     Future.delayed(Duration(milliseconds: 100), () {
       setState(() {
         _visible = 1.0;
@@ -271,15 +309,15 @@ class ToItem extends StatelessWidget {
           itemBuilder: (context, idx) {
             if (value == "빌려드려요") {
               return LendItemMainPage(
-                category: "${_category(_myList.mainProducts[idx].category)}",
-                idx: _myList.mainProducts[idx].id,
+                category: "${_category(_myList.mainProducts[idx].category_idx!)}",
+                idx: _myList.mainProducts[idx].idx,
                 title: "${_myList.mainProducts[idx].title}",
                 name: "${_myList.mainProducts[idx].name}",
                 price: "${_moneyFormat("${_myList.mainProducts[idx].price}")}원",
                 distance:
                     "${(_myList.mainProducts[idx].distance).toStringAsFixed(2)}",
-                picture: "${_myList.mainProducts[idx].productFiles[0].path}",
-                receiverIdx: _myList.mainProducts[idx].receiverIdx,
+                picture: "${_myList.mainProducts[idx].image[0].file}",
+                //receiverIdx: _myList.mainProducts[idx].receiverIdx,
               );
             } else {
               return WantItemMainPage(
