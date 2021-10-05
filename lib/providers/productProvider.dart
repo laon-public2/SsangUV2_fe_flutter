@@ -150,7 +150,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   Future<void> changeUserPosition(num la, num lo) async {
-    print("$la, $lo");
+    print("changeUserPosition $la, $lo");
     this.laUser = la;
     this.loUser = lo;
     notifyListeners();
@@ -1095,8 +1095,8 @@ class ProductProvider extends ChangeNotifier {
         );
         this.myLocation[1] = value;
         this.currentLocation = value;
-        this.la = this.loUser;
-        this.lo = this.laUser!;
+        this.la = this.laUser!;
+        this.lo = this.loUser;
         await getMainRent(page);
         await getMainWant(page);
       } else {
@@ -1140,7 +1140,7 @@ class ProductProvider extends ChangeNotifier {
 
   Future<void> getUserGeo(num la, num long) async {
     print('유저 위치 정보 조회');
-    final res = await productService.getGeo(long, la);
+    final res = await productService.getGeo(la, long);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap);
     List<Geolocation> list = (jsonMap['documents'] as List)

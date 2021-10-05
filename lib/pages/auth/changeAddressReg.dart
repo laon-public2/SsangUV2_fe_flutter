@@ -27,7 +27,7 @@ class ChangeAddressReg extends StatefulWidget {
 
 class _ChangeAddressState extends State<ChangeAddressReg> {
   TextEditingController _addressDetail = TextEditingController();
-
+  bool? regAddressEnabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +84,7 @@ class _ChangeAddressState extends State<ChangeAddressReg> {
                 ),
                 SizedBox(height: 20.h),
                 TextField(
+                  enabled: regAddressEnabled,
                   controller: _addressDetail,
                   decoration: InputDecoration(
                     labelText: "자세한 주소 입력",
@@ -100,6 +101,7 @@ class _ChangeAddressState extends State<ChangeAddressReg> {
                       return;
                     } else {
                       _showDialogLoading();
+                      regAddressEnabled = false;
                       await Provider.of<RegUserProvider>(context, listen: false).regUserForm(
                         pwd.text,
                         name.text,
@@ -123,12 +125,9 @@ class _ChangeAddressState extends State<ChangeAddressReg> {
                           this.widget.lo,
                         );
 
-                        await Provider.of<ProductProvider>(context, listen: false)
-                            .changeUserPosition(
-                          Provider.of<UserProvider>(context, listen: false)
-                              .userLocationX,
-                          Provider.of<UserProvider>(context, listen: false)
-                              .userLocationY,
+                        await Provider.of<ProductProvider>(context, listen: false).changeUserPosition(
+                          Provider.of<UserProvider>(context, listen: false).userLocationLatitude,
+                          Provider.of<UserProvider>(context, listen: false).userLocationLongitude,
                         );
                         await Provider.of<ProductProvider>(context, listen: false).getGeolocator();
                         await Provider.of<UserProvider>(context, listen: false).getMyInfo();

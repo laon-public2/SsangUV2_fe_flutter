@@ -20,6 +20,7 @@ class ChangeAddress extends StatefulWidget {
 class _ChangeAddressState extends State<ChangeAddress> with SingleTickerProviderStateMixin{
   TextEditingController _addressDetail = TextEditingController();
 
+  bool? addressEnabled = true;
   late AnimationController _aniController;
   late Animation<Offset> _offsetAnimation;
   double _visible = 0.0;
@@ -113,6 +114,7 @@ class _ChangeAddressState extends State<ChangeAddress> with SingleTickerProvider
                 ),
                 SizedBox(height: 20.h),
                 TextField(
+                  enabled: addressEnabled,
                   controller: _addressDetail,
                   decoration: InputDecoration(
                     labelText: "자세한 주소 입력",
@@ -129,16 +131,16 @@ class _ChangeAddressState extends State<ChangeAddress> with SingleTickerProvider
                       return;
                     } else {
                       _showLoading();
+                      addressEnabled = false;
                       await _myInfo.changeAddress(
                         this.widget.address,
                         "${this.widget.addressDetail} ${this._addressDetail.text}",
                         this.widget.la,
                         this.widget.lo,
                       );
-                      await Provider.of<ProductProvider>(context, listen: false)
-                          .changeUserPosition(
-                        Provider.of<UserProvider>(context, listen: false).userLocationX,
-                        Provider.of<UserProvider>(context, listen: false).userLocationY,
+                      await Provider.of<ProductProvider>(context, listen: false).changeUserPosition(
+                        Provider.of<UserProvider>(context, listen: false).userLocationLatitude,
+                        Provider.of<UserProvider>(context, listen: false).userLocationLongitude,
                       );
                       await Provider.of<ProductProvider>(context, listen: false).getGeolocator();
                       Navigator.of(context).popUntil((route) => route.isFirst);

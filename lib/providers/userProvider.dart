@@ -39,8 +39,10 @@ class UserProvider extends ChangeNotifier {
   String? address;
   String? addressDetail;
 
-  late double userLocationX;
-  late double userLocationY;
+  late double userLocationLatitude;
+  late double userLocationLongitude;
+  late double defaultUserLocationLatitude = 37.4869535;
+  late double defaultUserLocationLongitude = 126.8956429;
   bool? userPush;
 
   late Paging userNotice;
@@ -52,8 +54,8 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> initialUserLocation() async {
     var currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
-    this.userLocationX = currentPosition.latitude;
-    this.userLocationY = currentPosition.longitude;
+    this.userLocationLatitude = currentPosition.latitude;
+    this.userLocationLongitude = currentPosition.longitude;
   }
 
   Future<void> getAccessToken(String phone, String password) async {
@@ -118,8 +120,8 @@ class UserProvider extends ChangeNotifier {
     if (jsonMap['success'] == true) {
       this.address = address;
       this.addressDetail = addressDetail;
-      this.userLocationY = la.toDouble();
-      this.userLocationX = lo.toDouble();
+      this.userLocationLatitude = la.toDouble();
+      this.userLocationLongitude = lo.toDouble();
     }
     notifyListeners();
   }
@@ -173,19 +175,19 @@ class UserProvider extends ChangeNotifier {
           this.userPush = false;
         }
         if(myinfo['data']['user_location'] != null){
-          this.userLocationX = myinfo['data']['user_location']['x'];
+          this.userLocationLatitude = myinfo['data']['user_location']['x'];
         } else {
           var currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
-          this.userLocationX = currentPosition.latitude;
+          this.userLocationLatitude = currentPosition.latitude;
         }
         if(myinfo['data']['user_location'] != null){
-          this.userLocationY = myinfo['data']['user_location']['y'];
+          this.userLocationLongitude = myinfo['data']['user_location']['y'];
         } else {
           var currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
-          this.userLocationY = currentPosition.longitude;
+          this.userLocationLongitude = currentPosition.longitude;
         }
 
-        print('x == ${this.userLocationX} y == ${this.userLocationY}');
+        print('x == ${this.userLocationLatitude} y == ${this.userLocationLongitude}');
         if (this.originalFBtoken == this.userFBtoken) {
           return 'success';
         } else {
@@ -203,8 +205,8 @@ class UserProvider extends ChangeNotifier {
       this.comNum = "00-000-00000";
       this.address = "서울시 은평구 갈현동";
       this.addressDetail = "한스빌 478-2";
-      this.userLocationX = 37;
-      this.userLocationY = 126;
+      this.userLocationLatitude = 37;
+      this.userLocationLongitude = 126;
       this.userProfileImg = "userImgNot";
       return 'none';
     }

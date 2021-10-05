@@ -512,7 +512,7 @@ class _DropdownRoute<T> extends PopupRoute<_DropdownRouteResult<T>> {
     final double topLimit = math.min(_kMenuItemHeight, buttonTop);
     final double bottomLimit = math.max(availableHeight - _kMenuItemHeight, buttonBottom);
 
-    double menuTop = (buttonTop - selectedItemOffset) - (itemHeights[selectedIndex] - buttonRect.height) / 2.0;
+    double menuTop = ((buttonTop - selectedItemOffset) - (itemHeights[selectedIndex] - buttonRect.height) / 2.0).floorToDouble();
     double preferredMenuHeight = kMaterialListPadding.vertical;
     if (items.isNotEmpty)
       preferredMenuHeight += itemHeights.reduce((double total, double height) => total + height);
@@ -520,7 +520,7 @@ class _DropdownRoute<T> extends PopupRoute<_DropdownRouteResult<T>> {
     // If there are too many elements in the menu, we need to shrink it down
     // so it is at most the computedMaxHeight.
     final double menuHeight = math.min(computedMaxHeight, preferredMenuHeight);
-    double menuBottom = menuTop + menuHeight;
+    double menuBottom = (menuTop + menuHeight).floorToDouble();
 
     // If the computed top or bottom of the menu are outside of the range
     // specified, we need to bring them into range. If the item height is larger

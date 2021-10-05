@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class SplashAni extends StatefulWidget {
+
   @override
   _SplashAniState createState() => _SplashAniState();
 }
@@ -26,6 +27,12 @@ class _SplashAniState extends State<SplashAni> {
   int num4 = 3;
   int num5 = 4;
   bool _isDispose = false;
+
+  set isDispose(bool value) {
+    _isDispose = value;
+  }
+
+  // bool get isDispose => _isDispose;
 
   _randomNum() async {
     bool infinite = false;

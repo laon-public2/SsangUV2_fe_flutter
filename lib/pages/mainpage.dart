@@ -83,10 +83,19 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
       await Provider.of<UserProvider>(context, listen: false)
           .setAccessToken(token);
       await Provider.of<BannerProvider>(context, listen: false).getBanners();
-      await Provider.of<ProductProvider>(context, listen: false).changeUserPosition(
-        Provider.of<UserProvider>(context, listen: false).userLocationY,
-        Provider.of<UserProvider>(context, listen: false).userLocationX,
-      );
+      try{
+        await Provider.of<ProductProvider>(context, listen: false).changeUserPosition(
+          Provider.of<UserProvider>(context, listen: false).userLocationLatitude,
+          Provider.of<UserProvider>(context, listen: false).userLocationLongitude,
+        );
+      }
+      catch(e){
+        await Provider.of<ProductProvider>(context, listen: false).changeUserPosition(
+          Provider.of<UserProvider>(context, listen: false).defaultUserLocationLatitude,
+          Provider.of<UserProvider>(context, listen: false).defaultUserLocationLongitude,
+        );
+      }
+
     } else {
       return;
     }

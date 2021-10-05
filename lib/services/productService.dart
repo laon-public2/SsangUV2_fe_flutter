@@ -174,7 +174,7 @@ class ProductService {
   //   return response;
   // }
 
-  Future<Response?> getProRent(int userIdx, int page, int category, String type) async {
+  Future<Response?>  getProRent(int userIdx, int page, int category, String type) async {
     try {
       print("$type 접속");
       Response res = await dio.get(
@@ -653,8 +653,8 @@ class ProductService {
 
   Future<Response?> getGeo(num la, num long) async {
     print("주소값 불러오기");
-    print(la);
-    print(long);
+    print('la : ' + la.toString());
+    print('long : ' + long.toString());
     try {
       Response res = await dio.get('/geo', queryParameters: {
         'latitude': la,

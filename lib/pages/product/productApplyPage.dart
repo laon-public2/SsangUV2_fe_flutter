@@ -435,8 +435,8 @@ class _ProductApplyPageState extends State<ProductApplyPage> with SingleTickerPr
                             date[1],
                             "${_user.address}",
                             "${_user.addressDetail}",
-                            _user.userLocationX,
-                            _user.userLocationY,
+                            _user.userLocationLatitude,
+                            _user.userLocationLongitude,
                             _user.accessToken!,
                             _otherLocation,
                           );

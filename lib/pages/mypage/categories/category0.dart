@@ -43,10 +43,8 @@ class _Category1State extends State<Category0> {
 
   Future<bool>_loadingProduct() async {
     int userIdx = Provider.of<UserProvider>(context, listen: false).userIdx!;
-    await Provider.of<MyPageProvider>(context, listen: false)
-        .getProWant(userIdx, page, category);
-    await Provider.of<MyPageProvider>(context, listen: false)
-        .getProRent(userIdx, page, category);
+    await Provider.of<MyPageProvider>(context, listen: false).getProWant(userIdx, page, category);
+    await Provider.of<MyPageProvider>(context, listen: false).getProRent(userIdx, page, category);
     return true;
   }
 

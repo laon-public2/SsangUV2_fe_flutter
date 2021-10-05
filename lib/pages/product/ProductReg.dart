@@ -561,8 +561,8 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
                               date[1],
                               "${_user.address}",
                               "${_user.addressDetail}",
-                              _user.userLocationX,
-                              _user.userLocationY,
+                              _user.userLocationLatitude,
+                              _user.userLocationLongitude,
                               _user.accessToken!,
                               _otherLocation,
                             );

@@ -34,7 +34,7 @@ class _LoginMyPageState extends State<LoginMyPage> {
             children: [
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 33),
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
                   color: Colors.white,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -68,7 +68,7 @@ class _LoginMyPageState extends State<LoginMyPage> {
                       ),
                       Container(
                         width: double.infinity,
-                        height: 52,
+                        margin: EdgeInsets.symmetric(vertical: 13),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [

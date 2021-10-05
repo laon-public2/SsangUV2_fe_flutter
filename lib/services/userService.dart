@@ -52,7 +52,7 @@ class UserService {
   }
 
   Future<Response?> changeUserAddress(String phNum, String address, String addressDetail, num la, num lo, String token) async {
-    print('유저 주소 변경 서비스 접속');
+    print('유저 주소 변경 서비스 접속 la : $la lo : $lo');
     try{
       dio.options.headers['x-access-token'] = token;
       dio.options.contentType = "application/x-www-form-urlencoded";
