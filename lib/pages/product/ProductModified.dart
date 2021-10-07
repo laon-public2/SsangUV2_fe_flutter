@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,7 @@ class ProductModified extends StatefulWidget {
 
 class _ProductRegState extends State<ProductModified> with SingleTickerProviderStateMixin{
 
+  ProductController productController = Get.find<ProductController>();
   //애니메이션
   late AnimationController _animationController;
   late Animation<Offset> _offsetAnimaiton;
@@ -232,7 +234,7 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
-      await Provider.of<ProductProvider>(context, listen: false).changeAddress(
+      await Provider.of<ProductController>(context, listen: false).changeAddress(
         "lend1",
         this.widget.originalInfo!.lati!,
         this.widget.originalInfo!.longti!,
@@ -483,8 +485,6 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
               bottom: 20,
               child: Consumer<UserProvider>(
                 builder: (_, _user, __) {
-                  return Consumer<ProductProvider>(
-                    builder: (_, _myProduct, __) {
                       return InkWell(
                         onTap: () async {
                           if (_productName.text == "") {
@@ -513,7 +513,7 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
                             });
                             _showDialog();
                           } else if (_otherLocation == true) {
-                            if (_myProduct.secondAddress == "기타 주소 설정") {
+                            if (productController.secondAddress == "기타 주소 설정") {
                               setState(() {
                                 _isDialogText = "기타주소가 비어 있습니다.";
                               });
@@ -536,7 +536,7 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
                             _showDialog();
                           } else {
                             List<String> date = _dateController.text.split("~");
-                            await _myProduct.productModified(
+                            await productController.productModified(
                                 this.widget.originalInfo!.idx,
                                 _selectCategory(this.widget.categoryString),
                                 _productName.text,
@@ -548,10 +548,10 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
                                 deleteImages,
                                 date[0],
                                 date[1],
-                                _myProduct.firstAddress,
+                                productController.firstAddress.value,
                                 this._otherAddressDetail.text,
-                                _myProduct.firstLa,
-                                _myProduct.firstLo,
+                                productController.firstLa.value,
+                                productController.firstLo.value,
                                 _user.accessToken!,
                             );
                             _showDialogSuccess("글이 수정되었습니다.");
@@ -586,8 +586,6 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
                           ),
                         ),
                       );
-                    },
-                  );
                 },
               )),
         ],
@@ -596,8 +594,6 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
   }
 
   Widget userAddress(String type) {
-    return Consumer<ProductProvider>(
-      builder: (_, _product, __) {
         return InkWell(
           onTap: () {
             setState(() {
@@ -630,15 +626,14 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
             ),
           ),
         );
-      },
-    );
+
   }
 
   _otherLoc(String type) {
     if (type == "lend1") {
-      return Provider.of<ProductProvider>(context, listen: false).firstAddress;
+      return Provider.of<ProductController>(context, listen: false).firstAddress;
     } else {
-      return Provider.of<ProductProvider>(context, listen: false).secondAddress;
+      return Provider.of<ProductController>(context, listen: false).secondAddress;
     }
   }
 

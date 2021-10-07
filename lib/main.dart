@@ -64,12 +64,12 @@ class _MyAppState extends State<MyApp> {
                 ChangeNotifierProvider<PolicyProvider>(
                   create: (_) => PolicyProvider(),
                 ),
-                ChangeNotifierProvider<ProductProvider>(
-                  create: (_) => ProductProvider(),
-                ),
-                ChangeNotifierProvider<BannerProvider>(
-                  create: (_) => BannerProvider(),
-                ),
+                // ChangeNotifierProvider<ProductController>(
+                //   create: (_) => ProductController(),
+                // ),
+                // ChangeNotifierProvider<BannerProvider>(
+                //   create: (_) => BannerProvider(),
+                // ),
                 ChangeNotifierProvider<ContractProvider>(
                   create: (_) => ContractProvider(),
                 ),

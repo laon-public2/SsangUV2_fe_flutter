@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/providers/bannerProvider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -9,15 +10,15 @@ import 'package:url_launcher/url_launcher.dart';
 class BannerItem extends StatelessWidget {
   // const BannerItem({Key key}) : super(key: key);
 
+  BannerController bannerController = Get.put(BannerController());
+
   var isCategory = false;
 
   BannerItem(this.isCategory);
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<BannerProvider>(
-      builder: (_, banner, __) {
-        return Container(
+    return Container(
           // color: Colors.red,
           child: CarouselSlider(
             options: CarouselOptions(
@@ -33,8 +34,7 @@ class BannerItem extends StatelessWidget {
               viewportFraction: 1,
               onPageChanged: (index, reason) {},
             ),
-            items: (this.isCategory ? banner.categoryBanner : banner.banners)
-                .map((e) {
+            items: (this.isCategory ? bannerController.categoryBanner : bannerController.banners).map((e) {
               return Builder(builder: (context) {
                 return InkWell(
                   onTap: () {
@@ -46,7 +46,7 @@ class BannerItem extends StatelessWidget {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(5))),
                     child: ExtendedImage.network(
-                      "http://115.91.73.66:15066/assets/images/banner/${e.bannerFile}",
+                      "http://115.91.73.66:15066/assets/images/banner/${e.path}",
                       fit: BoxFit.cover,
                       cache: true,
                       borderRadius: BorderRadius.circular(5),
@@ -79,8 +79,6 @@ class BannerItem extends StatelessWidget {
               });
             }).toList(),
           ),
-        );
-      },
     );
   }
 

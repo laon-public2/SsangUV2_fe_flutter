@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart' hide MultipartFile, FormData, GetConnect, Response;
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/model/CategoryPageRent.dart';
@@ -37,52 +38,52 @@ import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 import 'package:share_product_v2/widgets/loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ProductProvider extends ChangeNotifier {
+class ProductController extends GetxController {
   final ProductService productService = ProductService();
 
   late Paging paging;
   late ReviewPaging reviewPaging;
+  late Paging privateRentCounter;
+  late Paging chatListCounter;
+  late Paging rentListCounter;
 
+  productDetailWant? productDetail;
   Product? product;
 
-  List<Product> products = [];
-
-  List<MainPageRent> mainProducts = [];
-  List<MainPageWant> mainProductsWant = [];
-  List<CategoryPageRent> categoryProducts = [];
-  List<CategoryPageWant> categoryProductsWant = [];
   List<String> myLocation = ["로딩중", "기본주소", "다른 위치 설정"];
-  String currentLocation = "";
-  List<Geolocation> geoLocation = [];
-  List<Geolocation> geoUserLocation = [];
-  productDetailWant? productDetail;
-  List<productReview>? productReviewnot;
-  List<PrivateRent> privateRentList = [];
-  late Paging privateRentCounter;
 
-  List<ChatListModel> chatListItem = [];
-  late Paging chatListCounter;
-  List<ChatListModel> rentListItem = [];
-  List<ChatListModel> rentListItemRent = [];
-  late Paging rentListCounter;
-  late String productStart;
+  var products = <Product>[].obs;
+  var mainProducts = <MainPageRent>[].obs;
+  var mainProductsWant = <MainPageWant>[].obs;
+  var categoryProducts = <CategoryPageRent>[].obs;
+  var categoryProductsWant = <CategoryPageWant>[].obs;
+  var geoLocation = <Geolocation>[].obs;
+  var geoUserLocation = <Geolocation>[].obs;
+  var productReviewnot = <productReview?>[].obs;
+  var privateRentList = <PrivateRent>[].obs;
+  var chatListItem = <ChatListModel>[].obs;
+  var rentListItem = <ChatListModel>[].obs;
+  var rentListItemRent = <ChatListModel>[].obs;
 
-  String firstAddress = '기본 주소로 사용함';
-  String secondAddress = '기타 주소 설정';
-  late num firstLa;
-  late num firstLo;
-  late num secondLa;
-  late num secondLo;
+  var productStart = "".obs;
+  var currentLocation = "".obs;
+  var firstAddress = '기본 주소로 사용함'.obs;
+  var secondAddress = '기타 주소 설정'.obs;
+  var searchingWord = "".obs;
 
-  late String searchingWord;
-  late num la;
-  late num lo;
-  late num laDefault = 37.4869535;
-  late num loDefault = 126.8956429;
-  late num laSecondDefault;
-  late num loSecondDefault;
+
+  var laDefault = Rx<num>(37.4869535);
+  var loDefault = Rx<num>(126.8956429);
+  var firstLa = Rx<num>(0);
+  var firstLo = Rx<num>(0);
+  var secondLa = Rx<num>(0);
+  var secondLo = Rx<num>(0);
+  var lat = Rx<num>(0);
+  var lon = Rx<num>(0);
+  var laSecondDefault = Rx<num>(0);
+  var loSecondDefault = Rx<num>(0);
   num? laUser;
-  late num loUser;
+  num? loUser;
 
   List<SpecialProduct> specialProduct = [];
 
@@ -125,7 +126,6 @@ class ProductProvider extends ChangeNotifier {
   List<SearchDataProduct> searchDataProductCa8 = [];
   List<SearchDataProduct> searchDataProductWantCa8 = [];
   late Paging searchPagingCa8;
-
   //검색 카테고리 9
   List<SearchDataProduct> searchDataProductCa9 = [];
   List<SearchDataProduct> searchDataProductWantCa9 = [];
@@ -138,50 +138,53 @@ class ProductProvider extends ChangeNotifier {
 
 
   Future<void> resetAddress() async {
-    this.firstAddress = '기본 주소 설정';
-    this.secondAddress = '기타 주소 설정';
-    this.firstLa = 0;
-    this.firstLo = 0;
-    this.secondLa = 0;
-    this.secondLo = 0;
+    this.firstAddress.value = '기본 주소 설정';
+    this.secondAddress.value = '기타 주소 설정';
+    this.firstLa.value = 0;
+    this.firstLo.value = 0;
+    this.secondLa.value = 0;
+    this.secondLo.value = 0;
     this.laUser = 0;
     this.loUser = 0;
-    notifyListeners();
+    
   }
 
   Future<void> changeUserPosition(num la, num lo) async {
     print("changeUserPosition $la, $lo");
     this.laUser = la;
     this.loUser = lo;
-    notifyListeners();
+    
   }
 
   Future<void> changeAddress(String type, num la, num lo, String address) async {
     print(type);
     if (type == "lend1") {
-      this.firstAddress = address;
-      this.firstLa = la;
-      this.firstLo = lo;
+      this.firstAddress.value = address;
+      this.firstLa.value = la;
+      this.firstLo.value = lo;
     } else if (type == "lend2") {
-      this.secondAddress = address;
-      this.secondLa = la;
-      this.secondLo = lo;
+      this.secondAddress.value = address;
+      this.secondLa.value = la;
+      this.secondLo.value = lo;
     } else {
-      this.firstAddress = address;
-      this.firstLa = la;
-      this.firstLo = lo;
+      this.firstAddress.value = address;
+      this.firstLa.value = la;
+      this.firstLo.value = lo;
     }
-    notifyListeners();
+    
   }
 
   Future<void> getGeolocator() async {
-    this.currentLocation = myLocation.first;
+    this.currentLocation.value = myLocation.first;
     int page = 0;
     var currentPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
     await getGeo(currentPosition.latitude, currentPosition.longitude);
     if (this.laUser != null) {
-      await getUserGeo( this.laUser!, this.loUser);
+      await getUserGeo( this.laUser!, this.loUser!);
+    }
+    else {
+      print('lauser is null');
     }
     print("la 좌표${currentPosition.latitude}");
     print("lo 좌표${currentPosition.longitude}");
@@ -189,35 +192,37 @@ class ProductProvider extends ChangeNotifier {
     await getMainWant(page);
     await getGeoDrop();
     await getUserGeoDrop();
-    notifyListeners();
+    update();
   }
 
   Future<void> getGeoDrop() async {
     try {
       myLocation[0] = geoLocation[1].depth3;
-      this.currentLocation = myLocation.first;
+      this.currentLocation.value = myLocation.first;
+      update();
     } catch (e) {
       print('geodrop' + e.toString());
     }
-    notifyListeners();
+    
   }
 
   Future<void> getUserGeoDrop() async {
     try {
       if(myLocation[0] != geoUserLocation[1].depth3){
         myLocation[1] = geoUserLocation[1].depth3;
+        update();
       }
     } catch (e) {
       print('usergeodrop' + e.toString());
     }
-    notifyListeners();
+    
   }
 
   // TODO: point 기반의 (위치) 데이터 수정 필요
   void getProductByCategory(
       double lati, double longti, int page, String type, int category) async {
     if (page == 0) {
-      this.products = [];
+      this.products.clear();
     }
 
     final response = (await productService.getProductByCategory(
@@ -234,13 +239,14 @@ class ProductProvider extends ChangeNotifier {
       this.paging = paging;
 
       if (paging.currentPage == null || paging.currentPage == 0) {
-        this.products = list;
+        this.products.value = list;
       } else {
         for (var e in list) {
           this.products.add(e);
         }
       }
-      notifyListeners();
+
+      update();
     } catch (e) {
       print("getProductByCategory Exception : $e");
     }
@@ -250,7 +256,7 @@ class ProductProvider extends ChangeNotifier {
   void getSearch(
       String keyword, int page, double latitude, double longitude) async {
     if (page == 0) {
-      this.products = [];
+      this.products.clear();
     }
     final response =
         (await productService.getSearch(keyword, page, latitude, longitude));
@@ -268,14 +274,15 @@ class ProductProvider extends ChangeNotifier {
       // this.products = list;
 
       if (paging.currentPage == null || paging.currentPage == 0) {
-        this.products = list;
+        this.products.value = list;
       } else {
         for (var e in list) {
           this.products.add(e);
         }
       }
 
-      notifyListeners();
+
+      update();
     } catch (e) {
       print('getSearch' + e.toString());
     }
@@ -293,7 +300,8 @@ class ProductProvider extends ChangeNotifier {
       this.product = product;
 
 
-      notifyListeners();
+
+      update();
     } catch (e) {
       print(e);
     } finally {
@@ -303,7 +311,7 @@ class ProductProvider extends ChangeNotifier {
 
   void getMyProduct(int page) async {
     if (page == 0) {
-      this.products = [];
+      this.products.clear();
     }
 
     final response = await productService.getMyProduct(page);
@@ -323,14 +331,15 @@ class ProductProvider extends ChangeNotifier {
       // this.products = list;
 
       if (paging.currentPage == null || paging.currentPage == 0) {
-        this.products = list;
+        this.products.value = list;
       } else {
         for (var e in list) {
           this.products.add(e);
         }
       }
 
-      notifyListeners();
+
+      update();
     } catch (e) {
       print(e);
     }
@@ -373,10 +382,11 @@ class ProductProvider extends ChangeNotifier {
       print(response!.statusCode);
 
       Navigator.of(context).pop();
+      update();
     } catch (e) {
       print(e);
     }
-    notifyListeners();
+    
   }
 
   Future<void> productApplyRent(
@@ -428,6 +438,7 @@ class ProductProvider extends ChangeNotifier {
       );
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
+      update();
     } catch (e) {
       print(e);
     }
@@ -480,6 +491,7 @@ class ProductProvider extends ChangeNotifier {
       );
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
+      update();
     } catch (e) {
       print(e);
     }
@@ -536,6 +548,7 @@ class ProductProvider extends ChangeNotifier {
       );
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
+      update();
     } catch (e) {
       print(e);
     }
@@ -591,6 +604,7 @@ class ProductProvider extends ChangeNotifier {
       );
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
+      update();
     } catch (e) {
       print(e);
     }
@@ -730,6 +744,7 @@ class ProductProvider extends ChangeNotifier {
         Map<String, dynamic> jsonMap = json.decode(res.toString());
         print(jsonMap);
       }
+      update();
     } catch (e) {
       print(e);
     }
@@ -783,11 +798,12 @@ class ProductProvider extends ChangeNotifier {
 
       this.product = product;
 
-      notifyListeners();
+
+      update();
     } catch (e) {
       print(e);
     }
-    notifyListeners();
+    
   }
 
   void getSpecialProduct() async {
@@ -800,7 +816,8 @@ class ProductProvider extends ChangeNotifier {
           .toList();
       this.specialProduct = list;
 
-      notifyListeners();
+
+      update();
     } catch (e) {
       print(e);
     }
@@ -811,6 +828,7 @@ class ProductProvider extends ChangeNotifier {
       await productService.deleteProduct(id);
 
       Navigator.of(context).popUntil((route) => route.isFirst);
+      update();
     } catch (e) {
       print(e);
     }
@@ -836,33 +854,34 @@ class ProductProvider extends ChangeNotifier {
     pref.setString(idx, encode);
     pref.setStringList("idxs", idxList);
 
+    update();
     Provider.of<MainProvider>(context, listen: false).notify();
   }
 
   // renting(int id) async {
   //   await productService.rentingProduct(id);
   //   getMyProduct(0);
-  //   notifyListeners();
+  //   
   // }
   //
   // rentable(int id) async {
   //   await productService.rentableProduct(id);
   //   getMyProduct(0);
-  //   notifyListeners();
+  //   
   // }
   //
   // stop(int id) async {
   //   await productService.stopProduct(id);
   //   getMyProduct(0);
-  //   notifyListeners();
+  //   
   // }
 
   Future<void> getMainRent(int page) async {
     if (page == 0) {
-      this.mainProducts = [];
+      this.mainProducts.clear();
     }
     print("메인페이지 상품 로딩");
-    final res = await productService.getMainRent(this.la.toDouble(), this.lo.toDouble(), page);
+    final res = await productService.getMainRent(this.lat.value.toDouble(), this.lon.value.toDouble(), page);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     try {
       print(jsonMap);
@@ -874,24 +893,25 @@ class ProductProvider extends ChangeNotifier {
       Paging paging = Paging.fromJson(jsonMap);
       this.paging = paging;
       if (paging.currentPage == null || paging.currentPage == 0) {
-        this.mainProducts = list;
+        this.mainProducts.value = list;
       } else {
         for (var e in list) {
           this.mainProducts.add(e);
         }
       }
+      update();
     } catch (e) {
       print('mainrent ' + e.toString());
     }
-    notifyListeners();
+    
   }
 
   Future<void> getMainWant(int page) async {
     if (page == 0) {
-      this.mainProductsWant = [];
+      this.mainProductsWant.clear();
     }
     print("메인페이지 상품 로딩 빌려주세요.");
-    final res = await productService.getMainWant(this.la.toDouble(), this.lo.toDouble(), page);
+    final res = await productService.getMainWant(this.lat.value.toDouble(), this.lon.value.toDouble(), page);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     try {
       print("에러찾기");
@@ -902,60 +922,60 @@ class ProductProvider extends ChangeNotifier {
       Paging paging = Paging.fromJson(jsonMap);
       this.paging = paging;
       if (paging.currentPage == null || paging.currentPage == 0) {
-        this.mainProductsWant = list;
+        this.mainProductsWant.value = list;
       } else {
         for (var e in list) {
           this.mainProductsWant.add(e);
         }
       }
+      update();
     } catch (e) {
       print(e);
     }
-    notifyListeners();
+    
   }
 
   void categoryRent(String category, int page, String type) async {
     print(category);
     print(page);
     print(type);
-    print(la);
-    print(lo);
+    print(lat);
+    print(lon);
     if (page == 0) {
-      this.categoryProducts = [];
+      this.categoryProducts.clear();
     }
     print("카테고리 물품 로딩");
     final res = await productService.getCategoryProducts(
-        category, page, type, la.toDouble(), lo.toDouble());
+        category, page, type, lat.value.toDouble(), lon.value.toDouble());
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap.toString());
     try {
-      List<CategoryPageRent> list = (jsonMap['data'] as List)
-          .map((e) => CategoryPageRent.fromJson(e))
-          .toList();
+      List<CategoryPageRent> list = (jsonMap['data'] as List).map((e) => CategoryPageRent.fromJson(e)).toList();
       Paging paging = Paging.fromJson(jsonMap);
       this.paging = paging;
       if (this.paging.currentPage == null || this.paging.currentPage == 0) {
-        this.categoryProducts = list;
+        this.categoryProducts.value = list;
         print(this.categoryProducts);
       } else {
         for (var e in list) {
           this.categoryProducts.add(e);
         }
       }
+      update();
     } catch (e) {
-      print(e);
+      print(e.hashCode);
     }
-    notifyListeners();
+    
   }
 
   void categoryWant(
       String category, int page, String type) async {
     if (page == 0) {
-      this.categoryProductsWant = [];
+      this.categoryProductsWant.clear();
     }
     print("카테고리 물품 로딩");
     final res = await productService.getCategoryProducts(
-        category, page, type, la.toDouble(), lo.toDouble());
+        category, page, type, lat.value.toDouble(), lon.value.toDouble());
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap.toString());
     try {
@@ -965,39 +985,41 @@ class ProductProvider extends ChangeNotifier {
       Paging paging = Paging.fromJson(jsonMap);
       this.paging = paging;
       if (this.paging.currentPage == null || this.paging.currentPage == 0) {
-        this.categoryProductsWant = list;
+        this.categoryProductsWant.value = list;
         print(this.categoryProducts);
       } else {
         for (var e in list) {
           this.categoryProductsWant.add(e);
         }
       }
+      update();
     } catch (e) {
       print('categotyWant' + e.toString());
     }
-    notifyListeners();
+    
   }
 
   Future<void> getproductDetail(int productIdx) async {
     print(productIdx);
     print("물품 상세정보 로딩");
     this.productDetail = null;
-    final res = await productService.productDetail(productIdx, la, lo);
+    final res = await productService.productDetail(productIdx, lat, lon);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap);
     try {
       productDetailWant list = productDetailWant.fromJson(jsonMap['data']);
       this.productDetail = list;
+      update();
     } catch (e) {
       print('getproductDetail $e');
     }
-    notifyListeners();
+    
   }
 
   Future<void> getProductReviewFive(int productIdx, int page) async {
     print("물품 리뷰 가져오기");
     if (page == 0) {
-      this.productReviewnot = null;
+      this.productReviewnot.clear();
     }
     final res = await productService.productReview(productIdx, page);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
@@ -1012,17 +1034,18 @@ class ProductProvider extends ChangeNotifier {
       this.reviewPaging = paging;
       if (this.reviewPaging.currentPage == null ||
           this.reviewPaging.currentPage == 0) {
-        this.productReviewnot = list;
+        this.productReviewnot.value = list;
         print(list[0].createAt);
       } else {
         for (var e in list) {
-          this.productReviewnot!.add(e);
+          this.productReviewnot.add(e);
         }
       }
+      update();
     } catch (e) {
       print(e);
     }
-    notifyListeners();
+    
   }
 
   Future<void> sendReview(int userIdx, int productIdx, String description,
@@ -1032,13 +1055,14 @@ class ProductProvider extends ChangeNotifier {
         userIdx, productIdx, description, grade, token);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap);
+    update();
   }
 
   Future<void> getGeoSearch(num la, num long) async {
     print("설정한 주소 설정");
     int page = 0;
-    this.laSecondDefault = la;
-    this.loSecondDefault = long;
+    this.laSecondDefault.value = la;
+    this.loSecondDefault.value = long;
     final res = await productService.getGeo(la, long);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     List<Geolocation> list = (jsonMap['documents'] as List)
@@ -1058,13 +1082,14 @@ class ProductProvider extends ChangeNotifier {
         this.myLocation.add('다른 위치 설정');
       }
       this.myLocation[2] = "${list[1].depth3}";
-      this.currentLocation = "${list[1].depth3}";
-      this.la = la;
-      this.lo = long;
+      this.currentLocation.value = "${list[1].depth3}";
+      this.lat.value = la;
+      this.lon.value = long;
       await getMainRent(page);
       await getMainWant(page);
     }
-    notifyListeners();
+
+    update();
   }
 
   Future<void> getGeoChange(String value) async {
@@ -1079,9 +1104,9 @@ class ProductProvider extends ChangeNotifier {
             textColor: Colors.white,
             fontSize: 16.0
         );
-        this.la = this.laDefault;
-        this.lo = this.loDefault;
-        this.currentLocation = value;
+        this.lat = this.laDefault;
+        this.lon = this.loDefault;
+        this.currentLocation.value = value;
         await getMainRent(page);
         await getMainWant(page);
       } else if (this.myLocation[1] == value) {
@@ -1094,9 +1119,9 @@ class ProductProvider extends ChangeNotifier {
             fontSize: 16.0
         );
         this.myLocation[1] = value;
-        this.currentLocation = value;
-        this.la = this.laUser!;
-        this.lo = this.loUser;
+        this.currentLocation.value = value;
+        this.lat.value = this.laUser!;
+        this.lon.value = this.loUser!;
         await getMainRent(page);
         await getMainWant(page);
       } else {
@@ -1109,24 +1134,25 @@ class ProductProvider extends ChangeNotifier {
             fontSize: 16.0
         );
         this.myLocation[2] = value;
-        this.currentLocation = value;
-        this.la = this.laSecondDefault;
-        this.lo = this.loSecondDefault;
+        this.currentLocation.value = value;
+        this.lat = this.laSecondDefault;
+        this.lon = this.loSecondDefault;
         await getMainRent(page);
         await getMainWant(page);
       }
+      update();
     } catch (e) {
       print(e);
     }
-    notifyListeners();
+    
   }
 
   Future<void> getGeo(num la, num long) async {
     print('위치 정보 조회');
-    this.la = la;
-    this.lo = long;
-    this.laDefault = la;
-    this.loDefault = long;
+    this.lat.value = la;
+    this.lon.value = long;
+    this.laDefault.value = la;
+    this.loDefault.value = long;
     final res = await productService.getGeo(la, long);
     print(res.toString());
     Map<String, dynamic> jsonMap = json.decode(res.toString());
@@ -1134,20 +1160,22 @@ class ProductProvider extends ChangeNotifier {
     List<Geolocation> list = (jsonMap['documents'] as List)
         .map((e) => Geolocation.fromJson(e))
         .toList();
-    this.geoLocation = list;
-    notifyListeners();
+    this.geoLocation.value = list;
+
+    update();
   }
 
   Future<void> getUserGeo(num la, num long) async {
-    print('유저 위치 정보 조회');
+    print('유저 위치 정보 조회 $la / $long');
     final res = await productService.getGeo(la, long);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap);
     List<Geolocation> list = (jsonMap['documents'] as List)
         .map((e) => Geolocation.fromJson(e))
         .toList();
-    this.geoUserLocation = list;
-    notifyListeners();
+    this.geoUserLocation.value = list;
+
+    update();
   }
 
   Future<void> SearchingDataProduct(
@@ -1161,13 +1189,13 @@ class ProductProvider extends ChangeNotifier {
         print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
-          this.searchDataProduct = [];
-          this.searchDataProductWant = [];
+          this.searchDataProduct.clear();
+          this.searchDataProductWant.clear();
         }
         if(type == "RENT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1183,6 +1211,7 @@ class ProductProvider extends ChangeNotifier {
                 this.searchDataProduct.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1190,7 +1219,7 @@ class ProductProvider extends ChangeNotifier {
         else if(type == "WANT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1206,6 +1235,7 @@ class ProductProvider extends ChangeNotifier {
                 this.searchDataProductWant.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1219,13 +1249,13 @@ class ProductProvider extends ChangeNotifier {
         print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
-          this.searchDataProductCa2 = [];
-          this.searchDataProductWantCa2 = [];
+          this.searchDataProductCa2.clear();
+          this.searchDataProductWantCa2.clear();
         }
         if(type == "RENT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1235,12 +1265,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa2 = paging;
             if (this.searchPagingCa2.currentPage == null ||
                 this.searchPagingCa2.currentPage == 0) {
-              this.searchDataProductCa2 = list;
+              this.searchDataProductCa2= list;
             } else {
               for (var e in list) {
                 this.searchDataProductCa2.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1248,7 +1279,7 @@ class ProductProvider extends ChangeNotifier {
         else if(type == "WANT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1258,12 +1289,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa2 = paging;
             if (this.searchPagingCa2.currentPage == null ||
                 this.searchPagingCa2.currentPage == 0) {
-              this.searchDataProductWantCa2 = list;
+              this.searchDataProductWantCa2= list;
             } else {
               for (var e in list) {
                 this.searchDataProductWantCa2.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1277,13 +1309,13 @@ class ProductProvider extends ChangeNotifier {
         print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
-          this.searchDataProductCa3 = [];
-          this.searchDataProductWantCa3 = [];
+          this.searchDataProductCa3.clear();
+          this.searchDataProductWantCa3.clear();
         }
         if(type == "RENT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1293,12 +1325,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa3 = paging;
             if (this.searchPagingCa3.currentPage == null ||
                 this.searchPagingCa3.currentPage == 0) {
-              this.searchDataProductCa3 = list;
+              this.searchDataProductCa3= list;
             } else {
               for (var e in list) {
                 this.searchDataProductCa3.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1306,7 +1339,7 @@ class ProductProvider extends ChangeNotifier {
         else if(type == "WANT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1316,12 +1349,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa3 = paging;
             if (this.searchPagingCa3.currentPage == null ||
                 this.searchPagingCa3.currentPage == 0) {
-              this.searchDataProductWantCa3 = list;
+              this.searchDataProductWantCa3= list;
             } else {
               for (var e in list) {
                 this.searchDataProductWantCa3.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1335,13 +1369,13 @@ class ProductProvider extends ChangeNotifier {
         print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
-          this.searchDataProductCa4 = [];
-          this.searchDataProductWantCa4 = [];
+          this.searchDataProductCa4.clear();
+          this.searchDataProductWantCa4.clear();
         }
         if(type == "RENT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1351,12 +1385,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa4 = paging;
             if (this.searchPagingCa4.currentPage == null ||
                 this.searchPagingCa4.currentPage == 0) {
-              this.searchDataProductCa4 = list;
+              this.searchDataProductCa4= list;
             } else {
               for (var e in list) {
                 this.searchDataProductCa4.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1364,7 +1399,7 @@ class ProductProvider extends ChangeNotifier {
         else if(type == "WANT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1374,12 +1409,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa4 = paging;
             if (this.searchPagingCa4.currentPage == null ||
                 this.searchPagingCa4.currentPage == 0) {
-              this.searchDataProductWantCa4 = list;
+              this.searchDataProductWantCa4= list;
             } else {
               for (var e in list) {
                 this.searchDataProductWantCa4.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1393,13 +1429,13 @@ class ProductProvider extends ChangeNotifier {
         print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
-          this.searchDataProductCa5 = [];
-          this.searchDataProductWantCa5 = [];
+          this.searchDataProductCa5.clear();
+          this.searchDataProductWantCa5.clear();
         }
         if(type == "RENT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1409,12 +1445,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa5 = paging;
             if (this.searchPagingCa5.currentPage == null ||
                 this.searchPagingCa5.currentPage == 0) {
-              this.searchDataProductCa5 = list;
+              this.searchDataProductCa5= list;
             } else {
               for (var e in list) {
                 this.searchDataProductCa5.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1422,7 +1459,7 @@ class ProductProvider extends ChangeNotifier {
         else if(type == "WANT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1432,12 +1469,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa5 = paging;
             if (this.searchPagingCa5.currentPage == null ||
                 this.searchPagingCa5.currentPage == 0) {
-              this.searchDataProductWantCa5 = list;
+              this.searchDataProductWantCa5= list;
             } else {
               for (var e in list) {
                 this.searchDataProductWantCa5.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1451,13 +1489,13 @@ class ProductProvider extends ChangeNotifier {
         print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
-          this.searchDataProductCa6 = [];
-          this.searchDataProductWantCa6 = [];
+          this.searchDataProductCa6.clear();
+          this.searchDataProductWantCa6.clear();
         }
         if(type == "RENT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1467,12 +1505,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa6 = paging;
             if (this.searchPagingCa6.currentPage == null ||
                 this.searchPagingCa6.currentPage == 0) {
-              this.searchDataProductCa6 = list;
+              this.searchDataProductCa6= list;
             } else {
               for (var e in list) {
                 this.searchDataProductCa6.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1480,7 +1519,7 @@ class ProductProvider extends ChangeNotifier {
         else if(type == "WANT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1490,12 +1529,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa6 = paging;
             if (this.searchPagingCa6.currentPage == null ||
                 this.searchPagingCa6.currentPage == 0) {
-              this.searchDataProductWantCa6 = list;
+              this.searchDataProductWantCa6= list;
             } else {
               for (var e in list) {
                 this.searchDataProductWantCa6.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1509,13 +1549,13 @@ class ProductProvider extends ChangeNotifier {
         print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
-          this.searchDataProductCa7 = [];
-          this.searchDataProductWantCa7 = [];
+          this.searchDataProductCa7.clear();
+          this.searchDataProductWantCa7.clear();
         }
         if(type == "RENT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1525,12 +1565,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa7 = paging;
             if (this.searchPagingCa7.currentPage == null ||
                 this.searchPagingCa7.currentPage == 0) {
-              this.searchDataProductCa7 = list;
+              this.searchDataProductCa7= list;
             } else {
               for (var e in list) {
                 this.searchDataProductCa7.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1538,7 +1579,7 @@ class ProductProvider extends ChangeNotifier {
         else if (type == "WANT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1548,12 +1589,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa7 = paging;
             if (this.searchPagingCa7.currentPage == null ||
                 this.searchPagingCa7.currentPage == 0) {
-              this.searchDataProductWantCa7 = list;
+              this.searchDataProductWantCa7= list;
             } else {
               for (var e in list) {
                 this.searchDataProductWantCa7.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1567,13 +1609,13 @@ class ProductProvider extends ChangeNotifier {
         print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
-          this.searchDataProductCa8 = [];
-          this.searchDataProductWantCa8 = [];
+          this.searchDataProductCa8.clear();
+          this.searchDataProductWantCa8.clear();
         }
         if(type == "RENT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1583,12 +1625,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa8 = paging;
             if (this.searchPagingCa8.currentPage == null ||
                 this.searchPagingCa8.currentPage == 0) {
-              this.searchDataProductCa8 = list;
+              this.searchDataProductCa8= list;
             } else {
               for (var e in list) {
                 this.searchDataProductCa8.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1596,7 +1639,7 @@ class ProductProvider extends ChangeNotifier {
         else if(type == "WANT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1606,12 +1649,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa8 = paging;
             if (this.searchPagingCa8.currentPage == null ||
                 this.searchPagingCa8.currentPage == 0) {
-              this.searchDataProductWantCa8 = list;
+              this.searchDataProductWantCa8= list;
             } else {
               for (var e in list) {
                 this.searchDataProductWantCa8.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1625,13 +1669,13 @@ class ProductProvider extends ChangeNotifier {
         print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
-          this.searchDataProductCa9 = [];
-          this.searchDataProductWantCa9 = [];
+          this.searchDataProductCa9.clear();
+          this.searchDataProductWantCa9.clear();
         }
         if(type == "RENT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1641,12 +1685,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa9 = paging;
             if (this.searchPagingCa9.currentPage == null ||
                 this.searchPagingCa9.currentPage == 0) {
-              this.searchDataProductCa9 = list;
+              this.searchDataProductCa9= list;
             } else {
               for (var e in list) {
                 this.searchDataProductCa9.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1654,7 +1699,7 @@ class ProductProvider extends ChangeNotifier {
         if(type == "WANT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1664,12 +1709,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa9 = paging;
             if (this.searchPagingCa9.currentPage == null ||
                 this.searchPagingCa9.currentPage == 0) {
-              this.searchDataProductWantCa9 = list;
+              this.searchDataProductWantCa9= list;
             } else {
               for (var e in list) {
                 this.searchDataProductWantCa9.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1683,13 +1729,13 @@ class ProductProvider extends ChangeNotifier {
         print(type);
         print('검색 조회 프로바이더 서비스');
         if (page == 0) {
-          this.searchDataProductCa10 = [];
-          this.searchDataProductWantCa10 = [];
+          this.searchDataProductCa10.clear();
+          this.searchDataProductWantCa10.clear();
         }
         if(type == "RENT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1699,12 +1745,13 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa10 = paging;
             if (this.searchPagingCa10.currentPage == null ||
                 this.searchPagingCa10.currentPage == 0) {
-              this.searchDataProductCa10 = list;
+              this.searchDataProductCa10= list;
             } else {
               for (var e in list) {
                 this.searchDataProductCa10.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
@@ -1712,7 +1759,7 @@ class ProductProvider extends ChangeNotifier {
         else if(type == "WANT"){
           try {
             final res = await productService.searchProduct(
-                page, searchData, la, lo, category, type);
+                page, searchData, lat.value, lon.value, category, type);
             Map<String, dynamic> jsonMap = json.decode(res.toString());
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
@@ -1722,19 +1769,20 @@ class ProductProvider extends ChangeNotifier {
             this.searchPagingCa10 = paging;
             if (this.searchPagingCa10.currentPage == null ||
                 this.searchPagingCa10.currentPage == 0) {
-              this.searchDataProductWantCa10 = list;
+              this.searchDataProductWantCa10= list;
             } else {
               for (var e in list) {
                 this.searchDataProductWantCa10.add(e);
               }
             }
+            update();
           } catch (e) {
             print(e);
           }
         }
         break;
     }
-    notifyListeners();
+    
   }
 
   Future<void> delProduct(int productIdx, String token) async {
@@ -1744,6 +1792,7 @@ class ProductProvider extends ChangeNotifier {
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
       mainProducts.removeWhere((item) => item.idx == productIdx);
+      update();
     } catch (e) {
       print(e);
     }
@@ -1753,7 +1802,7 @@ class ProductProvider extends ChangeNotifier {
     print("유저 대여 제공리스트");
     try {
       final res =
-          await productService.privateList(productIdx, la, lo, page, token);
+          await productService.privateList(productIdx, lat.value, lon.value, page, token);
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       List<PrivateRent> list = (jsonMap['data'] as List)
           .map((e) => PrivateRent.fromJson(e))
@@ -1763,12 +1812,13 @@ class ProductProvider extends ChangeNotifier {
       this.privateRentCounter = paging;
       if (this.privateRentCounter.currentPage == null ||
           this.privateRentCounter.currentPage == 0) {
-        this.privateRentList = list;
+        this.privateRentList.value = list;
       } else {
         for (var e in list) {
           this.privateRentList.add(e);
         }
       }
+      update();
     } catch (e) {
       print(e);
     }
@@ -1786,12 +1836,13 @@ class ProductProvider extends ChangeNotifier {
       print(list);
       this.chatListCounter = paging;
       if(this.chatListCounter.currentPage == null || this.chatListCounter.currentPage == 0) {
-        this.chatListItem = list;
+        this.chatListItem.value = list;
       }else {
         for(var e in list) {
           this.chatListItem.add(e);
         }
       }
+      update();
     } catch (e) {
       print(e);
     }
@@ -1810,12 +1861,13 @@ class ProductProvider extends ChangeNotifier {
       Paging paging = Paging.fromJson(jsonMap);
       this.rentListCounter = paging;
       if(this.rentListCounter.currentPage == null || this.rentListCounter.currentPage == 0) {
-        this.rentListItem = list;
+        this.rentListItem.value = list;
       }else {
         for(var e in list) {
           this.rentListItem.add(e);
         }
       }
+      update();
     }catch(e){
       print(e);
     }
@@ -1834,16 +1886,17 @@ class ProductProvider extends ChangeNotifier {
       Paging paging = Paging.fromJson(jsonMap);
       this.rentListCounter = paging;
       if(this.rentListCounter.currentPage == null || this.rentListCounter.currentPage == 0) {
-        this.rentListItemRent = list;
+        this.rentListItemRent.value = list;
       }else {
         for(var e in list) {
           this.rentListItemRent.add(e);
         }
       }
+      update();
     }catch(e){
       print(e);
     }
-    notifyListeners();
+    
   }
 
   Future<String> rentInit(int senderIdx, int receiverIdx, int productIdx, String token) async {
@@ -1855,9 +1908,10 @@ class ProductProvider extends ChangeNotifier {
       print(jsonMap);
       this.productStart = jsonMap['data'];
       return jsonMap['data'];
+      update();
     } catch(e){
       print(e);
-      notifyListeners();
+      
       return '';
     }
   }
@@ -1880,9 +1934,12 @@ class ProductProvider extends ChangeNotifier {
       Map<String, dynamic> finishMap = json.decode(rentFinishRes.toString());
       print(startMap);
       print(finishMap);
+      update();
     }catch(e){
       print(e);
     }
-    notifyListeners();
+    
   }
 }
+
+

@@ -4,16 +4,16 @@ part 'CategoryPageRent.g.dart';
 
 @JsonSerializable()
 class CategoryPageRent {
-  int id;
+  int idx;
   String title = "";
   int price;
-  int? category;
-  String name;
+  int? category_idx;
+  String? name;
   num distance;
-  List<ProductFile> productFiles;
+  List<ProductFile> image;
 
-  CategoryPageRent(this.id, this.title, this.price, this.category, this.name,
-      this.distance, this.productFiles); // String productFiles;
+  CategoryPageRent(this.idx, this.title, this.price, this.category_idx, this.name,
+      this.distance, this.image); // String productFiles;
 
   factory CategoryPageRent.fromJson(Map<String, dynamic> json) => _$CategoryPageRentFromJson(json);
 
@@ -48,10 +48,10 @@ class CategoryPageRent {
 
 @JsonSerializable()
 class ProductFile {
-  int id;
-  String path;
+  int file_idx;
+  String file;
 
-  ProductFile(this.id, this.path);
+  ProductFile(this.file_idx, this.file);
 
   factory ProductFile.fromJson(Map<String, dynamic> json) => _$ProductFileFromJson(json);
 

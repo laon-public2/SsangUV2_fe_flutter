@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +48,9 @@ class ProductApplyPrivatePage extends StatefulWidget {
 }
 
 class _ProductApplyPageState extends State<ProductApplyPrivatePage> {
+
+  ProductController productController = Get.find<ProductController>();
+
   List<String> categories = [
     "생활용품",
     "여행",
@@ -315,8 +319,6 @@ class _ProductApplyPageState extends State<ProductApplyPrivatePage> {
             width: double.infinity,
             child: Consumer<UserProvider>(
               builder: (_, _user, __) {
-                return Consumer<ProductProvider>(
-                  builder: (__, _product, _) {
                     return RaisedButton(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
@@ -335,7 +337,7 @@ class _ProductApplyPageState extends State<ProductApplyPrivatePage> {
                           _showDialog(context, "물품의 자세한 내용 입력해주세요.");
                           return;
                         }
-                        await _product.productApplyPrivate(
+                        await productController.productApplyPrivate(
                           _user.phNum!,
                           _user.userIdx!,
                           _selectCategory(_selectedCategory),
@@ -362,8 +364,6 @@ class _ProductApplyPageState extends State<ProductApplyPrivatePage> {
                             fontWeight: FontWeight.w500),
                       ),
                     );
-                  },
-                );
               },
             )),
         SizedBox(

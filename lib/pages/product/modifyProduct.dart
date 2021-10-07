@@ -259,7 +259,7 @@ class _ModifyProductState extends State<ModifyProduct> {
                 return;
               }
 
-              Provider.of<ProductProvider>(context, listen: false).putProduct(
+              Provider.of<ProductController>(context, listen: false).putProduct(
                   context,
                   widget.product.id,
                   _selectedCategory,

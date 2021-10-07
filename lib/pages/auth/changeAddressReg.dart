@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/auth/SuccessReg.dart';
 import 'package:share_product_v2/providers/fcm_model.dart';
@@ -26,6 +27,7 @@ class ChangeAddressReg extends StatefulWidget {
 }
 
 class _ChangeAddressState extends State<ChangeAddressReg> {
+  ProductController productController = Get.find<ProductController>();
   TextEditingController _addressDetail = TextEditingController();
   bool? regAddressEnabled = true;
 
@@ -124,12 +126,12 @@ class _ChangeAddressState extends State<ChangeAddressReg> {
                           this.widget.la,
                           this.widget.lo,
                         );
-
-                        await Provider.of<ProductProvider>(context, listen: false).changeUserPosition(
-                          Provider.of<UserProvider>(context, listen: false).userLocationLatitude,
-                          Provider.of<UserProvider>(context, listen: false).userLocationLongitude,
-                        );
-                        await Provider.of<ProductProvider>(context, listen: false).getGeolocator();
+                        productController.changeUserPosition(Provider.of<UserProvider>(context, listen: false).userLocationLatitude,
+                          Provider.of<UserProvider>(context, listen: false).userLocationLongitude);
+                        // await Provider.of<ProductController>(context, listen: false).changeUserPosition(
+                        //
+                        // );
+                        await productController.getGeolocator();
                         await Provider.of<UserProvider>(context, listen: false).getMyInfo();
                         Navigator.push(
                           context,

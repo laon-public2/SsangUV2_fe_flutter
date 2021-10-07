@@ -8,13 +8,13 @@ part of 'CategoryPageRent.dart';
 
 CategoryPageRent _$CategoryPageRentFromJson(Map<String, dynamic> json) {
   return CategoryPageRent(
-    json['id'] as int,
+    json['idx'] as int,
     json['title'] as String,
     json['price'] as int,
     json['category_idx'] as int?,
-    json['name'] as String,
+    json['name'] as String?,
     json['distance'] as num,
-    (json['productFiles'] as List<dynamic>)
+    (json['image'] as List<dynamic>)
         .map((e) => ProductFile.fromJson(e as Map<String, dynamic>))
         .toList(),
   );
@@ -22,24 +22,24 @@ CategoryPageRent _$CategoryPageRentFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$CategoryPageRentToJson(CategoryPageRent instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'idx': instance.idx,
       'title': instance.title,
       'price': instance.price,
-      'category_idx': instance.category,
+      'category_idx': instance.category_idx,
       'name': instance.name,
       'distance': instance.distance,
-      'productFiles': instance.productFiles,
+      'image': instance.image,
     };
 
 ProductFile _$ProductFileFromJson(Map<String, dynamic> json) {
   return ProductFile(
-    json['id'] as int,
-    json['path'] as String,
+    json['file_idx'] as int,
+    json['file'] as String,
   );
 }
 
 Map<String, dynamic> _$ProductFileToJson(ProductFile instance) =>
     <String, dynamic>{
-      'id': instance.id,
-      'path': instance.path,
+      'file_idx': instance.file_idx,
+      'file': instance.file,
     };

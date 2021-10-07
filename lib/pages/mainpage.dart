@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/history/history.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -50,6 +51,10 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class MyStatefulWidgetState extends State<MyStatefulWidget> {
+
+  ProductController productController = Get.put(ProductController());
+
+  BannerController bannerController = Get.put(BannerController());
   // final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
   late SharedPreferences pref;
   int page = 0;
@@ -78,22 +83,30 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
     print("token : $token");
     print("reToken : $reToken");
     if (token != null && token != "" && reToken != null && reToken != "") {
-      await Provider.of<UserProvider>(context, listen: false)
-          .refreshToken(reToken);
-      await Provider.of<UserProvider>(context, listen: false)
-          .setAccessToken(token);
-      await Provider.of<BannerProvider>(context, listen: false).getBanners();
+      await Provider.of<UserProvider>(context, listen: false).refreshToken(reToken);
+      await Provider.of<UserProvider>(context, listen: false).setAccessToken(token);
+      await bannerController.getBanners();
+      // await Provider.of<BannerProvider>(context, listen: false).getBanners();
       try{
-        await Provider.of<ProductProvider>(context, listen: false).changeUserPosition(
-          Provider.of<UserProvider>(context, listen: false).userLocationLatitude,
-          Provider.of<UserProvider>(context, listen: false).userLocationLongitude,
+        await productController.changeUserPosition(
+            Provider.of<UserProvider>(context, listen: false).userLocationLatitude,
+            Provider.of<UserProvider>(context, listen: false).userLocationLongitude
         );
+
+        // await Provider.of<ProductController>(context, listen: false).changeUserPosition(
+        //   Provider.of<UserProvider>(context, listen: false).userLocationLatitude,
+        //   Provider.of<UserProvider>(context, listen: false).userLocationLongitude,
+        // );
       }
       catch(e){
-        await Provider.of<ProductProvider>(context, listen: false).changeUserPosition(
-          Provider.of<UserProvider>(context, listen: false).defaultUserLocationLatitude,
-          Provider.of<UserProvider>(context, listen: false).defaultUserLocationLongitude,
+        await productController.changeUserPosition(
+            Provider.of<UserProvider>(context, listen: false).defaultUserLocationLatitude,
+            Provider.of<UserProvider>(context, listen: false).defaultUserLocationLongitude
         );
+        // await Provider.of<ProductController>(context, listen: false).changeUserPosition(
+        //   Provider.of<UserProvider>(context, listen: false).defaultUserLocationLatitude,
+        //   Provider.of<UserProvider>(context, listen: false).defaultUserLocationLongitude,
+        // );
       }
 
     } else {
@@ -439,14 +452,15 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
     Future.delayed(Duration.zero, () async {
       await Provider.of<FCMModel>(context, listen: false).getMbToken();
       await Provider.of<UserProvider>(context, listen: false).AddFCMtoken(Provider.of<FCMModel>(context, listen: false).mbToken!);
-      bool getBanners = await Provider.of<BannerProvider>(context, listen: false).getBanners();
+      bool getBanners = await bannerController.getBanners();
+      // bool getBanners = await Provider.of<BannerProvider>(context, listen: false).getBanners();
       await Provider.of<UserProvider>(context, listen: false).initialUserLocation();
       if(getBanners == false){
         _showDialogErr("서버와의 통신에 문제가 있습니다\n만약 서비스가 계속 작동되지 않는다면 고객센터로 문의 주십시오.");
       }
     });
-
-    Provider.of<ProductProvider>(context, listen: false).getGeolocator();
+    productController.getGeolocator();
+    // Provider.of<ProductController>(context, listen: false).getGeolocator();
     // if(Provider.of<UserProvider>(context, listen: false).userLocationX == 37.0 && Provider.of<UserProvider>(context, listen: false).userLocationY == 126){
     //
     // }

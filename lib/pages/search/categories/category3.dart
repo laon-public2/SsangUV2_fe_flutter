@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
@@ -19,6 +20,9 @@ class Category3 extends StatefulWidget {
 }
 
 class _Category1State extends State<Category3> {
+
+  ProductController productController = Get.find<ProductController>();
+  
   final List<String> itemKind = [
     "빌려드려요",
     "빌려주세요",
@@ -30,7 +34,7 @@ class _Category1State extends State<Category3> {
   ScrollController categoryScroller = ScrollController();
 
   categoryScrollerListener() async {
-    final pvm = Provider.of<ProductProvider>(context, listen: false);
+    final pvm = Provider.of<ProductController>(context, listen: false);
     if(categoryScroller.position.pixels == categoryScroller.position.maxScrollExtent){
       print("스크롤이 가장 아래입니다.");
       if(_currentItem == "빌려드려요"){
@@ -66,7 +70,7 @@ class _Category1State extends State<Category3> {
   }
 
   void asyncData() async {
-    await Provider.of<ProductProvider>(context, listen: false).SearchingDataProduct(
+    await Provider.of<ProductController>(context, listen: false).SearchingDataProduct(
         this.page, this.widget.searchWord, this.widget._category, "RENT");
   }
 
@@ -98,11 +102,11 @@ class _Category1State extends State<Category3> {
                         _currentItem = value;
                       });
                       if(value == "빌려드려요"){
-                        await Provider.of<ProductProvider>(context, listen: false)
+                        await Provider.of<ProductController>(context, listen: false)
                             .SearchingDataProduct(
                             this.page, this.widget.searchWord, this.widget._category, "RENT");
                       }else if(value == "빌려주세요"){
-                        await Provider.of<ProductProvider>(context, listen: false)
+                        await Provider.of<ProductController>(context, listen: false)
                             .SearchingDataProduct(
                             this.page, this.widget.searchWord, this.widget._category, "WANT");
                       }
@@ -123,42 +127,42 @@ class _Category1State extends State<Category3> {
   }
 
   _toItem() {
-    return Consumer<ProductProvider>(
-      builder: (_, _myList, __) {
+    
+     
         return ListView.separated(
           itemCount: this._currentItem == '빌려드려요'
-              ? _myList.searchDataProductCa3.length
-              : _myList.searchDataProductWantCa3.length,
+              ? productController.searchDataProductCa3.length
+              : productController.searchDataProductWantCa3.length,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, idx) {
             if (this._currentItem == "빌려드려요") {
               return LendItemMainPage(
-                category: "${_category(_myList.searchDataProductCa3[idx].category)}",
-                idx: _myList.searchDataProductCa3[idx].id,
-                title: "${_myList.searchDataProductCa3[idx].title}",
-                name: "${_myList.searchDataProductCa3[idx].name}",
-                price: "${_moneyFormat("${_myList.searchDataProductCa3[idx].price}")}원",
+                category: "${_category(productController.searchDataProductCa3[idx].category)}",
+                idx: productController.searchDataProductCa3[idx].id,
+                title: "${productController.searchDataProductCa3[idx].title}",
+                name: "${productController.searchDataProductCa3[idx].name}",
+                price: "${_moneyFormat("${productController.searchDataProductCa3[idx].price}")}원",
                 distance:
-                "${(_myList.searchDataProductCa3[idx].distance).toStringAsFixed(2)}",
-                picture: "${_myList.searchDataProductCa3[idx].productFiles[0].path}",
+                "${(productController.searchDataProductCa3[idx].distance).toStringAsFixed(2)}",
+                picture: "${productController.searchDataProductCa3[idx].productFiles[0].path}",
               );
             } else {
               return WantItemMainPage(
-                idx: _myList.searchDataProductWantCa3[idx].id,
+                idx: productController.searchDataProductWantCa3[idx].id,
                 category:
-                "${_category(_myList.searchDataProductWantCa3[idx].category)}",
-                title: "${_myList.searchDataProductWantCa3[idx].title}",
-                name: "${_myList.searchDataProductWantCa3[idx].name}",
+                "${_category(productController.searchDataProductWantCa3[idx].category)}",
+                title: "${productController.searchDataProductWantCa3[idx].title}",
+                name: "${productController.searchDataProductWantCa3[idx].name}",
                 minPrice:
-                "${_moneyFormat("${_myList.searchDataProductWantCa3[idx].minPrice}")}원",
+                "${_moneyFormat("${productController.searchDataProductWantCa3[idx].minPrice}")}원",
                 maxPrice:
-                "${_moneyFormat("${_myList.searchDataProductWantCa3[idx].maxPrice}")}원",
+                "${_moneyFormat("${productController.searchDataProductWantCa3[idx].maxPrice}")}원",
                 distance:
-                "${(_myList.searchDataProductWantCa3[idx].distance).toStringAsFixed(2)}",
-                startDate: _dateFormat(_myList.searchDataProductWantCa3[idx].startDate),
-                endDate: _dateFormat(_myList.searchDataProductWantCa3[idx].endDate),
-                picture: _myList.searchDataProductWantCa3[idx].productFiles[0].path,
+                "${(productController.searchDataProductWantCa3[idx].distance).toStringAsFixed(2)}",
+                startDate: _dateFormat(productController.searchDataProductWantCa3[idx].startDate),
+                endDate: _dateFormat(productController.searchDataProductWantCa3[idx].endDate),
+                picture: productController.searchDataProductWantCa3[idx].productFiles[0].path,
               );
             }
           },
@@ -169,8 +173,6 @@ class _Category1State extends State<Category3> {
             );
           },
         );
-      },
-    );
   }
 }
 

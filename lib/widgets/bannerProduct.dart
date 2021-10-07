@@ -15,8 +15,6 @@ class BannerItemProduct extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<BannerProvider>(
-      builder: (_, banner, __) {
         return Container(
           // color: Colors.red,
           child: CarouselSlider(
@@ -50,8 +48,7 @@ class BannerItemProduct extends StatelessWidget {
             }).toList(),
           ),
         );
-      },
-    );
+
   }
 
   void _launchURL(url) async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
@@ -19,6 +20,8 @@ class ChangeAddress extends StatefulWidget {
 
 class _ChangeAddressState extends State<ChangeAddress> with SingleTickerProviderStateMixin{
   TextEditingController _addressDetail = TextEditingController();
+
+  ProductController productController = Get.find<ProductController>();
 
   bool? addressEnabled = true;
   late AnimationController _aniController;
@@ -138,11 +141,12 @@ class _ChangeAddressState extends State<ChangeAddress> with SingleTickerProvider
                         this.widget.la,
                         this.widget.lo,
                       );
-                      await Provider.of<ProductProvider>(context, listen: false).changeUserPosition(
+                      productController.changeUserPosition(
                         Provider.of<UserProvider>(context, listen: false).userLocationLatitude,
                         Provider.of<UserProvider>(context, listen: false).userLocationLongitude,
                       );
-                      await Provider.of<ProductProvider>(context, listen: false).getGeolocator();
+                      // await Provider.of<ProductController>(context, listen: false)
+                      await productController.getGeolocator();
                       Navigator.of(context).popUntil((route) => route.isFirst);
                     }
                   },

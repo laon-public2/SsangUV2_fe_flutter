@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/model/paging.dart';
@@ -21,6 +22,9 @@ class CategoryProductList extends StatefulWidget {
 }
 
 class _CategoryProductListState extends State<CategoryProductList> {
+
+  // ProductController productController = Get.find<ProductController>();
+
   Geolocator? geolocator;
   bool _want = false;
   bool _rent = true;
@@ -37,7 +41,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
   ScrollController categoryScroll = ScrollController();
 
   categoryScrollerListener() async {
-    final pvm = Provider.of<ProductProvider>(context, listen: false);
+    final pvm = Get.find<ProductController>();
     if (categoryScroll.position.pixels ==
         categoryScroll.position.maxScrollExtent) {
       print("스크롤이 가장 아래입니다.");
@@ -56,8 +60,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
   }
 
   _getProduct() async {
-    Provider.of<ProductProvider>(context, listen: false)
-        .categoryRent(categoryIdx!, page, userType);
+    Get.find<ProductController>().categoryRent(categoryIdx!, page, userType);
   }
 
   @override
@@ -67,7 +70,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       _getProduct();
       print(
-          "배열 갯수 === ${Provider.of<ProductProvider>(context, listen: false).categoryProducts.length}");
+          "배열 갯수 === ${Get.find<ProductController>().categoryProducts.length}");
     });
   }
 
@@ -148,7 +151,10 @@ class _CategoryProductListState extends State<CategoryProductList> {
     final Map<String, String> args = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
     return SingleChildScrollView(
       controller: categoryScroll,
-      child: Consumer<ProductProvider>(builder: (_, product, __) {
+      child: GetBuilder<ProductController>(
+          init: ProductController(),
+          builder: (product)
+      {
         this.paging = product.paging;
         return Container(
           color: Colors.white,
@@ -179,8 +185,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                           _help = false;
                           userType = "Rent";
                         });
-                        Provider.of<ProductProvider>(context, listen: false)
-                            .categoryRent(categoryIdx!, page, userType);
+                        Get.find<ProductController>().categoryRent(categoryIdx!, page, userType);
                       },
                     ),
                     Text(
@@ -199,7 +204,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                           _help = false;
                           userType = "Want";
                         });
-                        Provider.of<ProductProvider>(context, listen: false)
+                        Get.find<ProductController>()
                             .categoryWant(categoryIdx!, page, userType);
                       },
                       child: Text(
@@ -227,7 +232,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                           _want = false;
                           userType = "HELP";
                         });
-                        Provider.of<ProductProvider>(context, listen: false)
+                        Get.find<ProductController>()
                             .categoryWant(categoryIdx!, page, userType);
                       },
                       child: Text(
@@ -259,7 +264,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                           _rent = true;
                           userType = "Rent";
                         });
-                        Provider.of<ProductProvider>(context, listen: false)
+                        Get.find<ProductController>()
                             .categoryRent(categoryIdx!, page, userType);
                       },
                     ),
@@ -278,7 +283,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
                           _rent = false;
                           userType = "Want";
                         });
-                        Provider.of<ProductProvider>(context, listen: false)
+                        Get.find<ProductController>()
                             .categoryWant(categoryIdx!, page, userType);
                       },
                       child: Text(
@@ -304,45 +309,43 @@ class _CategoryProductListState extends State<CategoryProductList> {
   }
 
   _toItem() {
-    return Consumer<ProductProvider>(
-      builder: (_, _myList, __) {
         return ListView.separated(
           itemCount: !_want
-              ? _myList.categoryProducts.length
-              : _myList.categoryProductsWant.length,
+              ? Get.find<ProductController>().categoryProducts.length
+              : Get.find<ProductController>().categoryProductsWant.length,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, idx) {
             if (!_want) {
               return LendItemMainPage(
                 category:
-                    "${_category(_myList.categoryProducts[idx].category!)}",
-                idx: _myList.categoryProducts[idx].id,
-                title: "${_myList.categoryProducts[idx].title}",
-                name: "${_myList.categoryProducts[idx].name}",
+                    "${_category(Get.find<ProductController>().categoryProducts[idx].category_idx!)}",
+                idx: Get.find<ProductController>().categoryProducts[idx].idx,
+                title: "${Get.find<ProductController>().categoryProducts[idx].title}",
+                name: "${Get.find<ProductController>().categoryProducts[idx].name}",
                 price:
-                    "${_moneyFormat("${_myList.categoryProducts[idx].price}")}원",
+                    "${_moneyFormat("${Get.find<ProductController>().categoryProducts[idx].price}")}원",
                 distance:
-                    "${(_myList.categoryProducts[idx].distance).toStringAsFixed(2)}",
-                picture: _myList.categoryProducts[idx].productFiles[0].path,
+                    "${(Get.find<ProductController>().categoryProducts[idx].distance).toStringAsFixed(2)}",
+                picture: Get.find<ProductController>().categoryProducts[idx].image[0].file,
               );
             } else {
               return WantItemMainPage(
-                idx: _myList.categoryProductsWant[idx].id,
+                idx: Get.find<ProductController>().categoryProductsWant[idx].idx,
                 category:
-                    "${_category(_myList.categoryProductsWant[idx].category!)}",
-                title: "${_myList.categoryProductsWant[idx].title}",
-                name: "${_myList.categoryProductsWant[idx].name}",
+                    "${_category(Get.find<ProductController>().categoryProductsWant[idx].category_idx!)}",
+                title: "${Get.find<ProductController>().categoryProductsWant[idx].title}",
+                name: "${Get.find<ProductController>().categoryProductsWant[idx].name}",
                 minPrice:
-                    "${_moneyFormat("${_myList.categoryProductsWant[idx].minPrice}")}원",
+                    "${_moneyFormat("${Get.find<ProductController>().categoryProductsWant[idx].min_price}")}원",
                 maxPrice:
-                    "${_moneyFormat("${_myList.categoryProductsWant[idx].maxPrice}")}원",
+                    "${_moneyFormat("${Get.find<ProductController>().categoryProductsWant[idx].max_price}")}원",
                 distance:
-                    "${(_myList.categoryProductsWant[idx].distance).toStringAsFixed(2)}",
+                    "${(Get.find<ProductController>().categoryProductsWant[idx].distance).toStringAsFixed(2)}",
                 startDate:
-                    _dateFormat(_myList.categoryProductsWant[idx].startDate),
-                endDate: _dateFormat(_myList.categoryProductsWant[idx].endDate),
-                picture: _myList.categoryProductsWant[idx].productFiles[0].path,
+                    _dateFormat(Get.find<ProductController>().categoryProductsWant[idx].start_date),
+                endDate: _dateFormat(Get.find<ProductController>().categoryProductsWant[idx].end_date),
+                picture: Get.find<ProductController>().categoryProductsWant[idx].image[0].file,
               );
             }
           },
@@ -353,8 +356,6 @@ class _CategoryProductListState extends State<CategoryProductList> {
             );
           },
         );
-      },
-    );
   }
 }
 

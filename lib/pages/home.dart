@@ -4,10 +4,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/product/ProductDetailRent.dart';
+import 'package:share_product_v2/providers/homeController.dart';
 import 'package:share_product_v2/providers/mapProvider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/widgets/CustomDropdown.dart';
@@ -21,158 +23,59 @@ import '../main.dart';
 import 'KakaoMap.dart';
 import 'chat/CustomerMessage.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
+
   double? lati;
   double? longti;
-
-
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   CarouselController buttonCarouselController = CarouselController();
+  HomeController homeController = Get.put(HomeController());
+  ProductController productController = Get.find<ProductController>();
 
-  int page = 0;
   final List<String> itemKind = [
     "빌려주세요",
     "빌려드려요",
     "도와주세요"
   ];
-  String _currentItem = "";
 
   late List<String> myLocation;
-  String _currentLocation = "";
-
   late List<String> address;
 
-  ScrollController homeScroller = ScrollController();
-  double _visible = 0.0;
 
-  homeScrollerListener() async{
-    final pvm = Provider.of<ProductProvider>(context, listen: false);
-    if(homeScroller.position.pixels == homeScroller.position.maxScrollExtent){
-      print("스크롤이 가장 아래입니다.");
-      if(this._currentItem == "빌려드려요"){
-        if(pvm.paging.totalCount != pvm.mainProducts.length){
-          this.page++;
-          Provider.of<ProductProvider>(context, listen: false)
-              .getMainRent(this.page);
-        }
-      }else{
-        if(pvm.paging.totalCount != pvm.mainProductsWant.length){
-          this.page++;
-          Provider.of<ProductProvider>(context, listen: false)
-              .getMainWant(this.page);
-        }
-      }
-    }
-  }
+  // homeScrollerListener() async{
+  //
+  //   final pvm = productController;
+  //   if(homeScroller.position.pixels == homeScroller.position.maxScrollExtent){
+  //     print("스크롤이 가장 아래입니다.");
+  //     if(this._currentItem == "빌려드려요"){
+  //       if(pvm.paging.totalCount != pvm.mainProducts.length){
+  //         this.page++;
+  //         Provider.of<ProductController>(context, listen: false)
+  //             .getMainRent(this.page);
+  //       }
+  //     }else{
+  //       if(pvm.paging.totalCount != pvm.mainProductsWant.length){
+  //         this.page++;
+  //         Provider.of<ProductController>(context, listen: false)
+  //             .getMainWant(this.page);
+  //       }
+  //     }
+  //   }
+  // }
 
-  @override
-  void initState() {
-    _currentItem = itemKind.first;
-    homeScroller.addListener(homeScrollerListener);
-    super.initState();
-    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  // @override
+  // void initState() {
+  //
+  // }
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('on resume $message');
-      Platform.isIOS ?
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context) => CustomerMessage(
-            message.data['uuid']!,
-            int.parse(message.data['productIdx']),
-            message.data['title'],
-            message.data['category'],
-            message.data['productOwner'],
-            int.parse(message.data['price']),
-            message.data['pic'],
-            message.data['status'],
-            int.parse(message.data['receiverIdx']),
-            message.data['senderFcm'],
-            message.data['receiverFcm'],
-            int.parse(message.data['senderIdx']),
-          )
-      )):
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context) => CustomerMessage(
-            message.data['data']['uuid'],
-            int.parse(message.data['data']['productIdx']),
-            message.data['data']['title'],
-            message.data['data']['category'],
-            message.data['data']['productOwner'],
-            int.parse(message.data['data']['price']),
-            message.data['data']['pic'],
-            message.data['data']['status'],
-            int.parse(message.data['data']['receiverIdx']),
-            message.data['data']['senderFcm'],
-            message.data['data']['receiverFcm'],
-            int.parse(message.data['data']['senderIdx']),
-          )
-      ));
-    });
-
-    // _firebaseMessaging.configure(
-    //   onMessage: (Map<String, dynamic> message) async {
-    //     print('on message $message');
-    //   },
-    //   onResume: (Map<String, dynamic> message) async {
-    //     print('on resume $message');
-    //     Platform.isIOS ?
-    //     Navigator.push(context, MaterialPageRoute(
-    //         builder: (context) => CustomerMessage(
-    //           message['uuid'],
-    //           int.parse(message['productIdx']),
-    //           message['title'],
-    //           message['category'],
-    //           message['productOwner'],
-    //           int.parse(message['price']),
-    //           message['pic'],
-    //           message['status'],
-    //           int.parse(message['receiverIdx']),
-    //           message['senderFcm'],
-    //           message['receiverFcm'],
-    //           int.parse(message['senderIdx']),
-    //         )
-    //     )):
-    //     Navigator.push(context, MaterialPageRoute(
-    //         builder: (context) => CustomerMessage(
-    //           message['data']['uuid'],
-    //           int.parse(message['data']['productIdx']),
-    //           message['data']['title'],
-    //           message['data']['category'],
-    //           message['data']['productOwner'],
-    //           int.parse(message['data']['price']),
-    //           message['data']['pic'],
-    //           message['data']['status'],
-    //           int.parse(message['data']['receiverIdx']),
-    //           message['data']['senderFcm'],
-    //           message['data']['receiverFcm'],
-    //           int.parse(message['data']['senderIdx']),
-    //         )
-    //     ));
-    //   },
-    //   onLaunch: (Map<String, dynamic> message) async {
-    //     print('on launch $message');
-    //   },
-    // );
-    Future.delayed(Duration(milliseconds: 100), () {
-      setState(() {
-        _visible = 1.0;
-      });
-    });
-  }
-
-  void dispose() {
-    homeScroller.dispose();
-    super.dispose();
-  }
+  // void dispose() {
+  //
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      opacity: _visible,
+    return Obx (() => AnimatedOpacity(
+      opacity: homeController.visible.value,
       duration: Duration(milliseconds: 100),
       child: ScrollConfiguration(
         behavior: MyBehavior(),
@@ -190,11 +93,9 @@ class _HomePageState extends State<HomePage> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Consumer<ProductProvider>(
-                        builder: (__, _myProduct, _) {
-                          return CustomDropdownMain(
-                            items: _myProduct.myLocation,
-                            value: _myProduct.currentLocation,
+                      CustomDropdownMain(
+                            items: productController.myLocation,
+                            value: productController.currentLocation.value,
                             onChange: (value) async {
                               if (value == "다른 위치 설정") {
                                await localhostServer.close();
@@ -211,15 +112,14 @@ class _HomePageState extends State<HomePage> {
                                     .getPosition(model.address);
                                 print("설정 주소 $position");
                                 List<String> positionSplit = position.split(',');
-                                await Provider.of<ProductProvider>(context,
-                                    listen: false)
-                                    .getGeoSearch(double.parse(positionSplit[0]),
-                                    double.parse(positionSplit[1]));
-                              }else{
-                                _myProduct.getGeoChange(value);
+                                await productController.getGeoSearch(double.parse(positionSplit[0]), double.parse(positionSplit[1]));
+                                // await Provider.of<ProductController>(context,
+                                //     listen: false)
+                                //     .getGeoSearch(double.parse(positionSplit[0]),
+                                //     );
+                              } else{
+                                 productController.getGeoChange(value);
                               }
-                            },
-                          );
                         },
                       ),
                     ],
@@ -239,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                 child: Container(
                   padding: const EdgeInsets.only(left: 16, right: 16, bottom: 0),
                   child: SingleChildScrollView(
-                    controller: homeScroller,
+                    controller: homeController.homeScroller,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -261,18 +161,16 @@ class _HomePageState extends State<HomePage> {
                           margin: const EdgeInsets.only(top: 0, bottom: 16, left: 10),
                           child: CustomDropdown(
                             items: itemKind,
-                            value: _currentItem,
+                            value: homeController.currentItem.value,
                             onChange: (value) {
-                              setState(() {
-                                _currentItem = value;
-                                this.page = 0;
-                              });
+                                homeController.currentItem.value = value;
+                                homeController.page.value = 0;
                             },
                           ),
                         ), // 빌려드려요 / 빌려주세요 드랍박스
                         ToItem(
-                          value: _currentItem,
-                          page: this.page,
+                          value: homeController.currentItem.value,
+                          page: homeController.page.value,
                         ),
                       ],
                     ),
@@ -286,11 +184,15 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+    ),
     );
   }
 }
 
 class ToItem extends StatelessWidget {
+
+  ProductController productController = Get.find<ProductController>();
+
   final String value;
   int page;
 
@@ -298,43 +200,41 @@ class ToItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProductProvider>(
-      builder: (_, _myList, __) {
         return ListView.separated(
           itemCount: value == '빌려드려요'
-              ? _myList.mainProducts.length
-              : _myList.mainProductsWant.length,
+              ? productController.mainProducts.length
+              : productController.mainProductsWant.length,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, idx) {
             if (value == "빌려드려요") {
               return LendItemMainPage(
-                category: "${_category(_myList.mainProducts[idx].category_idx!)}",
-                idx: _myList.mainProducts[idx].idx,
-                title: "${_myList.mainProducts[idx].title}",
-                name: "${_myList.mainProducts[idx].name}",
-                price: "${_moneyFormat("${_myList.mainProducts[idx].price}")}원",
+                category: "${_category(productController.mainProducts[idx].category_idx!)}",
+                idx: productController.mainProducts[idx].idx,
+                title: "${productController.mainProducts[idx].title}",
+                name: "${productController.mainProducts[idx].name}",
+                price: "${_moneyFormat("${productController.mainProducts[idx].price}")}원",
                 distance:
-                    "${(_myList.mainProducts[idx].distance).toStringAsFixed(2)}",
-                picture: "${_myList.mainProducts[idx].image[0].file}",
-                //receiverIdx: _myList.mainProducts[idx].receiverIdx,
+                    "${(productController.mainProducts[idx].distance).toStringAsFixed(2)}",
+                picture: "${productController.mainProducts[idx].image[0].file}",
+                //receiverIdx: productController.mainProducts[idx].receiverIdx,
               );
             } else {
               return WantItemMainPage(
-                idx: _myList.mainProductsWant[idx].id,
+                idx: productController.mainProductsWant[idx].id,
                 category:
-                    "${_category(_myList.mainProductsWant[idx].category)}",
-                title: "${_myList.mainProductsWant[idx].title}",
-                name: "${_myList.mainProductsWant[idx].name}",
+                    "${_category(productController.mainProductsWant[idx].category)}",
+                title: "${productController.mainProductsWant[idx].title}",
+                name: "${productController.mainProductsWant[idx].name}",
                 minPrice:
-                    "${_moneyFormat("${_myList.mainProductsWant[idx].minPrice}")}원",
+                    "${_moneyFormat("${productController.mainProductsWant[idx].minPrice}")}원",
                 maxPrice:
-                    "${_moneyFormat("${_myList.mainProductsWant[idx].maxPrice}")}원",
+                    "${_moneyFormat("${productController.mainProductsWant[idx].maxPrice}")}원",
                 distance:
-                    "${(_myList.mainProductsWant[idx].distance).toStringAsFixed(2)}",
-                startDate: _dateFormat(_myList.mainProductsWant[idx].startDate),
-                picture: "${_myList.mainProductsWant[idx].productFiles[0].path}",
-                endDate: _dateFormat(_myList.mainProductsWant[idx].endDate),
+                    "${(productController.mainProductsWant[idx].distance).toStringAsFixed(2)}",
+                startDate: _dateFormat(productController.mainProductsWant[idx].startDate),
+                picture: "${productController.mainProductsWant[idx].productFiles[0].path}",
+                endDate: _dateFormat(productController.mainProductsWant[idx].endDate),
               );
             }
           },
@@ -345,8 +245,6 @@ class ToItem extends StatelessWidget {
             );
           },
         );
-      },
-    );
   }
 }
 

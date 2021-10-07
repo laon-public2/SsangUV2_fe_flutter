@@ -120,7 +120,7 @@ class _GoogleMapsState extends State<GoogleMaps> {
                               .getAddress(_cameraPosition!.latitude,
                                   _cameraPosition!.longitude);
                       print("address : $address");
-                      await Provider.of<ProductProvider>(context, listen: false)
+                      await Provider.of<ProductController>(context, listen: false)
                           .changeAddress(this.widget.type, _cameraPosition!.latitude, _cameraPosition!.longitude, address);
                       Navigator.of(context).pop(true);
                     },

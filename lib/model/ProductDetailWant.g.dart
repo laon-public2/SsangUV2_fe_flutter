@@ -23,8 +23,8 @@ productDetailWant _$productDetailWantFromJson(Map<String, dynamic> json) {
     json['address_detail'] as String,
     json['name'] as String,
     json['review_possible'] as bool?,
-    json['location']['y'] as num?,
-    json['location']['x'] as num?,
+    json['lati'] as num?,
+    json['longti'] as num?,
     json['distance'] as num?,
     json['fcm_token'] as String,
     (json['image'] as List<dynamic>)

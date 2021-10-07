@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/regUserProvider.dart';
@@ -13,9 +14,12 @@ class LoginPageNode extends StatefulWidget {
 }
 
 class _LoginPageNodeState extends State<LoginPageNode> with SingleTickerProviderStateMixin {
+
+  ProductController productController = Get.find<ProductController>();
   TextEditingController _phNum = TextEditingController();
   TextEditingController _password = TextEditingController();
   String? phNum;
+
 
   late AnimationController _aniController;
   late Animation<Offset> _offsetAnimation;
@@ -144,7 +148,8 @@ class _LoginPageNodeState extends State<LoginPageNode> with SingleTickerProvider
                   if (Provider.of<UserProvider>(context, listen: false)
                       .isLoggenIn) {
                     _showDialogLoading();
-                    await Provider.of<ProductProvider>(context, listen: false).getGeolocator();
+
+                    await productController.getGeolocator();
                     Navigator.of(context).popUntil((route) => route.isFirst);
                   } else {
                     _showDialog('전화번호 또는 아이디가 틀렸습니다.');

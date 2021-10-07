@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/providers/productProvider.dart';
 import 'package:share_product_v2/providers/userProvider.dart';
@@ -16,6 +17,8 @@ class MySSangU extends StatefulWidget {
 }
 
 class _MySSangUState extends State<MySSangU> {
+
+  ProductController productController = Get.find<ProductController>();
   int page = 0;
 
   @override
@@ -24,7 +27,7 @@ class _MySSangUState extends State<MySSangU> {
   }
 
   Future<bool> _privateListLoad() async {
-    await Provider.of<ProductProvider>(context, listen: false).privateList(
+    await Provider.of<ProductController>(context, listen: false).privateList(
       this.widget.productIdx,
       this.page,
       Provider.of<UserProvider>(context, listen: false).accessToken!,
@@ -70,8 +73,6 @@ class _MySSangUState extends State<MySSangU> {
   }
 
   _body() {
-    return Consumer<ProductProvider>(
-      builder: (_, _product, __) {
         return Container(
           width: double.infinity,
           height: double.infinity,
@@ -94,14 +95,14 @@ class _MySSangUState extends State<MySSangU> {
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, idx) {
                     return PrivateRentItem(
-                      category: "${_category(_product.privateRentList[idx].category)}",
-                      idx: _product.privateRentList[idx].id,
-                      title: "${_product.privateRentList[idx].title}",
-                      name: "${_product.privateRentList[idx].name}",
-                      price: "${_moneyFormat("${_product.privateRentList[idx].price}")}원",
+                      category: "${_category(productController.privateRentList[idx].category)}",
+                      idx: productController.privateRentList[idx].id,
+                      title: "${productController.privateRentList[idx].title}",
+                      name: "${productController.privateRentList[idx].name}",
+                      price: "${_moneyFormat("${productController.privateRentList[idx].price}")}원",
                       distance:
-                      "${(_product.privateRentList[idx].distance).toStringAsFixed(2)}",
-                      picture: "${_product.privateRentList[idx].productFiles[0].path}",
+                      "${(productController.privateRentList[idx].distance).toStringAsFixed(2)}",
+                      picture: "${productController.privateRentList[idx].productFiles[0].path}",
                     );
                   },
                   separatorBuilder: (context, idx) {
@@ -110,14 +111,12 @@ class _MySSangUState extends State<MySSangU> {
                       child: Divider(),
                     );
                   },
-                  itemCount: _product.privateRentList.length,
+                  itemCount: productController.privateRentList.length,
                 ),
               ],
             ),
           ),
         );
-      },
-    );
   }
 
   _category(int categoryNum) {

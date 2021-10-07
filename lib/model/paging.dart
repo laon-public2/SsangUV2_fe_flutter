@@ -4,12 +4,13 @@ part 'paging.g.dart';
 
 @JsonSerializable()
 class Paging {
-  int? size;
-  int? totalPage;
+  // int? size;
+  // int? totalPage;
   int? currentPage;
   int? totalCount;
 
-  Paging(this.size, this.totalPage, this.currentPage, this.totalCount);
+  Paging(this.currentPage, this.totalCount);
+  // Paging(this.size, this.totalPage, this.currentPage, this.totalCount);
 
   factory Paging.fromJson(Map<String, dynamic> json) => _$PagingFromJson(json);
 

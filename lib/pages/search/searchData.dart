@@ -85,7 +85,7 @@ class _SearchDataState extends State<SearchData> {
                     child: IconButton(
                       icon: Image.asset('assets/icon/newSearch.png'),
                       onPressed: () {
-                        Provider.of<ProductProvider>(context, listen: false)
+                        Provider.of<ProductController>(context, listen: false)
                             .SearchingDataProduct(0, _searchWord.text, _category, "RENT");
                       },
                     ),
@@ -171,7 +171,7 @@ class _SearchDataState extends State<SearchData> {
 
   void _handleSubmitted(String text){
     if(_searchWord.text.trim().isEmpty) return null;
-    Provider.of<ProductProvider>(context, listen: false)
+    Provider.of<ProductController>(context, listen: false)
         .SearchingDataProduct(0, _searchWord.text, _category, "RENT");
   }
 }

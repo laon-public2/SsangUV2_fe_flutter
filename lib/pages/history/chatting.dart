@@ -19,7 +19,7 @@ class Chatting extends StatelessWidget {
     int page = 0;
 
     Future<bool> chatListLoad() async {
-      await Provider.of<ProductProvider>(context, listen: false).chatList(
+      await Provider.of<ProductController>(context, listen: false).chatList(
         Provider.of<UserProvider>(context, listen: false).userIdx!,
         page,
         Provider.of<UserProvider>(context, listen: false).accessToken!,
@@ -49,7 +49,7 @@ class Chatting extends StatelessWidget {
           );
         } else {
           return Container(
-            child: Consumer<ProductProvider>(
+            child: Consumer<ProductController>(
               builder: (_, contracts, __) {
                 return ListView.separated(
                     shrinkWrap: false,
@@ -63,7 +63,7 @@ class Chatting extends StatelessWidget {
                           return Container();
                         } else {
                           page++;
-                          Provider.of<ProductProvider>(context, listen: false)
+                          Provider.of<ProductController>(context, listen: false)
                               .chatList(
                             Provider.of<UserProvider>(context, listen: false)
                                 .userIdx!,

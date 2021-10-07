@@ -5,14 +5,14 @@ part 'banner.g.dart';
 @JsonSerializable()
 
 class BannerModel {
-  int id;
+  int banner_id;
   String title;
   String url;
  // String bannerType;
   // BannerFile bannerFile;
-  String bannerFile;
+  String path;
 
-  BannerModel(this.id, this.title, this.url, this.bannerFile);
+  BannerModel(this.banner_id, this.title, this.url, this.path);
 
   factory BannerModel.fromJson(Map<String, dynamic> json) => _$BannerModelFromJson(json);
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/model/product.dart';
@@ -19,6 +20,8 @@ class Share extends StatefulWidget {
 
 class _ShareState extends State<Share> {
 
+  ProductController productController = Get.find<ProductController>();
+
   final List<String> itemKind = [
     "대여요청",
     "대여제공",
@@ -30,7 +33,7 @@ class _ShareState extends State<Share> {
   int page = 0;
 
   sharedScrollListener() async {
-    final pvm =  Provider.of<ProductProvider>(context, listen: false);
+    final pvm =  Provider.of<ProductController>(context, listen: false);
     if(sharedScroll.position.pixels == sharedScroll.position.maxScrollExtent){
       print("스크롤이 가장 아래에 있습니다.");
       if(_currentItem == "대여요청") {
@@ -54,7 +57,7 @@ class _ShareState extends State<Share> {
   }
 
   Future<bool> loadData() async {
-    await Provider.of<ProductProvider>(context, listen: false).rentHistory(
+    await Provider.of<ProductController>(context, listen: false).rentHistory(
         Provider.of<UserProvider>(context, listen: false).userIdx!,
         page,
         Provider.of<UserProvider>(context, listen: false).accessToken!);
@@ -102,9 +105,7 @@ class _ShareState extends State<Share> {
           );
         } else {
           return Container(
-            child: Consumer<ProductProvider>(
-              builder: (_, product, __) {
-                return Column(
+                child: Column(
                   children: <Widget>[
                     Container(
                       width: double.infinity,
@@ -132,7 +133,7 @@ class _ShareState extends State<Share> {
                                   _currentItem = value;
                                 });
                                 if(this._currentItem == "빌린내역"){
-                                  Provider.of<ProductProvider>(context, listen: false)
+                                  Provider.of<ProductController>(context, listen: false)
                                       .rentHistory(
                                     Provider.of<UserProvider>(context, listen: false)
                                         .userIdx!,
@@ -141,7 +142,7 @@ class _ShareState extends State<Share> {
                                         .accessToken!,
                                   );
                                 }else{
-                                  Provider.of<ProductProvider>(context, listen: false)
+                                  Provider.of<ProductController>(context, listen: false)
                                       .rentHistoryRent(
                                     Provider.of<UserProvider>(context, listen: false)
                                         .userIdx!,
@@ -160,8 +161,8 @@ class _ShareState extends State<Share> {
                     ListView.separated(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
-                      itemCount: this._currentItem == "대여요청" ? product.rentListItem.length
-                          : product.rentListItemRent.length,
+                      itemCount: this._currentItem == "대여요청" ? productController.rentListItem.length
+                          : productController.rentListItemRent.length,
                       separatorBuilder: (context, idx) => Divider(
                         color: Color(0xffdddddd),
                       ),
@@ -175,13 +176,13 @@ class _ShareState extends State<Share> {
                                 width: 48.w,
                                 height: 48.h,
                                 child: Image.network(
-                                  "http://115.91.73.66:15066/assets/images/product/${product.rentListItem[idx].productFiles[0].path}",
+                                  "http://115.91.73.66:15066/assets/images/product/${productController.rentListItem[idx].productFiles[0].path}",
                                   fit: BoxFit.cover,
                                 ),
                               ),
                             ),
                             title: Text(
-                              product.rentListItem[idx].productTitle,
+                              productController.rentListItem[idx].productTitle,
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w500,
@@ -193,7 +194,7 @@ class _ShareState extends State<Share> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CustomText(
-                                  text: "${product.rentListItem[idx].receiverName}님",
+                                  text: "${productController.rentListItem[idx].receiverName}님",
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w700,
                                   textColor: Color(0xff999999),
@@ -202,7 +203,7 @@ class _ShareState extends State<Share> {
                                   children: <Widget>[
                                     CustomText(
                                       text: _dateFormat(
-                                          product.rentListItem[idx].startDate),
+                                          productController.rentListItem[idx].startDate),
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w400,
                                       textColor: Color(0xff999999),
@@ -216,7 +217,7 @@ class _ShareState extends State<Share> {
                                     ),
                                     CustomText(
                                       text: _dateFormat(
-                                          product.rentListItem[idx].endDate),
+                                          productController.rentListItem[idx].endDate),
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w400,
                                       textColor: Color(0xff999999),
@@ -235,13 +236,13 @@ class _ShareState extends State<Share> {
                                 width: 48.w,
                                 height: 48.h,
                                 child: Image.network(
-                                  "http://115.91.73.66:15066/assets/images/product/${product.rentListItemRent[idx].productFiles[0].path}",
+                                  "http://115.91.73.66:15066/assets/images/product/${productController.rentListItemRent[idx].productFiles[0].path}",
                                   fit: BoxFit.cover,
                                 ),
                               ),
                             ),
                             title: Text(
-                              product.rentListItemRent[idx].productTitle,
+                              productController.rentListItemRent[idx].productTitle,
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w500,
@@ -253,7 +254,7 @@ class _ShareState extends State<Share> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CustomText(
-                                  text: "${product.rentListItemRent[idx].receiverName}님",
+                                  text: "${productController.rentListItemRent[idx].receiverName}님",
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w700,
                                   textColor: Color(0xff999999),
@@ -262,7 +263,7 @@ class _ShareState extends State<Share> {
                                   children: <Widget>[
                                     CustomText(
                                       text: _dateFormat(
-                                          product.rentListItemRent[idx].startDate),
+                                          productController.rentListItemRent[idx].startDate),
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w400,
                                       textColor: Color(0xff999999),
@@ -276,7 +277,7 @@ class _ShareState extends State<Share> {
                                     ),
                                     CustomText(
                                       text: _dateFormat(
-                                          product.rentListItemRent[idx].endDate),
+                                          productController.rentListItemRent[idx].endDate),
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w400,
                                       textColor: Color(0xff999999),
@@ -290,8 +291,7 @@ class _ShareState extends State<Share> {
                       },
                     ),
                   ],
-                );
-              },
+                
             ),
           );
         }

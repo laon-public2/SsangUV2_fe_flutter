@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -681,8 +682,8 @@ class _CustomerMessage extends State<CustomerMessage>
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Consumer<ProductProvider>(
-                                  builder: (_, _product, __){
+                                GetBuilder<ProductController>(
+                                  builder: (_product){
                                     return InkWell(
                                       child: Container(
                                         width: 120.w,
