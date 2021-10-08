@@ -8,8 +8,8 @@
 // import 'package:share_product_v2/pages/product/detailMapPage.dart';
 // import 'package:share_product_v2/pages/product/modifyProduct.dart';
 // import 'package:share_product_v2/providers/contractProvider.dart';
-// import 'package:share_product_v2/providers/productProvider.dart';
-// import 'package:share_product_v2/providers/userProvider.dart';
+// import 'package:share_product_v2/providers/productController.dart';
+// import 'package:share_product_v2/providers/userController.dart';
 // import 'package:share_product_v2/utils/ConvertNumberFormat.dart';
 // import 'package:share_product_v2/widgets/BackBtn.dart';
 // import 'package:share_product_v2/widgets/Map.dart';

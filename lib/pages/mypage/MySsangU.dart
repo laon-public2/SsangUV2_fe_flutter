@@ -1,8 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_product_v2/widgets/PrivateRentItem.dart';
 import 'package:share_product_v2/widgets/customAppBar%20copy.dart';
@@ -19,6 +20,7 @@ class MySSangU extends StatefulWidget {
 class _MySSangUState extends State<MySSangU> {
 
   ProductController productController = Get.find<ProductController>();
+  UserController userController = Get.find<UserController>();
   int page = 0;
 
   @override
@@ -27,10 +29,10 @@ class _MySSangUState extends State<MySSangU> {
   }
 
   Future<bool> _privateListLoad() async {
-    await Provider.of<ProductController>(context, listen: false).privateList(
+    await productController.privateList(
       this.widget.productIdx,
       this.page,
-      Provider.of<UserProvider>(context, listen: false).accessToken!,
+      userController.accessToken.value,
     );
     return false;
   }

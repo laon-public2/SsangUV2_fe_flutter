@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/customAppBar%20copy.dart';
 import 'package:share_product_v2/widgets/customdialog.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
@@ -50,7 +50,7 @@ class ProductApplyPrivatePage extends StatefulWidget {
 class _ProductApplyPageState extends State<ProductApplyPrivatePage> {
 
   ProductController productController = Get.find<ProductController>();
-
+  UserController userController = Get.find<UserController>();
   List<String> categories = [
     "생활용품",
     "여행",
@@ -317,8 +317,8 @@ class _ProductApplyPageState extends State<ProductApplyPrivatePage> {
         SizedBox(
             height: 40.h,
             width: double.infinity,
-            child: Consumer<UserProvider>(
-              builder: (_, _user, __) {
+            child: GetBuilder<UserController>(
+              builder: (_user) {
                     return RaisedButton(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
@@ -338,8 +338,8 @@ class _ProductApplyPageState extends State<ProductApplyPrivatePage> {
                           return;
                         }
                         await productController.productApplyPrivate(
-                          _user.phNum!,
-                          _user.userIdx!,
+                          _user.phNum.value,
+                          _user.userIdx.value,
                           _selectCategory(_selectedCategory),
                           this.widget.productIdx,
                           titleTextController.text,
@@ -350,7 +350,7 @@ class _ProductApplyPageState extends State<ProductApplyPrivatePage> {
                           this.widget.endDate,
                           this.widget.address,
                           this.widget.addressDetail,
-                          _user.accessToken!,
+                          _user.accessToken.value,
                           this.widget.latitude,
                           this.widget.longitude,
                         );

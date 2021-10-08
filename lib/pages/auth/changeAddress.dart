@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_product_v2/widgets/loading.dart';
 
@@ -22,6 +22,7 @@ class _ChangeAddressState extends State<ChangeAddress> with SingleTickerProvider
   TextEditingController _addressDetail = TextEditingController();
 
   ProductController productController = Get.find<ProductController>();
+  UserController userController = Get.find<UserController>();
 
   bool? addressEnabled = true;
   late AnimationController _aniController;
@@ -74,8 +75,8 @@ class _ChangeAddressState extends State<ChangeAddress> with SingleTickerProvider
   }
 
   _body() {
-    return Consumer<UserProvider>(
-      builder: (_, _myInfo, __) {
+    return GetBuilder<UserController>(
+      builder: (_myInfo) {
         return Container(
             color: Colors.white,
             width: double.infinity,
@@ -142,10 +143,10 @@ class _ChangeAddressState extends State<ChangeAddress> with SingleTickerProvider
                         this.widget.lo,
                       );
                       productController.changeUserPosition(
-                        Provider.of<UserProvider>(context, listen: false).userLocationLatitude,
-                        Provider.of<UserProvider>(context, listen: false).userLocationLongitude,
+                        userController.userLocationLatitude.value,
+                        userController.userLocationLongitude.value,
                       );
-                      // await Provider.of<ProductController>(context, listen: false)
+                      // await productController
                       await productController.getGeolocator();
                       Navigator.of(context).popUntil((route) => route.isFirst);
                     }

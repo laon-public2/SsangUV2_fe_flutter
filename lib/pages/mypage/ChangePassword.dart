@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -24,8 +25,8 @@ class _ChangePasswordState extends State<ChangePassword> {
   }
 
   _body() {
-    return Consumer<UserProvider>(
-      builder: (_, _user, __){
+    return GetBuilder<UserController>(
+      builder: (_user){
         return Container(
           color: Colors.white,
           width: double.infinity,

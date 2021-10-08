@@ -6,8 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
+import 'package:share_product_v2/providers/userController.dart';
+import 'package:share_product_v2/providers/productController.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:share_product_v2/widgets/CustomDatePicker.dart';
 import 'package:share_product_v2/widgets/customAppBar%20copy.dart';
@@ -75,7 +75,7 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
     LocationData.add(RadioModel(true, "OnlyMine", "현재 위치"));
     LocationData.add(RadioModel(false, "NormalLocation", "기본 위치"));
     LocationData.add(RadioModel(false, "OtherLocation", "다른 위치"));
-    Provider.of<ProductController>(context, listen: false).resetAddress();
+    productController.resetAddress();
     //애니메이션 추가 부분
     _animationController = AnimationController(
       duration: Duration(milliseconds: 800),
@@ -368,8 +368,8 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
         SizedBox(
             height: 50.h,
             width: double.infinity,
-            child: Consumer<UserProvider>(
-              builder: (_, _user, __) {
+            child: GetBuilder<UserController>(
+              builder: (_user) {
                     return RaisedButton(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
@@ -395,7 +395,7 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
                           _showDialog(context, "설명을 입력해주세요.", "description");
                           return;
                         }
-                        if(this.LocationData[2].isSelected && productController.secondAddress == "기타 주소 설정"){
+                        if(this.LocationData[2].isSelected && productController.secondAddress.value == "기타 주소 설정"){
                           _showDialog(context, "기타 주소가 설정되지 않았습니다.", "description");
                         }
                         if(this.LocationData[2].isSelected && _otherAddressDetail.text == ""){
@@ -404,8 +404,8 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
                         List<String> date = _dateController.text.split("~");
                         if(this.LocationData[0].isSelected){
                           await productController.productApplyHelp(
-                            _user.phNum!,
-                            _user.userIdx!,
+                            _user.phNum.value,
+                            _user.userIdx.value,
                             _selectCategory(_selectedCategory),
                             titleTextController.text,
                             descriptionTextController.text,
@@ -417,14 +417,14 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
                             "${productController.geoLocation[1].depth3} ${productController.geoLocation[1].depth4}",
                             productController.lat.value,
                             productController.lon.value,
-                            _user.accessToken!,
+                            _user.accessToken.value,
                             _otherLocation,
                           );
                           _showDialogSuccess("글이 등록되었습니다.");
                         }else if(this.LocationData[1].isSelected){
                           await productController.productApplyRent(
-                            _user.phNum!,
-                            _user.userIdx!,
+                            _user.phNum.value,
+                            _user.userIdx.value,
                             _selectCategory(_selectedCategory),
                             titleTextController.text,
                             descriptionTextController.text,
@@ -436,14 +436,14 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
                             "${_user.addressDetail}",
                             productController.laUser!,
                             productController.loUser!,
-                            _user.accessToken!,
+                            _user.accessToken.value,
                             _otherLocation,
                           );
                           _showDialogSuccess("글이 등록되었습니다.");
                         }else{
                           await productController.productApplyRent(
-                            _user.phNum!,
-                            _user.userIdx!,
+                            _user.phNum.value,
+                            _user.userIdx.value,
                             _selectCategory(_selectedCategory),
                             titleTextController.text,
                             descriptionTextController.text,
@@ -455,7 +455,7 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
                             "${this._otherAddressDetail.text}",
                             productController.secondLa.value,
                             productController.secondLo.value,
-                            _user.accessToken!,
+                            _user.accessToken.value,
                             _otherLocation,
                           );
                           _showDialogSuccess("글이 등록되었습니다.");
@@ -619,9 +619,9 @@ class _ProductApplyPageState extends State<ProductHelpReg> with TickerProviderSt
 
   _otherLoc(String type) {
     if (type == "lend1") {
-      return Provider.of<ProductController>(context, listen: false).firstAddress;
+      return productController.firstAddress;
     } else {
-      return Provider.of<ProductController>(context, listen: false).secondAddress;
+      return productController.secondAddress;
     }
   }
 

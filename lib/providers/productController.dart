@@ -29,7 +29,7 @@ import 'package:share_product_v2/model/specialProduct.dart';
 import 'package:share_product_v2/models/default.dart';
 import 'package:share_product_v2/pages/search/searchData.dart';
 import 'package:share_product_v2/providers/mainProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/userController.dart';
 
 import 'package:share_product_v2/services/policyService.dart';
 import 'package:share_product_v2/services/productService.dart';
@@ -146,14 +146,15 @@ class ProductController extends GetxController {
     this.secondLo.value = 0;
     this.laUser = 0;
     this.loUser = 0;
-    
+    update();
   }
 
   Future<void> changeUserPosition(num la, num lo) async {
     print("changeUserPosition $la, $lo");
     this.laUser = la;
     this.loUser = lo;
-    
+
+    update();
   }
 
   Future<void> changeAddress(String type, num la, num lo, String address) async {
@@ -171,7 +172,8 @@ class ProductController extends GetxController {
       this.firstLa.value = la;
       this.firstLo.value = lo;
     }
-    
+
+    update();
   }
 
   Future<void> getGeolocator() async {
@@ -203,6 +205,7 @@ class ProductController extends GetxController {
     } catch (e) {
       print('geodrop' + e.toString());
     }
+    update();
     
   }
 
@@ -855,7 +858,7 @@ class ProductController extends GetxController {
     pref.setStringList("idxs", idxList);
 
     update();
-    Provider.of<MainProvider>(context, listen: false).notify();
+    // Provider.of<MainProvider>(context, listen: false).notify();
   }
 
   // renting(int id) async {
@@ -1002,7 +1005,6 @@ class ProductController extends GetxController {
   Future<void> getproductDetail(int productIdx) async {
     print(productIdx);
     print("물품 상세정보 로딩");
-    this.productDetail = null;
     final res = await productService.productDetail(productIdx, lat, lon);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap);
@@ -1042,10 +1044,11 @@ class ProductController extends GetxController {
         }
       }
       update();
-    } catch (e) {
-      print(e);
     }
-    
+    catch (e){
+      print('error error ' + e.toString());
+    }
+
   }
 
   Future<void> sendReview(int userIdx, int productIdx, String description,
@@ -1200,7 +1203,7 @@ class ProductController extends GetxController {
             List<SearchDataProduct> list = (jsonMap['data'] as List)
                 .map((e) => SearchDataProduct.fromJson(e))
                 .toList();
-            print(list);
+            print(list.length);
             Paging paging = Paging.fromJson(jsonMap);
             this.searchPaging = paging;
             if (this.searchPaging.currentPage == null ||
@@ -1902,7 +1905,7 @@ class ProductController extends GetxController {
   Future<String> rentInit(int senderIdx, int receiverIdx, int productIdx, String token) async {
     print("대여문의 하기");
     try {
-      print("${senderIdx}, ${receiverIdx}, ${productIdx}, ${token}");
+      print("$senderIdx, $receiverIdx, $productIdx, $token");
       final res = await productService.productInit(senderIdx, receiverIdx, productIdx, token);
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);

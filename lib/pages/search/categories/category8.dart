@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
 import 'package:share_product_v2/widgets/CustomDropdown.dart';
 import 'package:share_product_v2/widgets/CustomDropdownMain.dart';
 import 'package:share_product_v2/widgets/WantItemMainPage.dart';
@@ -34,7 +34,7 @@ class _Category1State extends State<Category8> {
   ScrollController categoryScroller = ScrollController();
 
   categoryScrollerListener() async {
-    final pvm = Provider.of<ProductController>(context, listen: false);
+    final pvm = productController;
     if(categoryScroller.position.pixels == categoryScroller.position.maxScrollExtent){
       print("스크롤이 가장 아래입니다.");
       if(_currentItem == "빌려드려요"){
@@ -70,16 +70,20 @@ class _Category1State extends State<Category8> {
   }
 
   void asyncData() async {
-    await Provider.of<ProductController>(context, listen: false).SearchingDataProduct(
+    await productController.SearchingDataProduct(
         this.page, this.widget.searchWord, this.widget._category, "RENT");
   }
 
   @override
   Widget build(BuildContext context) {
+    return GetBuilder<ProductController>(
+      builder: (controller) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: _body(),
     );
+  },
+);
   }
 
   _body() {
@@ -102,11 +106,11 @@ class _Category1State extends State<Category8> {
                         _currentItem = value;
                       });
                       if(value == "빌려드려요"){
-                        await Provider.of<ProductController>(context, listen: false)
+                        await productController
                             .SearchingDataProduct(
                             this.page, this.widget.searchWord, this.widget._category, "RENT");
                       }else if(value == "빌려주세요"){
-                        await Provider.of<ProductController>(context, listen: false)
+                        await productController
                             .SearchingDataProduct(
                             this.page, this.widget.searchWord, this.widget._category, "WANT");
                       }

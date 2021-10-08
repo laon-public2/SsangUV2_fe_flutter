@@ -21,8 +21,7 @@ class productDetailWant {
   String address_detail;
   String name;
   bool? review_possible;
-  num? lati;
-  num? longti;
+  Location location;
   num? distance;
   String fcm_token;
   List<ProductFile> image;
@@ -44,8 +43,7 @@ class productDetailWant {
       this.address_detail,
       this.name,
       this.review_possible,
-      this.lati,
-      this.longti,
+      this.location,
       this.distance,
       this.fcm_token,
       this.image);

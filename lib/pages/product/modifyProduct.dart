@@ -3,12 +3,13 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/model/product.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/customAppBar%20copy.dart';
 import 'dart:io';
 
@@ -55,6 +56,8 @@ class _ModifyProductState extends State<ModifyProduct> {
 
   late List<ProductFile> original_images = [];
   late List<int> deleteImages = [];
+
+  ProductController productController = Get.find<ProductController>();
 
   @override
   void initState() {
@@ -259,7 +262,7 @@ class _ModifyProductState extends State<ModifyProduct> {
                 return;
               }
 
-              Provider.of<ProductController>(context, listen: false).putProduct(
+              productController.putProduct(
                   context,
                   widget.product.id,
                   _selectedCategory,
@@ -394,7 +397,7 @@ class _ModifyProductState extends State<ModifyProduct> {
   }
 
   Widget userAddress() {
-    return Consumer<UserProvider>(builder: (_, user, __) {
+    return GetBuilder<UserController>(builder: (user) {
       print(123);
       print(user.loginMember!.member.address);
       return InkWell(

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/consts/textStyle.dart';
 import 'package:share_product_v2/pages/mypage/MyInfo.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/CustomLinkTextContainer.dart';
 import 'package:share_product_v2/widgets/CustomOnlyTextContainer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,39 +12,28 @@ import 'package:share_product_v2/widgets/PageTransition.dart';
 
 import 'myPage.dart';
 
-class LoginMyPage extends StatefulWidget {
-  @override
-  _LoginMyPageState createState() => _LoginMyPageState();
-}
-
-class _LoginMyPageState extends State<LoginMyPage> {
-  @override
-  void initState() {
-    super.initState();
-  }
+class LoginMyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Consumer<UserProvider>(
-        builder: (_, _getMyinfo, __) {
+      body: GetBuilder<UserController>(
+        builder: (_getMyinfo) {
           return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 50),
                   color: Colors.white,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       MyInfoContainer(
-                          username: _getMyinfo.username != null
-                              ? "${_getMyinfo.username}님"
-                              : "새로오셨네요!",
+                          username: _getMyinfo.username.value,
                           phone: "${_getMyinfo.phNum}"),
                       // CustomLinkTextContainer(
                       //   title: "나의 대여상품",
@@ -117,7 +107,7 @@ class _LoginMyPageState extends State<LoginMyPage> {
                               Text("알림설정", style: normal_16_000),
                               Spacer(),
                               Switch(
-                                value: _getMyinfo.userPush == null ? false : _getMyinfo.userPush!,
+                                value: _getMyinfo.userPush.value,
                                 onChanged: (bool value) {
                                   _getMyinfo.changePush();
                                   Fluttertoast.showToast(
@@ -206,9 +196,9 @@ class MyInfoContainer extends StatelessWidget {
               //   borderRadius: BorderRadius.circular(48),
               //   color: Colors.grey,
               // ),
-              child: Consumer<UserProvider>(
-                builder: (_, _getMyinfo, __) {
-                  return _getMyinfo.userProfileImg != null
+              child: GetBuilder<UserController>(
+                builder: (_getMyinfo) {
+                  return _getMyinfo.userProfileImg.value.length != 0
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(100),
                           child: Image.network(
@@ -235,7 +225,7 @@ class MyInfoContainer extends StatelessWidget {
                         style: bold_16_000,
                       ),
                       Text(
-                        " 반가워요!",
+                        "님 반가워요!",
                         style: normal_16_000,
                       ),
                     ],

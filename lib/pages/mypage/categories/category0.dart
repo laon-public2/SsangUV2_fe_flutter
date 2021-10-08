@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/auth/myPage.dart';
-import 'package:share_product_v2/providers/myPageProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/myPageController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/CustomDropdown.dart';
 import 'package:share_product_v2/widgets/CustomDropdownMain.dart';
 import 'package:share_product_v2/widgets/WantItemMainPage.dart';
@@ -26,8 +27,12 @@ class Category0 extends StatefulWidget {
 
 class _Category1State extends State<Category0> {
 
+  MyPageController myPageController = Get.find<MyPageController>();
+  
+  
 
   final List<String> itemKind = ["빌려드려요", "빌려주세요"];
+  UserController userController = Get.find<UserController>();
 
   late int page;
   int category = 1;
@@ -42,9 +47,9 @@ class _Category1State extends State<Category0> {
   }
 
   Future<bool>_loadingProduct() async {
-    int userIdx = Provider.of<UserProvider>(context, listen: false).userIdx!;
-    await Provider.of<MyPageProvider>(context, listen: false).getProWant(userIdx, page, category);
-    await Provider.of<MyPageProvider>(context, listen: false).getProRent(userIdx, page, category);
+    int userIdx = userController.userIdx.value;
+    await myPageController.getProWant(userIdx, page, category);
+    await myPageController.getProRent(userIdx, page, category);
     return true;
   }
 
@@ -123,10 +128,10 @@ class _Category1State extends State<Category0> {
   }
 
   _toItem() {
-    return Consumer<UserProvider>(
-      builder: (__, _myInfo, _) {
-        return Consumer<MyPageProvider>(
-          builder: (_, _myActHistory, __) {
+    return GetBuilder<UserController>(
+      builder: (_myInfo) {
+        return GetBuilder<MyPageController>(
+          builder: (_myActHistory) {
             return ListView.separated(
               itemCount: _currentItem == '빌려드려요'
                   ? _myActHistory.proRent.length
@@ -141,23 +146,23 @@ class _Category1State extends State<Category0> {
                     name: _myActHistory.proRent[idx].name,
                     price: _moneyFormat("${_myActHistory.proRent[idx].price}"),
                     status: _myActHistory.proRent[idx].status,
-                    idx: _myActHistory.proRent[idx].id,
-                    picFile: _myActHistory.proRent[idx].productFiles[0].path,
+                    idx: _myActHistory.proRent[idx].idx,
+                    picFile: _myActHistory.proRent[idx].image[0].file,
                     arrayNum: idx,
-                    token: _myInfo.accessToken!,
+                    token: _myInfo.accessToken.value,
                   );
                 } else if (_currentItem == '빌려주세요') {
                     return WantItemMyAct(
-                      idx: _myActHistory.proWant[idx].id,
+                      idx: _myActHistory.proWant[idx].idx,
                       category:
                       "전체",
                       title: "${_myActHistory.proWant[idx].title}",
                       name: "${_myActHistory.proWant[idx].name}",
-                      minPrice: "${_moneyFormat("${_myActHistory.proWant[idx].minPrice}")}원",
-                      maxPrice: "${_moneyFormat("${_myActHistory.proWant[idx].maxPrice}")}원",
-                      startDate: _dateFormat(_myActHistory.proWant[idx].startDate),
-                      endDate: _dateFormat(_myActHistory.proWant[idx].endDate),
-                      picture: _myActHistory.proWant[idx].productFiles[0].path,
+                      minPrice: "${_moneyFormat("${_myActHistory.proWant[idx].min_price}")}원",
+                      maxPrice: "${_moneyFormat("${_myActHistory.proWant[idx].max_price}")}원",
+                      startDate: _dateFormat(_myActHistory.proWant[idx].start_date),
+                      endDate: _dateFormat(_myActHistory.proWant[idx].end_date),
+                      picture: _myActHistory.proWant[idx].image[0].file,
                     );
                 }
                 else{

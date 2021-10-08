@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/auth/myPage.dart';
-import 'package:share_product_v2/providers/myPageProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/myPageController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/CustomDropdown.dart';
 import 'package:share_product_v2/widgets/CustomDropdownMain.dart';
 import 'package:share_product_v2/widgets/WantItemMainPage.dart';
@@ -26,7 +27,9 @@ class Category3 extends StatefulWidget {
 
 class _Category1State extends State<Category3> {
   final List<String> itemKind = ["빌려드려요", "빌려주세요"];
+  UserController userController = Get.find<UserController>();
 
+  MyPageController myPageController = Get.find<MyPageController>();
   late int page;
   int category = 4;
   late int totalCount;
@@ -40,10 +43,10 @@ class _Category1State extends State<Category3> {
   }
 
   Future<bool>_loadingProduct() async {
-    int userIdx = Provider.of<UserProvider>(context, listen: false).userIdx!;
-    await Provider.of<MyPageProvider>(context, listen: false)
+    int userIdx = userController.userIdx.value;
+    await myPageController
         .getProWantCa3(userIdx, page, category);
-    await Provider.of<MyPageProvider>(context, listen: false)
+    await myPageController
         .getProRentCa3(userIdx, page, category);
     return true;
   }
@@ -122,10 +125,10 @@ class _Category1State extends State<Category3> {
   }
 
   _toItem() {
-    return Consumer<UserProvider>(
-      builder: (__, _myInfo, _) {
-        return Consumer<MyPageProvider>(
-          builder: (_, _myActHistory, __) {
+    return GetBuilder<UserController>(
+      builder: (_myInfo) {
+        return GetBuilder<MyPageController>(
+          builder: (_myActHistory) {
             return ListView.separated(
               itemCount: _currentItem == '빌려드려요'
                   ? _myActHistory.proRentCa3.length
@@ -140,23 +143,23 @@ class _Category1State extends State<Category3> {
                     name: _myActHistory.proRentCa3[idx].name,
                     price: _moneyFormat("${_myActHistory.proRentCa3[idx].price}"),
                     status: _myActHistory.proRentCa3[idx].status,
-                    idx: _myActHistory.proRentCa3[idx].id,
-                    picFile: _myActHistory.proRentCa3[idx].productFiles[0].path,
+                    idx: _myActHistory.proRentCa3[idx].idx,
+                    picFile: _myActHistory.proRentCa3[idx].image[0].file,
                     arrayNum: idx,
-                    token: _myInfo.accessToken!,
+                    token: _myInfo.accessToken.value,
                   );
                 } else if (_currentItem == '빌려주세요') {
                   return WantItemMyAct(
-                    idx: _myActHistory.proWantCa3[idx].id,
+                    idx: _myActHistory.proWantCa3[idx].idx,
                     category:
                     "스포츠/레저",
                     title: "${_myActHistory.proWantCa3[idx].title}",
                     name: "${_myActHistory.proWantCa3[idx].name}",
-                    minPrice: "${_moneyFormat("${_myActHistory.proWantCa3[idx].minPrice}")}원",
-                    maxPrice: "${_moneyFormat("${_myActHistory.proWantCa3[idx].maxPrice}")}원",
-                    startDate: _dateFormat(_myActHistory.proWantCa3[idx].startDate),
-                    endDate: _dateFormat(_myActHistory.proWantCa3[idx].endDate),
-                    picture: _myActHistory.proWantCa3[idx].productFiles[0].path,
+                    minPrice: "${_moneyFormat("${_myActHistory.proWantCa3[idx].min_price}")}원",
+                    maxPrice: "${_moneyFormat("${_myActHistory.proWantCa3[idx].max_price}")}원",
+                    startDate: _dateFormat(_myActHistory.proWantCa3[idx].start_date),
+                    endDate: _dateFormat(_myActHistory.proWantCa3[idx].end_date),
+                    picture: _myActHistory.proWantCa3[idx].image[0].file,
                   );
                 } else {
                   Navigator.push(

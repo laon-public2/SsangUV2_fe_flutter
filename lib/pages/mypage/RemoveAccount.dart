@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RemoveAccount extends StatefulWidget {
@@ -68,8 +69,8 @@ class _RemoveAccountState extends State<RemoveAccount> with SingleTickerProvider
   }
 
   _body(){
-    return Consumer<UserProvider>(
-      builder: (_, myInfo, __){
+    return GetBuilder<UserController>(
+      builder: (myInfo){
         return SafeArea(
           child: Container(
             width: double.infinity,
@@ -181,7 +182,7 @@ class _RemoveAccountState extends State<RemoveAccount> with SingleTickerProvider
                     InkWell(
                       onTap: () async {
                         if(_isDelete) {
-                          await myInfo.DeleteUser(myInfo.phNum!);
+                          await myInfo.DeleteUser(myInfo.phNum.value);
                           SharedPreferences pref = await SharedPreferences.getInstance();
                           pref.clear();
                           Navigator.of(context).popUntil((route) => route.isFirst);

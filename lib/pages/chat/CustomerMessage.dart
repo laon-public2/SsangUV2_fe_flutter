@@ -15,15 +15,15 @@ import 'package:provider/provider.dart';
 import 'package:share_product_v2/model/StompSendDTO.dart';
 import 'package:share_product_v2/pages/product/ProductDetailRent.dart';
 import 'package:share_product_v2/providers/contractProvider.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/PageTransition.dart';
 import 'package:share_product_v2/widgets/chatBigImg.dart';
 import 'package:share_product_v2/widgets/loading.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
-import '../../providers/userProvider.dart';
+import '../../providers/userController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:connectivity/connectivity.dart';
 
@@ -53,8 +53,8 @@ class CustomerMessage extends StatefulWidget {
   _CustomerMessage createState() => _CustomerMessage();
 }
 
-class _CustomerMessage extends State<CustomerMessage>
-    with WidgetsBindingObserver, TickerProviderStateMixin{
+class _CustomerMessage extends State<CustomerMessage> with WidgetsBindingObserver, TickerProviderStateMixin{
+  UserController userController = Get.find<UserController>();
   late Map<String, String> headers;
   int page = 0;
   final picker = ImagePicker();
@@ -160,7 +160,7 @@ class _CustomerMessage extends State<CustomerMessage>
               var jsonRes = json.decode(frame.body!);
               print("frame.body : $jsonRes");
               StompSendDTO dto = StompSendDTO.fromJson(jsonRes);
-              await Provider.of<ContractProvider>(context, listen: false)
+              await Provider.of<ContractController>(context, listen: false)
                   .addChat(dto);
               double _position =
                   50.0 + bottomScrollController.position.maxScrollExtent;
@@ -190,10 +190,10 @@ class _CustomerMessage extends State<CustomerMessage>
   }
 
   _sendMsg(String text) {
-    var user = Provider.of<UserProvider>(context, listen: false);
+    var user = userController;
     StompSendDTO data = StompSendDTO(
       orderId: "${this.widget.uuid}",
-      sender: Provider.of<UserProvider>(context, listen: false).username,
+      sender: userController.username.value,
       content: _textController.text,
       type: "TEXT",
     );
@@ -201,8 +201,8 @@ class _CustomerMessage extends State<CustomerMessage>
       destination: '/pub/chat/message',
       body: json.encode(data.toJson()),
     );
-    if(this.widget.senderIdx == user.userIdx){
-      Provider.of<ContractProvider>(context, listen: false).sendFcm(
+    if(this.widget.senderIdx == user.userIdx.value){
+      Provider.of<ContractController>(context, listen: false).sendFcm(
         this.widget.title,
         text,
         this.widget.productIdx,
@@ -219,7 +219,7 @@ class _CustomerMessage extends State<CustomerMessage>
         this.widget.senderIdx,
       );
     }else{
-      Provider.of<ContractProvider>(context, listen: false).sendFcm(
+      Provider.of<ContractController>(context, listen: false).sendFcm(
         this.widget.title,
         text,
         this.widget.productIdx,
@@ -277,7 +277,7 @@ class _CustomerMessage extends State<CustomerMessage>
   }
 
   chatScroller() async{
-    final cvm = Provider.of<ContractProvider>(context, listen: false);
+    final cvm = Provider.of<ContractController>(context, listen: false);
    if(bottomScrollController.position.pixels == bottomScrollController.position.minScrollExtent) {
      print("현재 채팅방의 스크롤이 가장 위에 위치하고 있습니다.");
      if(cvm.chatHistoriesCounter.totalCount != cvm.chatHistories.length){
@@ -401,7 +401,7 @@ class _CustomerMessage extends State<CustomerMessage>
   }
 
   Future<bool> _loadChat() async {
-    final cvm = Provider.of<ContractProvider>(context, listen: false);
+    final cvm = Provider.of<ContractController>(context, listen: false);
     await cvm.getChatHistory(this.widget.uuid, this.page);
     return true;
   }
@@ -492,8 +492,8 @@ class _CustomerMessage extends State<CustomerMessage>
                   );
                 }
               });
-              return Consumer<UserProvider>(
-                builder: (_, _user, __){
+              return GetBuilder<UserController>(
+                builder: (_user){
                   return Container(
                     width: double.infinity,
                     height: double.infinity,
@@ -510,7 +510,7 @@ class _CustomerMessage extends State<CustomerMessage>
                                 child: Column(
                                   children: <Widget>[
                                     SizedBox(height: 80.h),
-                                    Consumer<ContractProvider>(
+                                    Consumer<ContractController>(
                                       builder: (_, chat, __) {
                                         return ListView.builder(
                                             shrinkWrap: true,
@@ -672,7 +672,7 @@ class _CustomerMessage extends State<CustomerMessage>
                             ),
                           ),
                         ),
-                        this.widget.productOwner == _user.username ?
+                        this.widget.productOwner == _user.username.value ?
                         Positioned(
                           right: 0,
                           left: 0,
@@ -705,8 +705,8 @@ class _CustomerMessage extends State<CustomerMessage>
                                           return null;
                                         }else{
                                           await _product.rentStatus(
-                                            Provider.of<UserProvider>(context, listen: false).accessToken!,
-                                            Provider.of<UserProvider>(context, listen: false).userIdx!,
+                                            userController.accessToken.value,
+                                            userController.userIdx.value,
                                             this.widget.receiverIdx,
                                             this.widget.productIdx,
                                             this.widget.status,
@@ -814,15 +814,13 @@ class _CustomerMessage extends State<CustomerMessage>
                                         builder: (BuildContext context) {
                                           return Loading();
                                         });
-                                    await Provider.of<ContractProvider>(
+                                    await Provider.of<ContractController>(
                                         context,
                                         listen: false)
                                         .uploadImage(
                                       images,
                                       this.widget.uuid,
-                                      Provider.of<UserProvider>(context,
-                                          listen: false)
-                                          .username!,
+                                      userController.username.value,
                                     );
                                     setState(() {
                                       this.images = [];
@@ -896,7 +894,7 @@ class _CustomerMessage extends State<CustomerMessage>
                 borderRadius: BorderRadius.circular(50),
                 border: Border.all(color: Color(0xffdddddd)),
               ),
-              child: Consumer<ContractProvider>(
+              child: Consumer<ContractController>(
                 builder: (_, _contract, __) {
                   return IconButton(
                     icon: Image.asset('assets/icon/inputImg.png'),
@@ -1018,8 +1016,8 @@ class ChatMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // print("$sender, $text, $date, $type, $uuid");
-    return Consumer<UserProvider>(
-      builder: (_, _user, __) {
+    return GetBuilder<UserController>(
+      builder: (_user){
         return _user.username == sender
             ? ListTile(
                 title: Column(

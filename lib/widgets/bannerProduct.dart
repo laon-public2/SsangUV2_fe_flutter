@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/bannerProvider.dart';
+import 'package:share_product_v2/providers/bannerController.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BannerItemProduct extends StatelessWidget {

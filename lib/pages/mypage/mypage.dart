@@ -4,7 +4,7 @@
 // import 'package:package_info/package_info.dart';
 // import 'package:provider/provider.dart';
 // import 'package:share_product_v2/pages/mypage/loginpage.dart';
-// import 'package:share_product_v2/providers/userProvider.dart';
+// import 'package:share_product_v2/providers/userController.dart';
 // import 'package:share_product_v2/utils/SharedPref.dart';
 // import 'package:share_product_v2/widgets/customdialog.dart';
 // import 'package:shared_preferences/shared_preferences.dart';

@@ -5,7 +5,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/product/ProductDetail.dart';
 import 'package:share_product_v2/pages/product/ProductDetailRent.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
 import 'package:share_product_v2/widgets/categoryContainer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/utils/APIUtil.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
@@ -9,12 +10,8 @@ import 'package:share_product_v2/widgets/loading.dart';
 
 import '../mainpage.dart';
 
-class SuccessReg extends StatefulWidget {
-  @override
-  _SuccessRegState createState() => _SuccessRegState();
-}
-
-class _SuccessRegState extends State<SuccessReg> {
+class SuccessReg extends StatelessWidget {
+  UserController userController = Get.find<UserController>();
   @override
   Widget build(BuildContext context) {
     MyStatefulWidgetState myStatefulWidgetState = MyStatefulWidgetState();
@@ -44,9 +41,9 @@ class _SuccessRegState extends State<SuccessReg> {
               Spacer(),
               InkWell(
                 onTap: () async {
-                  _showDialogLoading();
+                  _showDialogLoading(context);
 
-                  await Provider.of<UserProvider>(context, listen: false).getMyInfo();
+                  await userController.getMyInfo();
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
                 child: Container(
@@ -72,11 +69,11 @@ class _SuccessRegState extends State<SuccessReg> {
           ),
         ),
       ),
-      onWillPop: () => _showDialog("회원가입완료 버튼을 눌러주세요"),
+      onWillPop: () => _showDialog(context, "회원가입완료 버튼을 눌러주세요"),
     );
   }
 
- _showDialog(String text) {
+ _showDialog(BuildContext context, String text) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -84,7 +81,7 @@ class _SuccessRegState extends State<SuccessReg> {
         });
   }
 
-  void _showDialogLoading() {
+  void _showDialogLoading(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {

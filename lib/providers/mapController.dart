@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:share_product_v2/model/KaKaoAddress.dart';
 import 'package:share_product_v2/services/MapService.dart';
 
-class MapProvider extends ChangeNotifier {
+class MapController extends GetxController {
   final MapService mapService = MapService();
 
   // String kakaoAddress;
@@ -12,7 +13,7 @@ class MapProvider extends ChangeNotifier {
     String data = await mapService.getAddress(latitude, longitude);
     // this.kakaoAddress = data;
     // notifyListeners();
-
+    update();
     return data;
   }
 
@@ -21,7 +22,7 @@ class MapProvider extends ChangeNotifier {
 
     // this.KaKaoPosition = data;
     // notifyListeners();
-
+    update();
     return data;
   }
 }

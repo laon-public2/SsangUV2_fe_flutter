@@ -3,8 +3,8 @@
 // import 'package:carousel_slider/carousel_slider.dart';
 // import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 // import 'package:provider/provider.dart';
-// import 'package:share_product_v2/providers/mapProvider.dart';
-// import 'package:share_product_v2/providers/userProvider.dart';
+// import 'package:share_product_v2/providers/mapController.dart';
+// import 'package:share_product_v2/providers/userController.dart';
 // import 'package:share_product_v2/widgets/customText.dart';
 // import 'package:share_product_v2/widgets/loading.dart';
 // import 'package:shared_preferences/shared_preferences.dart';

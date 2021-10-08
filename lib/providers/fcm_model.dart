@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:get/get.dart';
 import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
 
-class FCMModel with ChangeNotifier {
-  String? mbToken;
-  static Future<dynamic> myBackgroundMessageHandler(
-      Map<String, dynamic> message) async {
+class FCMModel extends GetxController {
+  var mbToken = "".obs;
+  static Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
     if (message.containsKey('data')) {
       // Handle data message 데이터 메세지 캡쳐
       final dynamic data = message['data'];
@@ -20,7 +20,6 @@ class FCMModel with ChangeNotifier {
       final dynamic notification = message['notification'];
       print(notification);
     }
-
     // Or do other work.
   }
 
@@ -84,9 +83,9 @@ class FCMModel with ChangeNotifier {
   // }
 
   Future<void> getMbToken() async {
-    mbToken = await _firebaseMessaging.getToken();
+    mbToken.value = (await _firebaseMessaging.getToken())!;
     print("fcm 토근이여 $mbToken");
-    notifyListeners();
+    update();
   }
 
   // void _iosPermission() {

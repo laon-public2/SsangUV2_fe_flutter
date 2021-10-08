@@ -10,8 +10,8 @@ import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
 import 'package:share_product_v2/pages/product/ImageView.dart';
 import 'package:share_product_v2/pages/product/detailMapPage.dart';
 import 'package:share_product_v2/pages/product/writeReview.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/bannerProduct.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 import 'package:share_product_v2/widgets/loading.dart';
@@ -39,7 +39,8 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
 
 
   ProductController productController = Get.find<ProductController>();
-
+  UserController userController = Get.find<UserController>();
+  
   //애니메이션 빌더
   late AnimationController _colorAni;
   late Animation _colorTween, _iconColorTween, _borderColorTween;
@@ -60,8 +61,6 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
     mapController = controller;
   }
 
-  late List<String> address;
-  late List<String> Pics;
   int _page = 0;
 
   void initState() {
@@ -73,11 +72,8 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
   }
 
   Future<bool> _loadLocator() async {
-    print("주소 ===== $address");
-    await Provider.of<ProductController>(context, listen: false)
-        .getproductDetail(this.widget.productIdx);
-    await Provider.of<ProductController>(context, listen: false)
-        .getProductReviewFive(this.widget.productIdx, _page);
+    await productController.getproductDetail(this.widget.productIdx);
+    await productController.getProductReviewFive(this.widget.productIdx, _page);
     return false;
   }
 
@@ -88,6 +84,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분
                   if (snapshot.hasData == false) {
+                    print('data fail');
                     return Container(
                       color: Colors.white,
                       height: 300.h,
@@ -175,10 +172,10 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
           ],
         ),
       ),
-        floatingActionButton: Consumer<UserProvider>(
-          builder: (_, _myUser, __) {
-                return _myUser.isLoggenIn ?
-                _myUser.username == productController.productDetail!.name
+        floatingActionButton: GetBuilder<UserController>(
+          builder: (_myUser) {
+                return _myUser.isLoggenIn.value ?
+                _myUser.username.value == productController.productDetail!.name
                     ? Container(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -187,7 +184,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                         onTap: () async {
                           await productController.delProduct(
                               productController.productDetail!.idx,
-                              _myUser.accessToken!);
+                              _myUser.accessToken.value);
                           await productController.getMainWant(0);
                           await productController.getMainWant(0);
                           _showDialogSuccess("삭제가 완료되었습니다.");
@@ -271,16 +268,16 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                 )
                     : InkWell(
                   onTap: () async {
-                    final uvm = Provider.of<UserProvider>(context, listen: false);
-                    if(uvm.isLoggenIn){
+                    final uvm = userController;
+                    if(uvm.isLoggenIn.value){
                       String uuid = await Provider.of<ProductController>(
                           context,
                           listen: false)
                           .rentInit(
-                        Provider.of<UserProvider>(context, listen: false).userIdx!,
+                        userController.userIdx.value,
                         productController.productDetail!.receiver_idx!,
                         this.widget.productIdx,
-                        Provider.of<UserProvider>(context, listen: false).accessToken!,
+                        userController.accessToken.value,
                       );
                       print("에러체크");
                       print(uuid);
@@ -299,8 +296,8 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                 "INIT",
                                 productController.productDetail!.receiver_idx!,
                                 productController.productDetail!.fcm_token,
-                                Provider.of<UserProvider>(context, listen: false).userFBtoken!,
-                                Provider.of<UserProvider>(context, listen: false).userIdx!,
+                                userController.userFBtoken.value,
+                                userController.userIdx.value,
                               )));
                     }
                   },
@@ -309,13 +306,13 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                       left: 16,
                       right: 16,
                     ),
-                    child: Consumer<UserProvider>(
-                      builder: (_, _user, __) {
+                    child: GetBuilder<UserController>(
+                      builder: (_user){
                         return Container(
                           width: double.infinity,
                           height: 50,
                           decoration: BoxDecoration(
-                            color: _user.isLoggenIn
+                            color: _user.isLoggenIn.value
                                 ? Color(0xffff0066)
                                 : Colors.grey[400],
                             borderRadius: BorderRadius.circular(10),
@@ -341,16 +338,16 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                 ):
                 InkWell(
                   onTap: () async {
-                    final uvm = Provider.of<UserProvider>(context, listen: false);
-                    if(uvm.isLoggenIn){
+                    final uvm = userController;
+                    if(uvm.isLoggenIn.value){
                       String uuid = await Provider.of<ProductController>(
                           context,
                           listen: false)
                           .rentInit(
-                        Provider.of<UserProvider>(context, listen: false).userIdx!,
+                        userController.userIdx.value,
                         productController.productDetail!.receiver_idx!,
                         this.widget.productIdx,
-                        Provider.of<UserProvider>(context, listen: false).accessToken!,
+                        userController.accessToken.value,
                       );
                       print("에러체크");
                       print(uuid);
@@ -369,8 +366,8 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                 "INIT",
                                 productController.productDetail!.receiver_idx!,
                                 productController.productDetail!.fcm_token,
-                                Provider.of<UserProvider>(context, listen: false).userFBtoken!,
-                                Provider.of<UserProvider>(context, listen: false).userIdx!,
+                                userController.userFBtoken.value,
+                                userController.userIdx.value,
                               )));
                     }
                   },
@@ -379,13 +376,13 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                       left: 16,
                       right: 16,
                     ),
-                    child: Consumer<UserProvider>(
-                      builder: (_, _user, __) {
+                    child: GetBuilder<UserController>(
+                      builder: (_user){
                         return Container(
                           width: double.infinity,
                           height: 50,
                           decoration: BoxDecoration(
-                            color: _user.isLoggenIn
+                            color: _user.isLoggenIn.value
                                 ? Color(0xffff0066)
                                 : Colors.grey[400],
                             borderRadius: BorderRadius.circular(10),
@@ -716,8 +713,8 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                     Container(
                                       height: 200,
                                       child: SimpleGoogleMaps(
-                                        latitude: productController.productDetail!.lati!.toDouble(),
-                                        longitude: productController.productDetail!.longti!.toDouble(),
+                                        latitude: productController.productDetail!.location.y.toDouble(),
+                                        longitude: productController.productDetail!.location.x.toDouble(),
                                       ),
                                     ),
                                     InkWell(
@@ -727,8 +724,8 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                           return DetailMapPage(
                                             address:
                                             "${productController.productDetail!.address} ${productController.productDetail!.address_detail}",
-                                            latitude: productController.productDetail!.lati!.toDouble(),
-                                            longitude: productController.productDetail!.longti!.toDouble(),
+                                            latitude: productController.productDetail!.location.y.toDouble(),
+                                            longitude: productController.productDetail!.location.x.toDouble(),
                                           );
                                         }));
                                       },
@@ -832,7 +829,7 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                                     rating: productController.reviewPaging.averageRating ==
                                         null
                                         ? 0
-                                        : productController.reviewPaging.averageRating
+                                        : productController.reviewPaging.averageRating!
                                         .toDouble(),
                                     direction: Axis.horizontal,
                                     itemCount: 5,

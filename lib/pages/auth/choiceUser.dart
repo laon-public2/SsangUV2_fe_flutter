@@ -3,13 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/providers/fcm_model.dart';
-import 'package:share_product_v2/providers/mapProvider.dart';
-import 'package:share_product_v2/providers/regUserProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/mapController.dart';
+import 'package:share_product_v2/providers/regUserController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 
@@ -36,8 +37,10 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
   var maskComNumFomatter = new MaskTextInputFormatter(
       mask: '###-##-#####', filter: {'#': RegExp(r'[0-9]')});
   final ImagePicker _picker = ImagePicker();
-
-
+  
+  RegUserController regUserController = Get.find<RegUserController>();
+  UserController userController = Get.find<UserController>();
+  MapController mapController = Get.find<MapController>();
 
   Future _getImage() async {
     PickedFile? image;
@@ -55,8 +58,8 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
-      body: Consumer<RegUserProvider>(
-        builder: (context, counter, child) {
+      body: GetBuilder<RegUserController>(
+        builder: (counter) {
           return _body();
         },
       ),
@@ -254,8 +257,7 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
                   KakaoMap(),
             ));
             String position =
-            await Provider.of<MapProvider>(context, listen: false)
-                .getPosition(model.address);
+            await mapController.getPosition(model.address);
             List<String> positionSplit = position.split(',');
             Navigator.push(
                 context,
@@ -327,16 +329,16 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
           _showDialog('사업자 등록번호가 비어 있습니다.');
           return;
         } else {
-          await Provider.of<RegUserProvider>(context, listen: false).regUserForm(
+          await regUserController.regUserForm(
             pwd.text,
             name.text,
             userType,
             '1',
             comNum.text,
             regimage == null ? File('') : regimage!,
-            Provider.of<UserProvider>(context, listen: false).userFBtoken!,
+            userController.userFBtoken.value,
           );
-          if (Provider.of<RegUserProvider>(context, listen: false).regUserTruth) {
+          if (regUserController.regUserTruth.value) {
             await localhostServer.close();
             await localhostServer.start();
 
@@ -346,8 +348,7 @@ class _ChoiceUserState extends State<ChoiceUser> with TickerProviderStateMixin {
                   KakaoMap(),
             ));
             String position =
-            await Provider.of<MapProvider>(context, listen: false)
-                .getPosition(model.address);
+            await mapController.getPosition(model.address);
             List<String> positionSplit = position.split(',');
             Navigator.push(
                 context,

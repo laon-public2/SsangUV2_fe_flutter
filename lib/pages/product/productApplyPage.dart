@@ -6,9 +6,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/CustomDatePicker.dart';
 import 'package:share_product_v2/widgets/customAppBar%20copy.dart';
 import 'dart:io';
@@ -28,6 +28,7 @@ class ProductApplyPage extends StatefulWidget {
 class _ProductApplyPageState extends State<ProductApplyPage> with SingleTickerProviderStateMixin {
 
   ProductController productController = Get.find<ProductController>();
+  UserController userController = Get.find<UserController>();
 
   List<String> categories = [
     "생활용품",
@@ -153,7 +154,7 @@ class _ProductApplyPageState extends State<ProductApplyPage> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
-      await Provider.of<ProductController>(context, listen: false).resetAddress();
+      await productController.resetAddress();
     });
     return Scaffold(
       backgroundColor: Colors.white,
@@ -370,8 +371,8 @@ class _ProductApplyPageState extends State<ProductApplyPage> with SingleTickerPr
         SizedBox(
             height: 50.h,
             width: double.infinity,
-            child: Consumer<UserProvider>(
-              builder: (_, _user, __) {
+            child: GetBuilder<UserController>(
+              builder: (_user) {
                     return RaisedButton(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
@@ -407,8 +408,8 @@ class _ProductApplyPageState extends State<ProductApplyPage> with SingleTickerPr
                         List<String> date = _dateController.text.split("~");
                         if(this.LocationData[0].isSelected){
                           await productController.productApplyRent(
-                            _user.phNum!,
-                            _user.userIdx!,
+                            _user.phNum.value,
+                            _user.userIdx.value,
                             _selectCategory(_selectedCategory),
                             titleTextController.text,
                             descriptionTextController.text,
@@ -420,14 +421,14 @@ class _ProductApplyPageState extends State<ProductApplyPage> with SingleTickerPr
                             "${productController.geoLocation[1].depth3} ${productController.geoLocation[1].depth4}",
                             productController.lat.value,
                             productController.lon.value,
-                            _user.accessToken!,
+                            _user.accessToken.value,
                             _otherLocation,
                           );
                           _showDialogSuccess("글이 등록되었습니다.");
                         }else if(this.LocationData[1].isSelected){
                           await productController.productApplyRent(
-                            _user.phNum!,
-                            _user.userIdx!,
+                            _user.phNum.value,
+                            _user.userIdx.value,
                             _selectCategory(_selectedCategory),
                             titleTextController.text,
                             descriptionTextController.text,
@@ -437,16 +438,16 @@ class _ProductApplyPageState extends State<ProductApplyPage> with SingleTickerPr
                             date[1],
                             "${_user.address}",
                             "${_user.addressDetail}",
-                            _user.userLocationLatitude,
-                            _user.userLocationLongitude,
-                            _user.accessToken!,
+                            _user.userLocationLatitude.value,
+                            _user.userLocationLongitude.value,
+                            _user.accessToken.value,
                             _otherLocation,
                           );
                           _showDialogSuccess("글이 등록되었습니다.");
                         }else{
                           await productController.productApplyRent(
-                            _user.phNum!,
-                            _user.userIdx!,
+                            _user.phNum.value,
+                            _user.userIdx.value,
                             _selectCategory(_selectedCategory),
                             titleTextController.text,
                             descriptionTextController.text,
@@ -458,7 +459,7 @@ class _ProductApplyPageState extends State<ProductApplyPage> with SingleTickerPr
                             "${this._otherAddressDetail.text}",
                             productController.secondLa.value,
                             productController.secondLo.value,
-                            _user.accessToken!,
+                            _user.accessToken.value,
                             _otherLocation,
                           );
                           _showDialogSuccess("글이 등록되었습니다.");
@@ -623,9 +624,9 @@ class _ProductApplyPageState extends State<ProductApplyPage> with SingleTickerPr
 
   _otherLoc(String type) {
     if (type == "lend1") {
-      return Provider.of<ProductController>(context, listen: false).firstAddress;
+      return productController.firstAddress;
     } else {
-      return Provider.of<ProductController>(context, listen: false).secondAddress;
+      return productController.secondAddress;
     }
   }
 

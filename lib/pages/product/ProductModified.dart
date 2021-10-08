@@ -5,8 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/model/ProductDetailWant.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/CustomDatePicker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'dart:math';
@@ -234,10 +234,10 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
-      await Provider.of<ProductController>(context, listen: false).changeAddress(
+      await productController.changeAddress(
         "lend1",
-        this.widget.originalInfo!.lati!,
-        this.widget.originalInfo!.longti!,
+        this.widget.originalInfo!.location.y,
+        this.widget.originalInfo!.location.x,
         this.widget.originalInfo!.address,
       );
     });
@@ -483,8 +483,8 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
               left: 0,
               right: 0,
               bottom: 20,
-              child: Consumer<UserProvider>(
-                builder: (_, _user, __) {
+              child: GetBuilder<UserController>(
+                builder: (_user) {
                       return InkWell(
                         onTap: () async {
                           if (_productName.text == "") {
@@ -513,7 +513,7 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
                             });
                             _showDialog();
                           } else if (_otherLocation == true) {
-                            if (productController.secondAddress == "기타 주소 설정") {
+                            if (productController.secondAddress.value == "기타 주소 설정") {
                               setState(() {
                                 _isDialogText = "기타주소가 비어 있습니다.";
                               });
@@ -552,7 +552,7 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
                                 this._otherAddressDetail.text,
                                 productController.firstLa.value,
                                 productController.firstLo.value,
-                                _user.accessToken!,
+                                _user.accessToken.value,
                             );
                             _showDialogSuccess("글이 수정되었습니다.");
                           }
@@ -631,9 +631,9 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
 
   _otherLoc(String type) {
     if (type == "lend1") {
-      return Provider.of<ProductController>(context, listen: false).firstAddress;
+      return productController.firstAddress;
     } else {
-      return Provider.of<ProductController>(context, listen: false).secondAddress;
+      return productController.secondAddress;
     }
   }
 
@@ -662,7 +662,6 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
         style: TextStyle(fontSize: 14, color: Color(0xffaaaaaa)),
         maxLines: 15,
         controller: controller,
-        focusNode: descriptionFocus,
         decoration: InputDecoration(
           hintText: "요청할 물품에 대한 내용을 작성해주세요. (공유 및 요청 불가품목은 게시가 제한될 수 있습니다.)",
           hintStyle: TextStyle(fontSize: 14, color: Color(0xffaaaaaa)),

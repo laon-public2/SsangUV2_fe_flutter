@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/search/categories/category1.dart';
 import 'package:share_product_v2/pages/search/categories/category10.dart';
@@ -9,7 +10,7 @@ import 'package:share_product_v2/pages/search/categories/category5.dart';
 import 'package:share_product_v2/pages/search/categories/category6.dart';
 import 'package:share_product_v2/pages/search/categories/category7.dart';
 import 'package:share_product_v2/pages/search/categories/category9.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
 
 import 'categories/category2.dart';
 import 'categories/category8.dart';
@@ -22,7 +23,7 @@ class SearchData extends StatefulWidget {
 class _SearchDataState extends State<SearchData> {
   int _category = 2;
   TextEditingController _searchWord = TextEditingController();
-
+  ProductController productController = Get.find<ProductController>();
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -85,7 +86,7 @@ class _SearchDataState extends State<SearchData> {
                     child: IconButton(
                       icon: Image.asset('assets/icon/newSearch.png'),
                       onPressed: () {
-                        Provider.of<ProductController>(context, listen: false)
+                        productController
                             .SearchingDataProduct(0, _searchWord.text, _category, "RENT");
                       },
                     ),
@@ -171,7 +172,7 @@ class _SearchDataState extends State<SearchData> {
 
   void _handleSubmitted(String text){
     if(_searchWord.text.trim().isEmpty) return null;
-    Provider.of<ProductController>(context, listen: false)
+    productController
         .SearchingDataProduct(0, _searchWord.text, _category, "RENT");
   }
 }

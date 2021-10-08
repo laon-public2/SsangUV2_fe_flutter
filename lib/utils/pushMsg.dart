@@ -1,13 +1,15 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/userController.dart';
 
 class PushManager {
   static final PushManager _manager = PushManager._internal();
 
+  UserController userController = Get.find<UserController>();
   final _firebaseMessaging = FirebaseMessaging.instance;
 
   factory PushManager() {
@@ -43,7 +45,7 @@ class PushManager {
 
     _firebaseMessaging.getToken().then((token) {
       print('파베 $token');
-      Provider.of<UserProvider>(context, listen: false).userFBtoken = token!;
+      userController.userFBtoken.value = token!;
     });
   }
 

@@ -10,8 +10,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/product/ProductDetailRent.dart';
 import 'package:share_product_v2/providers/homeController.dart';
-import 'package:share_product_v2/providers/mapProvider.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
+import 'package:share_product_v2/providers/mapController.dart';
+import 'package:share_product_v2/providers/productController.dart';
 import 'package:share_product_v2/widgets/CustomDropdown.dart';
 import 'package:share_product_v2/widgets/CustomDropdownMain.dart';
 import 'package:share_product_v2/widgets/WantItemMainPage.dart';
@@ -29,6 +29,7 @@ class HomePage extends StatelessWidget {
   double? longti;
   CarouselController buttonCarouselController = CarouselController();
   HomeController homeController = Get.put(HomeController());
+  MapController mapController = Get.put(MapController());
   ProductController productController = Get.find<ProductController>();
 
   final List<String> itemKind = [
@@ -49,13 +50,13 @@ class HomePage extends StatelessWidget {
   //     if(this._currentItem == "빌려드려요"){
   //       if(pvm.paging.totalCount != pvm.mainProducts.length){
   //         this.page++;
-  //         Provider.of<ProductController>(context, listen: false)
+  //         productController
   //             .getMainRent(this.page);
   //       }
   //     }else{
   //       if(pvm.paging.totalCount != pvm.mainProductsWant.length){
   //         this.page++;
-  //         Provider.of<ProductController>(context, listen: false)
+  //         productController
   //             .getMainWant(this.page);
   //       }
   //     }
@@ -106,10 +107,7 @@ class HomePage extends StatelessWidget {
                                       (context, animation, secondaryAnimation) =>
                                       KakaoMap(),
                                 ));
-                                String position = await Provider.of<MapProvider>(
-                                    context,
-                                    listen: false)
-                                    .getPosition(model.address);
+                                String position = await mapController.getPosition(model.address);
                                 print("설정 주소 $position");
                                 List<String> positionSplit = position.split(',');
                                 await productController.getGeoSearch(double.parse(positionSplit[0]), double.parse(positionSplit[1]));

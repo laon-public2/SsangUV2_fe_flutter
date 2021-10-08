@@ -3,8 +3,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
 
 class WriteReview extends StatefulWidget {
@@ -58,8 +58,8 @@ class _WriteReviewState extends State<WriteReview> {
   }
 
   _body() {
-    return Consumer<UserProvider>(
-      builder: (__, _myInfo, _) {
+    return GetBuilder<UserController>(
+      builder: (_myInfo,) {
           return Container(
             width: double.infinity,
             height: double.infinity,
@@ -129,11 +129,11 @@ class _WriteReviewState extends State<WriteReview> {
                         _showDialog();
                       } else {
                         productController.sendReview(
-                            _myInfo.userIdx!,
+                            _myInfo.userIdx.value,
                             this.widget.productIdx,
                             this.descriptionContorller.text,
                             this.ratingCount.toInt(),
-                            _myInfo.accessToken!);
+                            _myInfo.accessToken.value);
                         Navigator.pop(context);
                       }
                     },

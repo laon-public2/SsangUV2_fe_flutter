@@ -70,6 +70,7 @@ dependencies:
   build_runner: ^2.1.2
   geocoding: ^2.0.1
   get: ^4.3.8
+  flutter_datetime_picker: ^1.5.1
 
 dev_dependencies:
   flutter_test:

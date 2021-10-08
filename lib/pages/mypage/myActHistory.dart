@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/mypage/categories/category0.dart';
 import 'package:share_product_v2/pages/mypage/categories/category1.dart';
@@ -12,7 +13,8 @@ import 'package:share_product_v2/pages/mypage/categories/category6.dart';
 import 'package:share_product_v2/pages/mypage/categories/category7.dart';
 import 'package:share_product_v2/pages/mypage/categories/category8.dart';
 import 'package:share_product_v2/pages/mypage/categories/category9.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/myPageController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 
 class MyActHistory extends StatefulWidget {
   const MyActHistory({Key? key}) : super(key:key);
@@ -22,7 +24,7 @@ class MyActHistory extends StatefulWidget {
 
 class _MyActHistoryState extends State<MyActHistory> with SingleTickerProviderStateMixin{
   late TabController controller;
-
+  MyPageController myPageController = Get.put(MyPageController());
   List<Tab> myTabs = <Tab> [
     Tab(text: '전체'),
     Tab(text: '생활용품'),
@@ -66,11 +68,11 @@ class _MyActHistoryState extends State<MyActHistory> with SingleTickerProviderSt
               Container(
                 width: 27.w,
                 height: 27.h,
-                child: Consumer<UserProvider>(
-                  builder: (_, myact, __) {
+                child: GetBuilder<UserController>(
+                  builder: (myact) {
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(30),
-                      child: myact.userProfileImg != null ? Image.network(
+                      child: myact.userProfileImg.value.length != 0 ? Image.network(
                         "http://115.91.73.66:15066/assets/images/user/${myact.userProfileImg}",
                         height: 27.h,
                         width: double.infinity,
@@ -83,10 +85,10 @@ class _MyActHistoryState extends State<MyActHistory> with SingleTickerProviderSt
               SizedBox(
                 width: 5.w,
               ),
-              Consumer<UserProvider>(
-                builder: (_, myact, __) {
+              GetBuilder<UserController>(
+                builder: (myact) {
                   return Text(
-                    myact.username!,
+                    myact.username.value,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,

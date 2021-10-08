@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/model/policy.dart';
-import 'package:share_product_v2/providers/policyProvider.dart';
+import 'package:share_product_v2/providers/policyController.dart';
 import 'package:share_product_v2/widgets/customAppBar%20copy.dart';
 
 class PolicyPage extends StatelessWidget {
-  const PolicyPage({Key? key}) : super(key: key);
+  PolicyController policyController = Get.put(PolicyController());
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<PolicyProvider>(context, listen: false).getPolicies();
+    policyController.getPolicies();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -20,7 +21,7 @@ class PolicyPage extends StatelessWidget {
   }
 
   Widget body(context) {
-    return Consumer<PolicyProvider>(builder: (_, policy, __) {
+    return GetBuilder<PolicyController>(builder: (policy) {
       return makeList(context, policy.policies);
     });
   }

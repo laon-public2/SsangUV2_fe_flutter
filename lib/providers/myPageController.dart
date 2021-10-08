@@ -1,13 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:share_product_v2/model/productMyActRent.dart';
 import 'package:share_product_v2/models/default.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/userController.dart';
 
 import 'package:share_product_v2/services/productService.dart';
 
-class MyPageProvider extends ChangeNotifier {
+class MyPageController extends GetxController {
   final ProductService productSv = ProductService();
 
   //카테고리 0
@@ -54,7 +55,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proRent = datas;
-    notifyListeners();
+    update();
   }
   Future<void> getProWant(int userIdx, int page, int category) async {
     print("나의 활동 빌려주세요");
@@ -65,7 +66,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proWant = datas;
-    notifyListeners();
+    update();
   }
 
   //카테고리 1 서버데이터
@@ -78,7 +79,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proRentCa1 = datas;
-    notifyListeners();
+    update();
   }
   Future<void> getProWantCa1(int userIdx, int page, int category) async {
     print("나의 활동 빌려주세요");
@@ -89,7 +90,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proWantCa1 = datas;
-    notifyListeners();
+    update();
   }
 
   //카테고리 2 서버데이터
@@ -102,7 +103,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proRentCa2 = datas;
-    notifyListeners();
+    update();
   }
   Future<void> getProWantCa2(int userIdx, int page, int category) async {
     print("나의 활동 빌려주세요");
@@ -113,7 +114,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proWantCa2 = datas;
-    notifyListeners();
+    update();
   }
 
   //카테고리 3 서버데이터
@@ -126,7 +127,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proRentCa3 = datas;
-    notifyListeners();
+    update();
   }
   Future<void> getProWantCa3(int userIdx, int page, int category) async {
     print("나의 활동 빌려주세요");
@@ -137,7 +138,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proWantCa3 = datas;
-    notifyListeners();
+    update();
   }
 
   //카테고리 4 서버데이터
@@ -150,7 +151,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proRentCa4 = datas;
-    notifyListeners();
+    update();
   }
   Future<void> getProWantCa4(int userIdx, int page, int category) async {
     print("나의 활동 빌려주세요");
@@ -161,7 +162,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proWantCa4 = datas;
-    notifyListeners();
+    update();
   }
 
   //카테고리 5 서버데이터
@@ -174,7 +175,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proRentCa5 = datas;
-    notifyListeners();
+    update();
   }
   Future<void> getProWantCa5(int userIdx, int page, int category) async {
     print("나의 활동 빌려주세요");
@@ -185,7 +186,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proWantCa5 = datas;
-    notifyListeners();
+    update();
   }
 
   //카테고리 6 서버데이터
@@ -198,7 +199,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proRentCa6 = datas;
-    notifyListeners();
+    update();
   }
   Future<void> getProWantCa6(int userIdx, int page, int category) async {
     print("나의 활동 빌려주세요");
@@ -209,7 +210,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proWantCa6 = datas;
-    notifyListeners();
+    update();
   }
 
   //카테고리 7 서버데이터
@@ -222,7 +223,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proRentCa7 = datas;
-    notifyListeners();
+    update();
   }
   Future<void> getProWantCa7(int userIdx, int page, int category) async {
     print("나의 활동 빌려주세요");
@@ -233,7 +234,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proWantCa7 = datas;
-    notifyListeners();
+    update();
   }
 
   //카테고리 8 서버데이터
@@ -246,7 +247,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proRentCa8 = datas;
-    notifyListeners();
+    update();
   }
   Future<void> getProWantCa8(int userIdx, int page, int category) async {
     print("나의 활동 빌려주세요");
@@ -257,7 +258,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proWantCa8 = datas;
-    notifyListeners();
+    update();
   }
 
   //카테고리 9 서버데이터
@@ -270,7 +271,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proRentCa9 = datas;
-    notifyListeners();
+    update();
   }
   Future<void> getProWantCa9(int userIdx, int page, int category) async {
     print("나의 활동 빌려주세요");
@@ -281,7 +282,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proWantCa9 = datas;
-    notifyListeners();
+    update();
   }
 
   //카테고리 10 서버데이터
@@ -294,7 +295,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proRentCa10 = datas;
-    notifyListeners();
+    update();
   }
   Future<void> getProWantCa10(int userIdx, int page, int category) async {
     print("나의 활동 빌려주세요");
@@ -305,7 +306,7 @@ class MyPageProvider extends ChangeNotifier {
         .map((e) => ProductMyActRent.fromJson(e))
         .toList();
     this.proWantCa10 = datas;
-    notifyListeners();
+    update();
   }
 
   //물건 상태 변경
@@ -315,7 +316,7 @@ class MyPageProvider extends ChangeNotifier {
         await productSv.rentStatusModified(idx, token);
     Map<String, dynamic> jsonMap = json.decode(rentStatusMap.toString());
     print(jsonMap);
-    notifyListeners();
+    update();
   }
 
   Future<void> rentStatusModified(int arrayNum, String status, String category) async {
@@ -377,6 +378,6 @@ class MyPageProvider extends ChangeNotifier {
       else
         this.proRentCa10[arrayNum].status = "IMPOSSIBLE";
     }
-    notifyListeners();
+    update();
   }
 }

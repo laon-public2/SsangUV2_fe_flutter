@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/regUserProvider.dart';
+import 'package:share_product_v2/providers/regUserController.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
 
 class UsePhone extends StatefulWidget {
@@ -17,6 +18,8 @@ class _UsePhoneState extends State<UsePhone>
 
   late AnimationController _aniController;
   late Animation<Offset> _offsetAnimation;
+
+  RegUserController regUserController = Get.put(RegUserController());
 
   @override
   void initState() {
@@ -68,8 +71,8 @@ class _UsePhoneState extends State<UsePhone>
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
-      body: Consumer<RegUserProvider>(
-        builder: (context, counter, child) {
+      body: GetBuilder<RegUserController>(
+        builder: (counter) {
           return _body();
         },
       ),
@@ -159,9 +162,7 @@ class _UsePhoneState extends State<UsePhone>
                             builder: (context, snapshot) {
                               return InkWell(
                                 onTap: () {
-                                  Provider.of<RegUserProvider>(
-                                      context, listen: false)
-                                      .phoneAct(_myPh.text);
+                                  regUserController.phoneAct(_myPh.text);
                                 },
                                 child: Container(
                                   height: 45.h,
@@ -209,11 +210,8 @@ class _UsePhoneState extends State<UsePhone>
                       });
                       _showDialog();
                     } else {
-                      await Provider.of<RegUserProvider>(context, listen: false)
-                          .phoneActCon(_myPh.text, _myPhact.text);
-                      if (Provider
-                          .of<RegUserProvider>(context, listen: false)
-                          .phoneActive) {
+                      await regUserController.phoneActCon(_myPh.text, _myPhact.text);
+                      if (regUserController.phoneActive.value) {
                         print('비동기 처리');
                         Navigator.pushNamed(context, '/chioceUser');
                       } else {
@@ -236,19 +234,15 @@ class _UsePhoneState extends State<UsePhone>
                       setState(() {
                         phActString = "인증번호 인증";
                       });
-                      await Provider.of<RegUserProvider>(context, listen: false)
+                      await regUserController
                           .regUserChk(_myPh.text);
-                      if (Provider
-                          .of<RegUserProvider>(context, listen: false)
-                          .chkUserChk ==
-                          false) {
+                      if (regUserController.chkUserChk.value == false) {
                         Navigator.pushNamed(context, '/loginNode');
                       } else {
                         setState(() {
                           isPhAct = true;
                         });
-                        Provider.of<RegUserProvider>(context, listen: false)
-                            .phoneAct(_myPh.text);
+                        regUserController.phoneAct(_myPh.text);
                       }
                     }
                   }
@@ -294,7 +288,7 @@ class _UsePhoneState extends State<UsePhone>
           child: Center(
             child: InkWell(
               onTap: () {
-                Provider.of<RegUserProvider>(context, listen: false).backBtn();
+                regUserController.backBtn();
                 Navigator.pop(context);
               },
               child: Icon(

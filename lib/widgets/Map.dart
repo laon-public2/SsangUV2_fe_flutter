@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/KakaoMap.dart';
-import 'package:share_product_v2/providers/mapProvider.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/mapController.dart';
+import 'package:share_product_v2/providers/productController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,6 +32,9 @@ class _GoogleMapsState extends State<GoogleMaps> {
   LatLng? _cameraPosition;
 
   Completer<GoogleMapController> _controller = Completer();
+
+  MapController mapController = Get.find<MapController>();
+  ProductController productController = Get.find<ProductController>();
 
   List<Marker> _markers = <Marker>[];
 
@@ -116,11 +120,10 @@ class _GoogleMapsState extends State<GoogleMaps> {
                     text: "완료",
                     func: () async {
                       String address =
-                          await Provider.of<MapProvider>(context, listen: false)
-                              .getAddress(_cameraPosition!.latitude,
+                          await mapController.getAddress(_cameraPosition!.latitude,
                                   _cameraPosition!.longitude);
                       print("address : $address");
-                      await Provider.of<ProductController>(context, listen: false)
+                      await productController
                           .changeAddress(this.widget.type, _cameraPosition!.latitude, _cameraPosition!.longitude, address);
                       Navigator.of(context).pop(true);
                     },
@@ -160,8 +163,7 @@ class _GoogleMapsState extends State<GoogleMaps> {
               ));
 
               String position =
-                  await Provider.of<MapProvider>(context, listen: false)
-                      .getPosition(model.address);
+                  await mapController.getPosition(model.address);
               print("맵 위치 $position");
               setState(() {
                 address = "${model.address}";

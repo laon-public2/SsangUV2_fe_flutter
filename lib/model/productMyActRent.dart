@@ -4,36 +4,36 @@ part 'productMyActRent.g.dart';
 
 @JsonSerializable()
 class ProductMyActRent {
-  int id;
+  int idx;
   String title = "";
   int price;
   String date;
-  String startDate;
-  String endDate;
+  String start_date;
+  String end_date;
   String name;
-  int minPrice;
-  int maxPrice;
+  int min_price;
+  int max_price;
   String type;
   String status;
   String address;
-  String addressDetail;
-  List<ProductFile> productFiles;
+  String address_detail;
+  List<ProductFile> image;
 
   ProductMyActRent(
-      this.id,
+      this.idx,
       this.title,
       this.price,
       this.date,
-      this.startDate,
-      this.endDate,
+      this.start_date,
+      this.end_date,
       this.name,
-      this.minPrice,
-      this.maxPrice,
+      this.min_price,
+      this.max_price,
       this.type,
       this.status,
       this.address,
-      this.addressDetail,
-      this.productFiles);
+      this.address_detail,
+      this.image);
 // String productFiles;
 
   factory ProductMyActRent.fromJson(Map<String, dynamic> json) => _$ProductMyActRentFromJson(json);
@@ -45,10 +45,10 @@ class ProductMyActRent {
 
 @JsonSerializable()
 class ProductFile {
-  int id;
-  String path;
+  int file_idx;
+  String file;
 
-  ProductFile(this.id, this.path);
+  ProductFile(this.file_idx, this.file);
 
   factory ProductFile.fromJson(Map<String, dynamic> json) => _$ProductFileFromJson(json);
 

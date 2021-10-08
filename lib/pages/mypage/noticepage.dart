@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/customAppBar%20copy.dart';
 
-class NoticePage extends StatefulWidget {
-  @override
-  _NoticePageState createState() => _NoticePageState();
-}
-
-class _NoticePageState extends State<NoticePage> {
+class NoticePage extends StatelessWidget {
 
   int page = 0;
+  UserController userController = Get.find<UserController>();
 
   Future<bool> _noticeLoad() async{
-    await Provider.of<UserProvider>(context, listen: false).noticeView(this.page);
+    await userController.noticeView(this.page);
     return false;
   }
   @override
@@ -52,8 +49,8 @@ class _NoticePageState extends State<NoticePage> {
   }
 
   Widget body() {
-    return Consumer<UserProvider>(
-      builder: (_, _user, __){
+    return GetBuilder<UserController>(
+      builder: (_user){
         return ListView.builder(
           itemBuilder: (context, idx) {
             if(idx == _user.userNoticeList.length){
@@ -61,7 +58,7 @@ class _NoticePageState extends State<NoticePage> {
                 return Container();
               }else {
                 this.page++;
-                Provider.of<UserProvider>(context, listen: false).noticeView(this.page);
+                userController.noticeView(this.page);
               }
             }
             if(_user.userNoticeList[idx].status == "START"){

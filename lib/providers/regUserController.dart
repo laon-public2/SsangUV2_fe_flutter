@@ -1,17 +1,18 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:share_product_v2/model/RegUserPh.dart';
 import 'package:share_product_v2/services/regUser.dart';
 
-class RegUserProvider with ChangeNotifier {
+class RegUserController extends GetxController {
   final RegUserService regUserService = RegUserService();
-  bool phoneActive = false;
-  bool phoneActiveFailed = false;
-  bool regUserTruth = false;
-  bool chkUserChk = false;
-  String? phNum;
+  var phoneActive = false.obs;
+  var phoneActiveFailed = false.obs;
+  var regUserTruth = false.obs;
+  var chkUserChk = false.obs;
+  var phNum = "".obs;
 
 
 
@@ -19,18 +20,18 @@ class RegUserProvider with ChangeNotifier {
 
   void phoneAct(String phoneAct) async {
     print("phone인증 $phoneAct");
-    this.phNum = phoneAct;
+    this.phNum.value = phoneAct;
     Map<String, dynamic>? phoneActivation =
         await regUserService.phone_act(phoneAct);
     print('인증번호 상태 = ${phoneActivation!['message']}');
-    notifyListeners();
+    
   }
 
   void backBtn() async {
     print("인증 안함");
-    this.phoneActive = false;
-    this.phNum = "";
-    notifyListeners();
+    this.phoneActive.value = false;
+    this.phNum.value = "";
+    
   }
 
   Future<void> phoneActCon(String phoneAct, String verify) async {
@@ -40,13 +41,13 @@ class RegUserProvider with ChangeNotifier {
     print(phoneActivation.toString());
     print('인증번호 상태 = ${phoneActivation!['message']}');
     if (phoneActivation['message'] == "인증번호 검증 성공") {
-      phoneActive = true;
-      this.phNum = phoneAct;
+      phoneActive.value = true;
+      this.phNum.value = phoneAct;
     } else {
-      phoneActive = false;
-      phoneActiveFailed = true;
+      phoneActive.value = false;
+      phoneActiveFailed.value = true;
     }
-    notifyListeners();
+    
   }
 
   Future<void> regUserForm(String password, String name, String userType,
@@ -56,26 +57,26 @@ class RegUserProvider with ChangeNotifier {
     if(userType == "BUSINESS"){
       print("업체 유저 회원가입");
       Map<String, dynamic>? regUser = await regUserService.RegUser(
-          phNum!, password, name, userType, push, comNum, image!, fcmToken);
+          phNum.value, password, name, userType, push, comNum, image!, fcmToken);
       print(regUser.toString());
       if (regUser != null) {
         if (regUser['message'] == "회원가입에 성공하였습니다") {
-          regUserTruth = true;
+          regUserTruth.value = true;
         }
       }
     }else{
       print("일반 유저 회원가입");
       Map<String, dynamic>? regUser = await regUserService.RegUserNormal(
-          phNum!, password, name, userType, push, fcmToken);
+          phNum.value, password, name, userType, push, fcmToken);
       print(regUser.toString());
       if (regUser != null) {
         if (regUser['message'] == "회원가입에 성공하였습니다") {
-          regUserTruth = true;
+          regUserTruth.value = true;
         }
       }
     }
     // print('회원가입상태 = ${regUser['message']}');
-    notifyListeners();
+    
   }
 
   Future<void> regUserChk(String phnum) async {
@@ -84,9 +85,9 @@ class RegUserProvider with ChangeNotifier {
     Map<String, dynamic>? chkUser = await regUserService.user_chk(phnum);
     print('유저체크 상태 === ${chkUser!['success']}');
     if (chkUser['success']) {
-      chkUserChk = true;
+      chkUserChk.value = true;
     } else {
-      chkUserChk = false;
+      chkUserChk.value = false;
     }
   }
 }

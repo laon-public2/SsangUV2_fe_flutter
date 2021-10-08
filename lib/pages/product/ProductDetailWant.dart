@@ -8,8 +8,8 @@ import 'package:share_product_v2/pages/mypage/MySsangU.dart';
 import 'package:share_product_v2/pages/product/ProductModified.dart';
 import 'package:share_product_v2/pages/product/detailMapPage.dart';
 import 'package:share_product_v2/pages/product/productApplyPrivatePage.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/bannerProduct.dart';
 import 'package:share_product_v2/widgets/customdialogApplyReg.dart';
 import 'package:share_product_v2/widgets/loading.dart';
@@ -56,13 +56,9 @@ class _ProductDetailState extends State<ProductDetailWant> {
   }
 
   Future<bool> _loadLocator() async {
-    await Provider.of<ProductController>(context, listen: false)
-        .getproductDetail(this.widget.productIdx);
-    print(Provider.of<ProductController>(context, listen: false)
-        .productDetail!
-        .name);
-    await Provider.of<ProductController>(context, listen: false)
-        .getProductReviewFive(this.widget.productIdx, _page);
+    await productController.getproductDetail(this.widget.productIdx);
+    print(productController.productDetail!.name);
+    await productController.getProductReviewFive(this.widget.productIdx, _page);
     return false;
   }
 
@@ -105,10 +101,10 @@ class _ProductDetailState extends State<ProductDetailWant> {
             child: _body(),
           ),
         ),
-        floatingActionButton: Consumer<UserProvider>(
-          builder: (_, _myUser, __) {
-                return _myUser.isLoggenIn
-                    ? _myUser.username == productController.productDetail!.name
+        floatingActionButton: GetBuilder<UserController>(
+          builder: (_myUser) {
+                return _myUser.isLoggenIn.value
+                    ? _myUser.username.value == productController.productDetail!.name
                         ? Container(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -117,7 +113,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                   onTap: () async {
                                     await productController.delProduct(
                                         productController.productDetail!.idx,
-                                        _myUser.accessToken!);
+                                        _myUser.accessToken.value);
                                     await productController.getMainWant(0);
                                     await productController.getMainWant(0);
                                     _showDialogSuccess("삭제가 완료되었습니다.");
@@ -221,8 +217,8 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                 MaterialPageRoute(
                                   builder: (context) => ProductApplyPrivatePage(
                                     productController.productDetail!.idx,
-                                    _myUser.userIdx!,
-                                    _myUser.userNum!,
+                                    _myUser.userIdx.value,
+                                    _myUser.userNum.value,
                                     productController.productDetail!.category_idx!,
                                     productController.productDetail!.title,
                                     productController.productDetail!.min_price,
@@ -231,8 +227,8 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                     productController.productDetail!.end_date,
                                     "${productController.productDetail!.address}",
                                     "${productController.productDetail!.address_detail}",
-                                    productController.productDetail!.longti!,
-                                    productController.productDetail!.lati!,
+                                    productController.productDetail!.location.y,
+                                    productController.productDetail!.location.x,
                                   ),
                                 ),
                               );
@@ -246,7 +242,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                 width: double.infinity,
                                 height: 50,
                                 decoration: BoxDecoration(
-                                  color: _myUser.isLoggenIn
+                                  color: _myUser.isLoggenIn.value
                                       ? Color(0xffff0066)
                                       : Colors.grey[300],
                                   borderRadius: BorderRadius.circular(10),
@@ -279,7 +275,7 @@ class _ProductDetailState extends State<ProductDetailWant> {
                             width: double.infinity,
                             height: 50,
                             decoration: BoxDecoration(
-                              color: _myUser.isLoggenIn
+                              color: _myUser.isLoggenIn.value
                                   ? Color(0xffff0066)
                                   : Colors.grey[300],
                               borderRadius: BorderRadius.circular(10),
@@ -449,8 +445,8 @@ class _ProductDetailState extends State<ProductDetailWant> {
                   ],
                 ),
               ),
-              Consumer<UserProvider>(
-                builder: (_, _user, __) {
+              GetBuilder<UserController>(
+                builder: (_user){
                   return Container(
                     child: Column(
                       children: [
@@ -643,8 +639,8 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                     Container(
                                       height: 200,
                                       child: SimpleGoogleMaps(
-                                        latitude: productController.productDetail!.lati!.toDouble(),
-                                        longitude: productController.productDetail!.longti!.toDouble(),
+                                        latitude: productController.productDetail!.location.y.toDouble(),
+                                        longitude: productController.productDetail!.location.x.toDouble(),
                                       ),
                                     ),
                                     InkWell(
@@ -655,9 +651,9 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                             address:
                                                 "${productController.productDetail!.address} ${productController.productDetail!.address_detail}",
                                             latitude:
-                                                productController.productDetail!.lati!.toDouble(),
+                                                productController.productDetail!.location.y.toDouble(),
                                             longitude:
-                                                productController.productDetail!.longti!.toDouble(),
+                                                productController.productDetail!.location.x.toDouble(),
                                           );
                                         }));
                                       },

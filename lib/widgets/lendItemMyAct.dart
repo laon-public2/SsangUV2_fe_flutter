@@ -1,13 +1,14 @@
 //빌려 드려요
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/product/ProductDetail.dart';
 import 'package:share_product_v2/pages/product/ProductDetailMyact.dart';
 import 'package:share_product_v2/pages/mypage/myActHistory.dart';
 import 'package:share_product_v2/pages/product/ProductDetailRent.dart';
-import 'package:share_product_v2/providers/myPageProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/myPageController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/categoryContainer.dart';
 
 class LendItemMyAct extends StatefulWidget {
@@ -38,6 +39,9 @@ class LendItemMyAct extends StatefulWidget {
 }
 
 class _LendItemMyActState extends State<LendItemMyAct> {
+
+  MyPageController myPageController = Get.find<MyPageController>();
+
   @override
   void initState() {
     super.initState();
@@ -147,7 +151,7 @@ class _LendItemMyActState extends State<LendItemMyAct> {
                       InkWell(
                         onTap: () {
                           print("${this.widget.category}");
-                          MyPageProvider pr = Provider.of<MyPageProvider>(context, listen: false);
+                          MyPageController pr = myPageController;
                           if (this.widget.status == "IMPOSSIBLE"){
                             pr.rentStatus(this.widget.token, this.widget.idx);
                             pr.rentStatusModified(

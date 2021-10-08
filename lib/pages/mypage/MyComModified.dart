@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/mypage/ChangePassword.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/customdialogApply.dart';
 import 'dart:io';
 
@@ -70,8 +71,8 @@ class _MyPageModifiedState extends State<MyComModified> with SingleTickerProvide
   }
 
   _body() {
-    return Consumer<UserProvider>(
-      builder: (_, _user, __) {
+    return GetBuilder<UserController>(
+      builder: (_user){
         return Container(
           color: Colors.white,
           width: double.infinity,
@@ -138,7 +139,7 @@ class _MyPageModifiedState extends State<MyComModified> with SingleTickerProvide
                         },
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(200),
-                          child: _user.userProfileImg != null
+                          child: _user.userProfileImg.value.length != 0
                               ? Container(
                                   width: 130.w,
                                   height: 130.h,

@@ -10,7 +10,7 @@
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'dart:io' show Platform;
 
-// import 'package:share_product_v2/providers/userProvider.dart';
+// import 'package:share_product_v2/providers/userController.dart';
 // import 'package:share_product_v2/widgets/customdialog.dart';
 
 // class BottomBar extends StatefulWidget {

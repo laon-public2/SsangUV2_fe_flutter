@@ -4,11 +4,11 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/model/product.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/customText.dart';
 
-import '../../providers/productProvider.dart';
+import '../../providers/productController.dart';
 import '../../widgets/CustomDropdown.dart';
 
 class Share extends StatefulWidget {
@@ -21,6 +21,7 @@ class Share extends StatefulWidget {
 class _ShareState extends State<Share> {
 
   ProductController productController = Get.find<ProductController>();
+  UserController userController = Get.find<UserController>();
 
   final List<String> itemKind = [
     "대여요청",
@@ -33,34 +34,34 @@ class _ShareState extends State<Share> {
   int page = 0;
 
   sharedScrollListener() async {
-    final pvm =  Provider.of<ProductController>(context, listen: false);
+    final pvm =  productController;
     if(sharedScroll.position.pixels == sharedScroll.position.maxScrollExtent){
       print("스크롤이 가장 아래에 있습니다.");
       if(_currentItem == "대여요청") {
         if(pvm.rentListCounter.totalCount != pvm.rentListItem.length){
           this.page++;
           await pvm.rentHistory(
-              Provider.of<UserProvider>(context, listen: false).userIdx!,
+              userController.userIdx.value,
               page,
-              Provider.of<UserProvider>(context, listen: false).accessToken!);
+              userController.accessToken.value);
         }
       }else{
         if(pvm.rentListCounter.totalCount != pvm.rentListItem.length){
           this.page++;
           await pvm.rentHistoryRent(
-              Provider.of<UserProvider>(context, listen: false).userIdx!,
+              userController.userIdx.value,
               page,
-              Provider.of<UserProvider>(context, listen: false).accessToken!);
+              userController.accessToken.value);
         }
       }
     }
   }
 
   Future<bool> loadData() async {
-    await Provider.of<ProductController>(context, listen: false).rentHistory(
-        Provider.of<UserProvider>(context, listen: false).userIdx!,
+    await productController.rentHistory(
+        userController.userIdx.value,
         page,
-        Provider.of<UserProvider>(context, listen: false).accessToken!);
+        userController.accessToken.value);
     return false;
   }
 
@@ -133,22 +134,18 @@ class _ShareState extends State<Share> {
                                   _currentItem = value;
                                 });
                                 if(this._currentItem == "빌린내역"){
-                                  Provider.of<ProductController>(context, listen: false)
+                                  productController
                                       .rentHistory(
-                                    Provider.of<UserProvider>(context, listen: false)
-                                        .userIdx!,
+                                    userController.userIdx.value,
                                     0,
-                                    Provider.of<UserProvider>(context, listen: false)
-                                        .accessToken!,
+                                    userController.accessToken.value,
                                   );
                                 }else{
-                                  Provider.of<ProductController>(context, listen: false)
+                                  productController
                                       .rentHistoryRent(
-                                    Provider.of<UserProvider>(context, listen: false)
-                                        .userIdx!,
+                                    userController.userIdx.value,
                                     0,
-                                    Provider.of<UserProvider>(context, listen: false)
-                                        .accessToken!,
+                                    userController.accessToken.value,
                                   );
                                 }
                               },

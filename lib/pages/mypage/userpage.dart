@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/utils/StringUtil.dart';
 import 'package:share_product_v2/widgets/customAppBar%20copy.dart';
 import 'package:share_product_v2/widgets/customdialog.dart';
 
 class UserPage extends StatelessWidget {
-  late UserProvider userProvider;
+  late UserController userProvider;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarWithPrev(appBar: AppBar(), title: "내 정보", elevation: 1.0,),
-      body: Consumer<UserProvider>(
-        builder: (_, user, __) {
+      body: GetBuilder<UserController>(
+        builder: (user) {
           print(user.loginMember!.member.kakao.profile);
           userProvider = user;
-          if (!userProvider.isLoggenIn) {
+          if (!userProvider.isLoggenIn.value) {
             Navigator.of(context).pop();
           }
           return body(context);

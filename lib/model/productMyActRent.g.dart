@@ -8,20 +8,20 @@ part of 'productMyActRent.dart';
 
 ProductMyActRent _$ProductMyActRentFromJson(Map<String, dynamic> json) {
   return ProductMyActRent(
-    json['id'] as int,
+    json['idx'] as int,
     json['title'] as String,
     json['price'] as int,
     json['date'] as String,
-    json['startDate'] as String,
-    json['endDate'] as String,
+    json['start_date'] as String,
+    json['end_date'] as String,
     json['name'] as String,
-    json['minPrice'] as int,
-    json['maxPrice'] as int,
+    json['min_price'] as int,
+    json['max_price'] as int,
     json['type'] as String,
     json['status'] as String,
     json['address'] as String,
-    json['addressDetail'] as String,
-    (json['productFiles'] as List<dynamic>)
+    json['address_detail'] as String,
+    (json['image'] as List<dynamic>)
         .map((e) => ProductFile.fromJson(e as Map<String, dynamic>))
         .toList(),
   );
@@ -29,31 +29,31 @@ ProductMyActRent _$ProductMyActRentFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$ProductMyActRentToJson(ProductMyActRent instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'idx': instance.idx,
       'title': instance.title,
       'price': instance.price,
       'date': instance.date,
-      'startDate': instance.startDate,
-      'endDate': instance.endDate,
+      'start_date': instance.start_date,
+      'end_date': instance.end_date,
       'name': instance.name,
-      'minPrice': instance.minPrice,
-      'maxPrice': instance.maxPrice,
+      'min_price': instance.min_price,
+      'max_price': instance.max_price,
       'type': instance.type,
       'status': instance.status,
       'address': instance.address,
-      'addressDetail': instance.addressDetail,
-      'productFiles': instance.productFiles,
+      'address_detail': instance.address_detail,
+      'image': instance.image,
     };
 
 ProductFile _$ProductFileFromJson(Map<String, dynamic> json) {
   return ProductFile(
-    json['id'] as int,
-    json['path'] as String,
+    json['file_idx'] as int,
+    json['file'] as String,
   );
 }
 
 Map<String, dynamic> _$ProductFileToJson(ProductFile instance) =>
     <String, dynamic>{
-      'id': instance.id,
-      'path': instance.path,
+      'file_idx': instance.file_idx,
+      'file': instance.file,
     };

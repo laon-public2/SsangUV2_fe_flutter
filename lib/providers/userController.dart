@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart' hide MultipartFile, FormData;
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:share_product_v2/model/UserNoticeModel.dart';
 import 'package:share_product_v2/model/paging.dart';
@@ -21,32 +22,32 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class UserProvider extends ChangeNotifier {
+class UserController extends GetxController {
   final UserService userService = UserService();
   final PushService pushService = PushService();
-  bool isLoggenIn = false;
-  int? userIdx;
-  String? userFBtoken;
-  String? originalFBtoken;
-  String? phNum;
-  String? accessToken;
-  String? userProfileImg;
-  String? username;
-  String? userNum;
-  String? userType;
-  String? comNum;
-  String? comIdentity;
-  String? address;
-  String? addressDetail;
+  var isLoggenIn = false.obs;
+  var userIdx = 0.obs;
+  var userFBtoken = "".obs;
+  var originalFBtoken = "".obs;
+  var phNum = "".obs;
+  var accessToken = "".obs;
+  var userProfileImg = "".obs;
+  var username = "".obs;
+  var userNum = "".obs;
+  var userType = "".obs;
+  var comNum = "".obs;
+  var comIdentity = "".obs;
+  var address = "".obs;
+  var addressDetail = "".obs;
 
-  late double userLocationLatitude;
-  late double userLocationLongitude;
-  late double defaultUserLocationLatitude = 37.4869535;
-  late double defaultUserLocationLongitude = 126.8956429;
-  bool? userPush;
+  var userLocationLatitude = 0.0.obs;
+  var userLocationLongitude = 0.0.obs;
+  var defaultUserLocationLatitude = 37.4869535.obs;
+  var defaultUserLocationLongitude = 126.8956429.obs;
+  var userPush = false.obs;
 
   late Paging userNotice;
-  List<UserNoticeModel> userNoticeList = [];
+  var userNoticeList = <UserNoticeModel>[].obs;
 
 
   MemberWithContractCount? loginMember;
@@ -54,8 +55,8 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> initialUserLocation() async {
     var currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
-    this.userLocationLatitude = currentPosition.latitude;
-    this.userLocationLongitude = currentPosition.longitude;
+    this.userLocationLatitude.value = currentPosition.latitude;
+    this.userLocationLongitude.value = currentPosition.longitude;
   }
 
   Future<void> getAccessToken(String phone, String password) async {
@@ -65,21 +66,21 @@ class UserProvider extends ChangeNotifier {
     if (accessToken != null) {
       if (accessToken['success'] == true) {
         print('$accessToken');
-        this.accessToken = accessToken['access_token'];
-        this.userIdx = accessToken['data']['idx'];
+        this.accessToken.value = accessToken['access_token'];
+        this.userIdx.value = accessToken['data']['idx'];
         SharedPref()
             .save("access_token", accessToken['access_token'].toString());
         SharedPref()
             .save("refresh_token", accessToken['refresh_token'].toString());
-        this.isLoggenIn = true;
-        this.phNum = phone;
+        this.isLoggenIn.value = true;
+        this.phNum.value = phone;
         await getMyInfo();
         print('로그인되었음');
       } else {
-        this.isLoggenIn = false;
+        this.isLoggenIn.value = false;
       }
     }
-    notifyListeners();
+    update();
   }
 
   Future<void> getAccessTokenReg(String phone, String password) async {
@@ -89,128 +90,132 @@ class UserProvider extends ChangeNotifier {
     if (accessToken != null) {
       if (accessToken['success'] == true) {
         print('$accessToken');
-        this.accessToken = accessToken['access_token'];
-        this.userIdx = accessToken['data']['idx'];
+        this.accessToken.value = accessToken['access_token'];
+        this.userIdx.value = accessToken['data']['idx'];
         SharedPref()
             .save("access_token", accessToken['access_token'].toString());
         SharedPref()
             .save("refresh_token", accessToken['refresh_token'].toString());
-        this.isLoggenIn = true;
-        this.phNum = phone;
+        this.isLoggenIn.value = true;
+        this.phNum.value = phone;
         print('로그인되었음');
       } else {
-        this.isLoggenIn = false;
+        this.isLoggenIn.value = false;
       }
     }
-    notifyListeners();
+    update();
   }
 
   Future<void> AddFCMtoken(String token) async {
     print("FCM토근 등록 $token");
-    this.originalFBtoken = token;
-    notifyListeners();
+    this.originalFBtoken.value = token;
+    update();
   }
 
   Future<void> changeAddress(String address, String addressDetail, num la,
       num lo) async {
     print("유저 주소 변경");
     final res = await userService.changeUserAddress(
-        phNum!, address, addressDetail, la, lo, accessToken!);
+        phNum.value, address, addressDetail, la, lo, accessToken.value);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     if (jsonMap['success'] == true) {
-      this.address = address;
-      this.addressDetail = addressDetail;
-      this.userLocationLatitude = la.toDouble();
-      this.userLocationLongitude = lo.toDouble();
+      this.address.value = address;
+      this.addressDetail.value = addressDetail;
+      this.userLocationLatitude.value = la.toDouble();
+      this.userLocationLongitude.value = lo.toDouble();
     }
-    notifyListeners();
+    update();
   }
 
   Future<void> changePush() async {
-    this.userPush = !this.userPush!;
+    this.userPush.value = !this.userPush.value;
     print('유저 알림 서비스 변경');
     print(this.userIdx);
     final res = await userService.changePushService(
-        this.accessToken!, this.userIdx!);
+        this.accessToken.value, this.userIdx.value);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap);
 
-    notifyListeners();
+    update();
   }
 
   void fBToken() async {
     print('FCM토큰');
     Map<String, dynamic>? fbToken = await userService.updateFBtoken(
-        this.userIdx!, this.originalFBtoken!, this.accessToken!);
+        this.userIdx.value, this.originalFBtoken.value, this.accessToken.value);
     if (fbToken != null) {
       print('fcm토큰이 수정되었음');
     } else {
       print('토큰 값을 수정해주시기 바랍니다. 이것은 잘못된 오류 입니다.');
     }
-    notifyListeners();
+    update();
   }
 
   Future<String> getMyInfo() async {
     print('내정보 확인하기');
     print("${this.accessToken} ${this.phNum}");
     Map<String, dynamic>? myinfo =
-    await userService.myInfo(this.accessToken!, this.phNum!);
+    await userService.myInfo(this.accessToken.value, this.phNum.value);
     if (myinfo != null) {
       if (myinfo['success'] == true) {
         print(myinfo);
-        this.username = myinfo['data']['name'];
-        this.userType = myinfo['data']['userType'];
-        this.comNum = myinfo['data']['businessIdentifyNum'];
-        this.comIdentity = myinfo['data']['businessIdentifyFile'];
-        this.address = myinfo['data']['address'];
-        this.addressDetail = myinfo['data']['addressDetail'];
-        this.userProfileImg = myinfo['data']['image'];
-        this.userFBtoken = myinfo['data']['fcm_token'];
+        this.username.value = myinfo['data']['name'];
+        this.userType.value = myinfo['data']['userType'];
+        this.comNum.value = myinfo['data']['businessIdentifyNum'] ?? '';
+        this.comIdentity.value = myinfo['data']['businessIdentifyFile'] ?? '';
+        this.address.value = myinfo['data']['address'];
+        this.addressDetail.value = myinfo['data']['addressDetail'];
+        this.userProfileImg.value = myinfo['data']['image'] ?? '';
+        print('user length' + this.userProfileImg.value.length.toString());
+        this.userFBtoken.value = myinfo['data']['fcm_token'];
         if(myinfo['data']['push'] == null) {
-          this.userPush = false;
+          this.userPush.value = false;
         }
         if (myinfo['data']['push'] == 1) {
-          this.userPush = true;
+          this.userPush.value = true;
         } else {
-          this.userPush = false;
+          this.userPush.value = false;
         }
         if(myinfo['data']['user_location'] != null){
-          this.userLocationLatitude = myinfo['data']['user_location']['x'];
+          this.userLocationLatitude.value = myinfo['data']['user_location']['x'];
         } else {
           var currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
-          this.userLocationLatitude = currentPosition.latitude;
+          this.userLocationLatitude.value = currentPosition.latitude;
         }
         if(myinfo['data']['user_location'] != null){
-          this.userLocationLongitude = myinfo['data']['user_location']['y'];
+          this.userLocationLongitude.value = myinfo['data']['user_location']['y'];
         } else {
           var currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
-          this.userLocationLongitude = currentPosition.longitude;
+          this.userLocationLongitude.value = currentPosition.longitude;
         }
 
-        print('x == ${this.userLocationLatitude} y == ${this.userLocationLongitude}');
+        print('x == ${this.userLocationLatitude.value} y == ${this.userLocationLongitude}');
         if (this.originalFBtoken == this.userFBtoken) {
+          update();
           return 'success';
         } else {
           print("fcm토큰 수정");
           fBToken();
         }
+        update();
         return 'success';
       }
       else {
+        update();
         return 'fail';
       }
     } else {
-      this.username = "정보없음";
-      this.userType = "nomal";
-      this.comNum = "00-000-00000";
-      this.address = "서울시 은평구 갈현동";
-      this.addressDetail = "한스빌 478-2";
-      this.userLocationLatitude = 37;
-      this.userLocationLongitude = 126;
-      this.userProfileImg = "userImgNot";
+      this.username.value = "정보없음";
+      this.userType.value = "nomal";
+      this.comNum.value = "00-000-00000";
+      this.address.value = "서울시 은평구 갈현동";
+      this.addressDetail.value = "한스빌 478-2";
+      this.userLocationLatitude.value = 37;
+      this.userLocationLongitude.value = 126;
+      this.userProfileImg.value = "userImgNot";
+      update();
       return 'none';
     }
-    notifyListeners();
   }
 
   Future<void> refreshToken(String refreshToken) async {
@@ -226,12 +231,12 @@ class UserProvider extends ChangeNotifier {
             .save("refresh_token", accessToken['refresh_token'].toString());
         SharedPreferences w = await SharedPreferences.getInstance();
       } else {
-        this.isLoggenIn = false;
+        this.isLoggenIn.value = false;
       }
     } else {
-      this.isLoggenIn = false;
+      this.isLoggenIn.value = false;
     }
-    notifyListeners();
+    update();
   }
 
   Future<bool> phone(String phone) async {
@@ -244,19 +249,19 @@ class UserProvider extends ChangeNotifier {
             .save("access_token", returnMap['data']['access_token'].toString());
         SharedPref().save(
             "refresh_token", returnMap['data']['refresh_token'].toString());
-        this.isLoggenIn = true;
-        notifyListeners();
+        this.isLoggenIn.value = true;
+        update();
       }
     }
     return isFirstLogin;
-    // notifyListeners();
+    // update();
   }
 
   void me() async {
     ApiResponse apiResponse = await userService.me();
     loginMember = apiResponse.data;
-    this.isLoggenIn = true;
-    notifyListeners();
+    this.isLoggenIn.value = true;
+    update();
   }
 
   Future setAccessToken(String token) async {
@@ -264,13 +269,13 @@ class UserProvider extends ChangeNotifier {
     Map<String, dynamic>? accessToken = await userService.set_token(token);
     if (accessToken != null) {
       if (accessToken['success'] == true) {
-        this.isLoggenIn = true;
-        this.accessToken = token;
-        this.phNum = accessToken['data']['username'];
-        this.userIdx = accessToken['data']['idx'];
-        this.originalFBtoken = accessToken['data']['fcm_token'];
+        this.isLoggenIn.value = true;
+        this.accessToken.value = token;
+        this.phNum.value = accessToken['data']['username'];
+        this.userIdx.value = accessToken['data']['idx'];
+        this.originalFBtoken.value = accessToken['data']['fcm_token'];
         await getMyInfo();
-        if (this.originalFBtoken == this.userFBtoken) {
+        if (this.originalFBtoken.value == this.userFBtoken.value) {
           return;
         } else {
           print("fcm토큰 수정");
@@ -278,18 +283,18 @@ class UserProvider extends ChangeNotifier {
         }
       }
     } else {
-      this.isLoggenIn = false;
+      this.isLoggenIn.value = false;
     }
-    notifyListeners();
+    update();
   }
 
   void logout() async {
-    isLoggenIn = false;
+    isLoggenIn.value = false;
     loginMember = null;
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.remove("access_token");
     pref.remove("refresh_token");
-    notifyListeners();
+    update();
   }
 
   void setAddress(context, String address, String detail) async {
@@ -302,10 +307,10 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> DeleteUser(String userPh) async {
-    final res = await userService.delete_user(userPh, accessToken!);
+    final res = await userService.delete_user(userPh, accessToken.value);
     print(res.toString());
-    this.isLoggenIn = false;
-    notifyListeners();
+    this.isLoggenIn.value = false;
+    update();
   }
 
   Future<void> withdrawal() async {
@@ -322,7 +327,7 @@ class UserProvider extends ChangeNotifier {
     print("알림 페이지 프로바이더");
     try {
       final res = await userService.noticeViewService(
-          userIdx!, page, accessToken!);
+          userIdx.value, page, accessToken.value);
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
       List<UserNoticeModel> list = (jsonMap['data'] as List)
@@ -331,7 +336,7 @@ class UserProvider extends ChangeNotifier {
       this.userNotice = paging;
       if (this.userNotice.currentPage == null ||
           this.userNotice.currentPage == 0) {
-        this.userNoticeList = list;
+        this.userNoticeList.value = list;
       } else {
         for (var e in list) {
           this.userNoticeList.add(e);
@@ -344,7 +349,7 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> userComChange(File images) async {
     print("대여업체 유저 사업자등록증 사진변경");
-    final res = await userService.changeCompanyImg(images, this.accessToken!, this.userIdx!);
+    final res = await userService.changeCompanyImg(images, this.accessToken.value, this.userIdx.value);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap);
     await getMyInfo();
@@ -365,7 +370,7 @@ class UserProvider extends ChangeNotifier {
       // formData.files.add(entry);
     }
     final res = await userService.changeUserPic(
-        fileList, this.accessToken!, this.userIdx!, this.username!);
+        fileList, this.accessToken.value, this.userIdx.value, this.username.value);
     Map<String, dynamic> jsonMap = json.decode(res.toString());
     print(jsonMap);
     await getMyInfo();
@@ -374,21 +379,21 @@ class UserProvider extends ChangeNotifier {
   Future<String?> userInfoChange(String name) async {
     try {
       print("유저 이름 변경");
-      final res = await userService.changeUserName(name, phNum!, accessToken!);
+      final res = await userService.changeUserName(name, phNum.value, accessToken.value);
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
-      this.username = name;
+      this.username.value = name;
       return jsonMap['success'];
     } catch (e) {
       print(e);
     }
-    notifyListeners();
+    update();
   }
 
   Future<String?> userChangePwd(String currentPwd, String newPwd) async {
     try{
       print("유저 비밀번호 변경");
-      final res = await userService.changePassword(this.phNum!, currentPwd, newPwd, accessToken!);
+      final res = await userService.changePassword(this.phNum.value, currentPwd, newPwd, accessToken.value);
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
       return jsonMap['success'];

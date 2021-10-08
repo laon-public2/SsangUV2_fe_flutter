@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/model/paging.dart';
 import 'package:share_product_v2/model/product.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
 import 'package:share_product_v2/utils/ConvertNumberFormat.dart';
 import 'package:share_product_v2/widgets/BackBtn.dart';
 import 'package:share_product_v2/widgets/WantItemMainPage.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
 import 'package:share_product_v2/widgets/CustomDropdown.dart';
 import 'package:share_product_v2/widgets/CustomDropdownMain.dart';
 import 'package:share_product_v2/widgets/WantItemMainPage.dart';
@@ -22,7 +22,6 @@ class Category1 extends StatefulWidget {
 }
 
 class _Category1State extends State<Category1> {
-
   ProductController productController = Get.find<ProductController>();
 
   final List<String> itemKind = [
@@ -36,20 +35,21 @@ class _Category1State extends State<Category1> {
   ScrollController categoryScroller = ScrollController();
 
   categoryScrollerListener() async {
-    final pvm = Provider.of<ProductController>(context, listen: false);
-    if(categoryScroller.position.pixels == categoryScroller.position.maxScrollExtent){
+    final pvm = productController;
+    if (categoryScroller.position.pixels ==
+        categoryScroller.position.maxScrollExtent) {
       print("스크롤이 가장 아래입니다.");
-      if(_currentItem == "빌려드려요"){
+      if (_currentItem == "빌려드려요") {
         print("빌려드려요 상태");
-        if(pvm.searchPaging.totalCount != pvm.searchDataProduct.length){
+        if (pvm.searchPaging.totalCount != pvm.searchDataProduct.length) {
           print("검색 빌려드려요 more");
           this.page++;
           await pvm.SearchingDataProduct(
               page, this.widget.searchWord, this.widget._category, "RENT");
         }
-      }else if(_currentItem == "빌려주세요"){
+      } else if (_currentItem == "빌려주세요") {
         print("빌려주세요 상태");
-        if(pvm.searchPaging.totalCount != pvm.searchDataProductWant.length){
+        if (pvm.searchPaging.totalCount != pvm.searchDataProductWant.length) {
           this.page++;
           await pvm.SearchingDataProduct(
               page, this.widget.searchWord, this.widget._category, "WANT");
@@ -72,16 +72,19 @@ class _Category1State extends State<Category1> {
   }
 
   void asyncData() async {
-    await Provider.of<ProductController>(context, listen: false)
-        .SearchingDataProduct(
-            this.page, this.widget.searchWord, this.widget._category, "RENT");
+    await productController.SearchingDataProduct(
+        this.page, this.widget.searchWord, this.widget._category, "RENT");
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: _body(),
+    return GetBuilder<ProductController>(
+      builder: (controller) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: _body(),
+        );
+      },
     );
   }
 
@@ -104,14 +107,18 @@ class _Category1State extends State<Category1> {
                       setState(() {
                         _currentItem = value;
                       });
-                      if(value == "빌려드려요"){
-                        await Provider.of<ProductController>(context, listen: false)
-                            .SearchingDataProduct(
-                            this.page, this.widget.searchWord, this.widget._category, "RENT");
-                      }else if(value == "빌려주세요"){
-                        await Provider.of<ProductController>(context, listen: false)
-                            .SearchingDataProduct(
-                            this.page, this.widget.searchWord, this.widget._category, "WANT");
+                      if (value == "빌려드려요") {
+                        await productController.SearchingDataProduct(
+                            this.page,
+                            this.widget.searchWord,
+                            this.widget._category,
+                            "RENT");
+                      } else if (value == "빌려주세요") {
+                        await productController.SearchingDataProduct(
+                            this.page,
+                            this.widget.searchWord,
+                            this.widget._category,
+                            "WANT");
                       }
                     },
                   ),
@@ -130,53 +137,56 @@ class _Category1State extends State<Category1> {
   }
 
   _toItem() {
-        return ListView.separated(
-          itemCount: this._currentItem == '빌려드려요'
-              ? productController.searchDataProduct.length
-              : productController.searchDataProductWant.length,
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemBuilder: (context, idx) {
-            if (this._currentItem == "빌려드려요") {
-              return LendItemMainPage(
-                category:
-                    "${_category(productController.searchDataProduct[idx].category)}",
-                idx: productController.searchDataProduct[idx].id,
-                title: "${productController.searchDataProduct[idx].title}",
-                name: "${productController.searchDataProduct[idx].name}",
-                price:
-                    "${_moneyFormat("${productController.searchDataProduct[idx].price}")}원",
-                distance:
-                    "${(productController.searchDataProduct[idx].distance).toStringAsFixed(2)}",
-                picture:
-                    "${productController.searchDataProduct[idx].productFiles[0].path}",
-              );
-            } else {
-              return WantItemMainPage(
-                idx: productController.searchDataProductWant[idx].id,
-                category:
-                    "${_category(productController.searchDataProductWant[idx].category)}",
-                title: "${productController.searchDataProductWant[idx].title}",
-                name: "${productController.searchDataProductWant[idx].name}",
-                minPrice:
-                    "${_moneyFormat("${productController.searchDataProductWant[idx].minPrice}")}원",
-                maxPrice:
-                    "${_moneyFormat("${productController.searchDataProductWant[idx].maxPrice}")}원",
-                distance:
-                    "${(productController.searchDataProductWant[idx].distance).toStringAsFixed(2)}",
-                startDate: _dateFormat(productController.searchDataProductWant[idx].startDate),
-                endDate: _dateFormat(productController.searchDataProductWant[idx].endDate),
-                picture: productController.searchDataProductWant[idx].productFiles[0].path,
-              );
-            }
-          },
-          separatorBuilder: (context, idx) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Divider(),
-            );
-          },
+    return ListView.separated(
+      itemCount: this._currentItem == '빌려드려요'
+          ? productController.searchDataProduct.length
+          : productController.searchDataProductWant.length,
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemBuilder: (context, idx) {
+        if (this._currentItem == "빌려드려요") {
+          return LendItemMainPage(
+            category:
+                "${_category(productController.searchDataProduct[idx].category)}",
+            idx: productController.searchDataProduct[idx].id,
+            title: "${productController.searchDataProduct[idx].title}",
+            name: "${productController.searchDataProduct[idx].name}",
+            price:
+                "${_moneyFormat("${productController.searchDataProduct[idx].price}")}원",
+            distance:
+                "${(productController.searchDataProduct[idx].distance).toStringAsFixed(2)}",
+            picture:
+                "${productController.searchDataProduct[idx].productFiles[0].path}",
+          );
+        } else {
+          return WantItemMainPage(
+            idx: productController.searchDataProductWant[idx].id,
+            category:
+                "${_category(productController.searchDataProductWant[idx].category)}",
+            title: "${productController.searchDataProductWant[idx].title}",
+            name: "${productController.searchDataProductWant[idx].name}",
+            minPrice:
+                "${_moneyFormat("${productController.searchDataProductWant[idx].minPrice}")}원",
+            maxPrice:
+                "${_moneyFormat("${productController.searchDataProductWant[idx].maxPrice}")}원",
+            distance:
+                "${(productController.searchDataProductWant[idx].distance).toStringAsFixed(2)}",
+            startDate: _dateFormat(
+                productController.searchDataProductWant[idx].startDate),
+            endDate: _dateFormat(
+                productController.searchDataProductWant[idx].endDate),
+            picture: productController
+                .searchDataProductWant[idx].productFiles[0].path,
+          );
+        }
+      },
+      separatorBuilder: (context, idx) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: Divider(),
         );
+      },
+    );
   }
 }
 
@@ -186,7 +196,7 @@ _moneyFormat(String price) {
     value = value.replaceAll(RegExp(r'\D'), '');
     value = value.replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), ',');
     return value;
-  }else {
+  } else {
     return price;
   }
 }

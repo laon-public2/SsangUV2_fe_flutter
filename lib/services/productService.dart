@@ -526,6 +526,7 @@ class ProductService {
           "longitude": lo,
         },
       );
+      print(startDate + ' / ' + endDate);
       return res;
     } on DioError catch (e) {
       print("상품 수정 오류 (텍스트)");

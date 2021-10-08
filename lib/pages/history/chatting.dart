@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
 import 'package:share_product_v2/providers/contractProvider.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/PageTransition.dart';
 import 'package:share_product_v2/widgets/customText.dart';
 
 class Chatting extends StatelessWidget {
-  const Chatting({Key? key}) : super(key: key);
+  UserController userController = Get.find<UserController>();
+  ProductController productController = Get.find<ProductController>();
 
   @override
   Widget build(BuildContext context) {
     int page = 0;
 
     Future<bool> chatListLoad() async {
-      await Provider.of<ProductController>(context, listen: false).chatList(
-        Provider.of<UserProvider>(context, listen: false).userIdx!,
+      await productController.chatList(
+        userController.userIdx.value,
         page,
-        Provider.of<UserProvider>(context, listen: false).accessToken!,
+        userController.accessToken.value,
       );
       return false;
     }
@@ -49,8 +51,8 @@ class Chatting extends StatelessWidget {
           );
         } else {
           return Container(
-            child: Consumer<ProductController>(
-              builder: (_, contracts, __) {
+            child: GetBuilder<ProductController>(
+              builder: (contracts) {
                 return ListView.separated(
                     shrinkWrap: false,
                     itemCount: contracts.chatListItem.length,
@@ -63,13 +65,11 @@ class Chatting extends StatelessWidget {
                           return Container();
                         } else {
                           page++;
-                          Provider.of<ProductController>(context, listen: false)
+                          productController
                               .chatList(
-                            Provider.of<UserProvider>(context, listen: false)
-                                .userIdx!,
+                            userController.userIdx.value,
                             page,
-                            Provider.of<UserProvider>(context, listen: false)
-                                .accessToken!,
+                            userController.accessToken.value,
                           );
                         }
                       }

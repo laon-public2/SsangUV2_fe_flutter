@@ -9,16 +9,16 @@ import 'package:provider/provider.dart';
 import 'package:share_product_v2/models/IOSLocaliztionsDelegate.dart';
 import 'package:share_product_v2/pages/KakaoMap.dart';
 import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
-import 'package:share_product_v2/providers/bannerProvider.dart';
+import 'package:share_product_v2/providers/bannerController.dart';
 import 'package:share_product_v2/providers/contractProvider.dart';
 import 'package:share_product_v2/providers/fcm_model.dart';
 import 'package:share_product_v2/providers/mainProvider.dart';
-import 'package:share_product_v2/providers/mapProvider.dart';
-import 'package:share_product_v2/providers/myPageProvider.dart';
-import 'package:share_product_v2/providers/policyProvider.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
-import 'package:share_product_v2/providers/regUserProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/mapController.dart';
+import 'package:share_product_v2/providers/myPageController.dart';
+import 'package:share_product_v2/providers/policyController.dart';
+import 'package:share_product_v2/providers/productController.dart';
+import 'package:share_product_v2/providers/regUserController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/routes.dart';
 
 void main() => runApp(MyApp());
@@ -52,36 +52,36 @@ class _MyAppState extends State<MyApp> {
         if (snapshot.connectionState == ConnectionState.done) {
           return MultiProvider(
               providers: [
-                ChangeNotifierProvider<MyPageProvider>(
-                  create: (_) => MyPageProvider(),
-                ),
-                ChangeNotifierProvider<RegUserProvider>(
-                  create: (_) => RegUserProvider(),
-                ),
-                ChangeNotifierProvider<UserProvider>(
-                  create: (_) => UserProvider(),
-                ),
-                ChangeNotifierProvider<PolicyProvider>(
-                  create: (_) => PolicyProvider(),
-                ),
+                // ChangeNotifierProvider<MyPageProvider>(
+                //   create: (_) => MyPageProvider(),
+                // ),
+                // ChangeNotifierProvider<RegUserProvider>(
+                //   create: (_) => RegUserProvider(),
+                // ),
+                // ChangeNotifierProvider<UserController>(
+                //   create: (_) => UserController(),
+                // ),
+                // ChangeNotifierProvider<PolicyController>(
+                //   create: (_) => PolicyController(),
+                // ),
                 // ChangeNotifierProvider<ProductController>(
                 //   create: (_) => ProductController(),
                 // ),
                 // ChangeNotifierProvider<BannerProvider>(
                 //   create: (_) => BannerProvider(),
                 // ),
-                ChangeNotifierProvider<ContractProvider>(
-                  create: (_) => ContractProvider(),
+                ChangeNotifierProvider<ContractController>(
+                  create: (_) => ContractController(),
                 ),
-                ChangeNotifierProvider<MapProvider>(
-                  create: (_) => MapProvider(),
-                ),
-                ChangeNotifierProvider<MainProvider>(
-                  create: (_) => MainProvider(),
-                ),
-                ChangeNotifierProvider<FCMModel>(
-                  create: (_) => FCMModel(),
-                ),
+                // ChangeNotifierProvider<MapProvider>(
+                //   create: (_) => MapProvider(),
+                // ),
+                // ChangeNotifierProvider<MainProvider>(
+                //   create: (_) => MainProvider(),
+                // ),
+                // ChangeNotifierProvider<FCMModel>(
+                //   create: (_) => FCMModel(),
+                // ),
               ],
               child: ScreenUtilInit(
                 designSize: Size(360, 680),

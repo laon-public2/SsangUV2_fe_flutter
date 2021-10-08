@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/CustomDatePicker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'dart:math';
@@ -193,7 +193,7 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
-      await Provider.of<ProductController>(context, listen: false).resetAddress();
+      await productController.resetAddress();
     });
     return Scaffold(
       // resizeToAvoidBottomInset: false,
@@ -476,8 +476,8 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
             left: 0,
             right: 0,
             bottom: 20,
-            child: Consumer<UserProvider> (
-              builder: (_, _user, __) {
+            child: GetBuilder<UserController> (
+              builder: (_user) {
                     return InkWell(
                       onTap: () async{
                         if (_productName.text == "") {
@@ -510,7 +510,7 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
                             _isDialogText = "카테고리가 선택되지 않았습니다.";
                           });
                           _showDialog();
-                        } else if (this.LocationData[2].isSelected && productController.secondAddress == "기타 주소 설정") {
+                        } else if (this.LocationData[2].isSelected && productController.secondAddress.value == "기타 주소 설정") {
                             setState(() {
                               _isDialogText = "기타주소가 비어 있습니다.";
                             });
@@ -530,8 +530,8 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
                           if(this.LocationData[0].isSelected == true){
                             List<String> date = _dateController.text.split("~");
                             await productController.productApplyWant(
-                              _user.phNum!,
-                              _user.userIdx!,
+                              _user.phNum.value,
+                              _user.userIdx.value,
                               _selectCategory(_selectedCategory),
                               _productName.text,
                               descriptionTextController.text,
@@ -544,15 +544,15 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
                               "${productController.geoLocation[1].depth3} ${productController.geoLocation[1].depth4}",
                               productController.lat.value,
                               productController.lon.value,
-                              _user.accessToken!,
+                              _user.accessToken.value,
                               _otherLocation,
                             );
                             _showDialogSuccess("글이 등록되었습니다.");
                           }else if(this.LocationData[1].isSelected == true){
                             List<String> date = _dateController.text.split("~");
                             await productController.productApplyWant(
-                              _user.phNum!,
-                              _user.userIdx!,
+                              _user.phNum.value,
+                              _user.userIdx.value,
                               _selectCategory(_selectedCategory),
                               _productName.text,
                               descriptionTextController.text,
@@ -563,17 +563,17 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
                               date[1],
                               "${_user.address}",
                               "${_user.addressDetail}",
-                              _user.userLocationLatitude,
-                              _user.userLocationLongitude,
-                              _user.accessToken!,
+                              _user.userLocationLatitude.value,
+                              _user.userLocationLongitude.value,
+                              _user.accessToken.value,
                               _otherLocation,
                             );
                             _showDialogSuccess("글이 등록되었습니다.");
                           }else if(this.LocationData[2].isSelected == true){
                             List<String> date = _dateController.text.split("~");
                             await productController.productApplyWant(
-                              _user.phNum!,
-                              _user.userIdx!,
+                              _user.phNum.value,
+                              _user.userIdx.value,
                               _selectCategory(_selectedCategory),
                               _productName.text,
                               descriptionTextController.text,
@@ -586,7 +586,7 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
                               "${this._otherAddressDetail.text}",
                               productController.secondLa.value,
                               productController.secondLo.value,
-                              _user.accessToken!,
+                              _user.accessToken.value,
                               _otherLocation,
                             );
                             _showDialogSuccess("글이 등록되었습니다.");
@@ -676,9 +676,9 @@ class _ProductRegState extends State<ProductReg> with SingleTickerProviderStateM
 
   _otherLoc(String type) {
     if (type == "lend1") {
-      return Provider.of<ProductController>(context, listen: false).firstAddress;
+      return productController.firstAddress;
     } else {
-      return Provider.of<ProductController>(context, listen: false).secondAddress;
+      return productController.secondAddress;
     }
   }
 

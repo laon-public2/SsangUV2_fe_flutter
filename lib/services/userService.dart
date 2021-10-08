@@ -159,7 +159,7 @@ class UserService {
       
       
       
-      print(e.message);
+      print('내정보받기' + e.message);
       Map<String, dynamic>? jsonMap;
       return jsonMap;
     }

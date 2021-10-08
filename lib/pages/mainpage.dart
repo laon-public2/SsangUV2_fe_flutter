@@ -9,10 +9,10 @@ import 'package:share_product_v2/pages/auth/myPage.dart';
 import 'package:share_product_v2/pages/product/ProductReg.dart';
 import 'package:share_product_v2/pages/product/productApplyPage.dart';
 import 'package:share_product_v2/pages/product/productHelpReg.dart';
-import 'package:share_product_v2/providers/bannerProvider.dart';
+import 'package:share_product_v2/providers/bannerController.dart';
 import 'package:share_product_v2/providers/fcm_model.dart';
-import 'package:share_product_v2/providers/productProvider.dart';
-import 'package:share_product_v2/providers/userProvider.dart';
+import 'package:share_product_v2/providers/productController.dart';
+import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/utils/APIUtil.dart';
 import 'package:share_product_v2/widgets/CustomPopup.dart';
 import 'package:share_product_v2/widgets/InputDoneView.dart';
@@ -53,8 +53,11 @@ class MyStatefulWidget extends StatefulWidget {
 class MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   ProductController productController = Get.put(ProductController());
-
+  FCMModel fcmModel = Get.put(FCMModel());
   BannerController bannerController = Get.put(BannerController());
+  UserController userController = Get.put(UserController());
+  
+  
   // final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
   late SharedPreferences pref;
   int page = 0;
@@ -83,31 +86,44 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
     print("token : $token");
     print("reToken : $reToken");
     if (token != null && token != "" && reToken != null && reToken != "") {
-      await Provider.of<UserProvider>(context, listen: false).refreshToken(reToken);
-      await Provider.of<UserProvider>(context, listen: false).setAccessToken(token);
+      await userController.refreshToken(reToken);
+      await userController.setAccessToken(token);
       await bannerController.getBanners();
       // await Provider.of<BannerProvider>(context, listen: false).getBanners();
-      try{
-        await productController.changeUserPosition(
-            Provider.of<UserProvider>(context, listen: false).userLocationLatitude,
-            Provider.of<UserProvider>(context, listen: false).userLocationLongitude
-        );
 
-        // await Provider.of<ProductController>(context, listen: false).changeUserPosition(
-        //   Provider.of<UserProvider>(context, listen: false).userLocationLatitude,
-        //   Provider.of<UserProvider>(context, listen: false).userLocationLongitude,
-        // );
-      }
-      catch(e){
+      if(userController.userLocationLatitude.value == 0 || userController.userLocationLongitude.value == 0){
         await productController.changeUserPosition(
-            Provider.of<UserProvider>(context, listen: false).defaultUserLocationLatitude,
-            Provider.of<UserProvider>(context, listen: false).defaultUserLocationLongitude
+            userController.defaultUserLocationLatitude.value,
+            userController.defaultUserLocationLongitude.value
         );
-        // await Provider.of<ProductController>(context, listen: false).changeUserPosition(
-        //   Provider.of<UserProvider>(context, listen: false).defaultUserLocationLatitude,
-        //   Provider.of<UserProvider>(context, listen: false).defaultUserLocationLongitude,
-        // );
       }
+      else {
+        await productController.changeUserPosition(
+            userController.userLocationLatitude.value,
+            userController.userLocationLongitude.value
+        );
+      }
+      // try{
+      //   await productController.changeUserPosition(
+      //       userController.userLocationLatitude.value,
+      //       userController.userLocationLongitude.value
+      //   );
+      //
+      //   // await productController.changeUserPosition(
+      //   //   Provider.of<UserProvider>(context, listen: false).userLocationLatitude,
+      //   //   Provider.of<UserProvider>(context, listen: false).userLocationLongitude,
+      //   // );
+      // }
+      // catch(e){
+      //   await productController.changeUserPosition(
+      //       userController.defaultUserLocationLatitude.value,
+      //       userController.defaultUserLocationLongitude.value
+      //   );
+      //   // await productController.changeUserPosition(
+      //   //   Provider.of<UserProvider>(context, listen: false).defaultUserLocationLatitude,
+      //   //   Provider.of<UserProvider>(context, listen: false).defaultUserLocationLongitude,
+      //   // );
+      // }
 
     } else {
       return;
@@ -122,14 +138,14 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
         return;
       }
       if (index == 1) {
-        if (!Provider.of<UserProvider>(context, listen: false).isLoggenIn) {
+        if (!userController.isLoggenIn.value) {
           _showDialog(context);
         } else {
           showModalBottomSheet(context: context, builder: buildBottomSheet, backgroundColor: Colors.transparent);
         }
       }
       if (index == 2) {
-        if (!Provider.of<UserProvider>(context, listen: false).isLoggenIn) {
+        if (!userController.isLoggenIn.value) {
           _showDialog(context);
         } else {
           bottomSelectedIndex = index;
@@ -149,7 +165,7 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
     const TextStyle optionStyle =
         TextStyle(fontSize: 12, fontWeight: FontWeight.w400);
 
-    return Consumer<UserProvider>(builder: (_, user, __) {
+    return GetBuilder<UserController>(builder: (user) {
       return WillPopScope(
         onWillPop: () {
           if (bottomSelectedIndex != 0) {
@@ -450,22 +466,22 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
     super.initState();
     var keyboardVisibilityController = KeyboardVisibilityController();
     Future.delayed(Duration.zero, () async {
-      await Provider.of<FCMModel>(context, listen: false).getMbToken();
-      await Provider.of<UserProvider>(context, listen: false).AddFCMtoken(Provider.of<FCMModel>(context, listen: false).mbToken!);
+      await fcmModel.getMbToken();
+      await userController.AddFCMtoken(fcmModel.mbToken.value);
       bool getBanners = await bannerController.getBanners();
       // bool getBanners = await Provider.of<BannerProvider>(context, listen: false).getBanners();
-      await Provider.of<UserProvider>(context, listen: false).initialUserLocation();
+      await userController.initialUserLocation();
       if(getBanners == false){
         _showDialogErr("서버와의 통신에 문제가 있습니다\n만약 서비스가 계속 작동되지 않는다면 고객센터로 문의 주십시오.");
       }
     });
     productController.getGeolocator();
-    // Provider.of<ProductController>(context, listen: false).getGeolocator();
+    // productController.getGeolocator();
     // if(Provider.of<UserProvider>(context, listen: false).userLocationX == 37.0 && Provider.of<UserProvider>(context, listen: false).userLocationY == 126){
     //
     // }
-    if (Provider.of<UserProvider>(context, listen: false).isLoggenIn) {
-      Provider.of<UserProvider>(context, listen: false).me();
+    if (userController.isLoggenIn.value) {
+      userController.me();
     }
 
     keyboardVisibilityController.onChange.listen((bool visible) {
