@@ -7,7 +7,7 @@
 // import 'package:share_product_v2/pages/product/ImageView.dart';
 // import 'package:share_product_v2/pages/product/detailMapPage.dart';
 // import 'package:share_product_v2/pages/product/modifyProduct.dart';
-// import 'package:share_product_v2/providers/contractProvider.dart';
+// import 'package:share_product_v2/providers/contractController.dart';
 // import 'package:share_product_v2/providers/productController.dart';
 // import 'package:share_product_v2/providers/userController.dart';
 // import 'package:share_product_v2/utils/ConvertNumberFormat.dart';

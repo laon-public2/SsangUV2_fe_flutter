@@ -1832,6 +1832,7 @@ class ProductController extends GetxController {
     try {
       final res = await productService.chatList(userIdx, page, token);
       Map<String, dynamic> jsonMap = json.decode(res.toString());
+      print(jsonMap);
       List<ChatListModel> list = (jsonMap['data'] as List)
           .map((e) => ChatListModel.fromJson(e))
           .toList();
@@ -1909,7 +1910,7 @@ class ProductController extends GetxController {
       final res = await productService.productInit(senderIdx, receiverIdx, productIdx, token);
       Map<String, dynamic> jsonMap = json.decode(res.toString());
       print(jsonMap);
-      this.productStart = jsonMap['data'];
+      this.productStart.value = jsonMap['data'];
       return jsonMap['data'];
       update();
     } catch(e){

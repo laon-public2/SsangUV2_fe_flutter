@@ -35,7 +35,6 @@ dependencies:
   intl: ^0.17.0
   google_maps_flutter: ^2.0.9
   http: ^0.13.3
-  provider: ^6.0.0
   image_picker: ^0.8.4+1
   multi_image_picker: ^4.8.01
   shared_preferences: ^2.0.7

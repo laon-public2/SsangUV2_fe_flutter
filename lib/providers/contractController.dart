@@ -16,16 +16,16 @@ import 'package:share_product_v2/pages/chat/chatting.dart';
 import 'package:share_product_v2/services/chatService.dart';
 import 'package:share_product_v2/services/contractService.dart';
 
-class ContractController extends ChangeNotifier {
+class ContractController extends GetxController {
   final ContractService contractService = ContractService();
 
   final ChattingService chatService = ChattingService();
 
-  late List<ContractModel> contracts = [];
+  var contracts = <ContractModel>[].obs;
 
-  late List<ContractModel> contractsDo = [];
-  late List<ContractModel> contractsReceive = [];
-  late List<StompSendDTO> chatHistories = [];
+  var contractsDo = <ContractModel>[].obs;
+  var contractsReceive = <ContractModel>[].obs;
+  var chatHistories = <StompSendDTO>[].obs;
   late Paging chatHistoriesCounter;
 
   late ContractModel contractModel;
@@ -36,7 +36,7 @@ class ContractController extends ChangeNotifier {
   Future<void> getChatHistory(String uuid, int page) async {
     print("채팅 서비스 프로바이더");
     if (page == 0) {
-      this.chatHistories = [];
+      this.chatHistories.clear();
     }
     final res = await contractService.getChatHistory(uuid, page);
     Map<String, dynamic> json = jsonDecode(res.toString());
@@ -49,13 +49,13 @@ class ContractController extends ChangeNotifier {
       Paging paging = Paging.fromJson(json);
       this.chatHistoriesCounter = paging;
       if (chatHistoriesCounter.currentPage == null || chatHistoriesCounter.currentPage == 0) {
-        this.chatHistories = list;
+        this.chatHistories.value = list;
       } else {
         for(var e in list){
           this.chatHistories.add(e);
         }
       }
-      notifyListeners();
+      update();
     } catch (e) {
       print(e);
     }
@@ -70,7 +70,7 @@ class ContractController extends ChangeNotifier {
 
   Future<void> addChat(StompSendDTO dto) async {
     this.chatHistories.insert(0, dto);
-    notifyListeners();
+    update();
   }
 
   Future<void> sendFcm(String title, String body, int productIdx, String uuid, int category, String productOwner, int price, String status, int receiverIdx, String token, String pic, String senderFcm, String receiverFcm, int senderIdx) async {

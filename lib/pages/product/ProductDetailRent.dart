@@ -270,15 +270,19 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                   onTap: () async {
                     final uvm = userController;
                     if(uvm.isLoggenIn.value){
-                      String uuid = await Provider.of<ProductController>(
-                          context,
-                          listen: false)
-                          .rentInit(
-                        userController.userIdx.value,
+                      String uuid = await productController.rentInit(userController.userIdx.value,
                         productController.productDetail!.receiver_idx!,
                         this.widget.productIdx,
-                        userController.accessToken.value,
-                      );
+                        userController.accessToken.value,);
+                      // await Provider.of<ProductController>(
+                      //     context,
+                      //     listen: false)
+                      //     .rentInit(
+                      //   userController.userIdx.value,
+                      //   productController.productDetail!.receiver_idx!,
+                      //   this.widget.productIdx,
+                      //   userController.accessToken.value,
+                      // );
                       print("에러체크");
                       print(uuid);
                       Navigator.push(
@@ -340,15 +344,20 @@ class _ProductDetailState extends State<ProductDetailRent> with TickerProviderSt
                   onTap: () async {
                     final uvm = userController;
                     if(uvm.isLoggenIn.value){
-                      String uuid = await Provider.of<ProductController>(
-                          context,
-                          listen: false)
-                          .rentInit(
+                      String uuid = await productController.rentInit(
                         userController.userIdx.value,
                         productController.productDetail!.receiver_idx!,
                         this.widget.productIdx,
-                        userController.accessToken.value,
-                      );
+                        userController.accessToken.value,);
+                      // await Provider.of<ProductController>(
+                      //     context,
+                      //     listen: false)
+                      //     .rentInit(
+                      //   userController.userIdx.value,
+                      //   productController.productDetail!.receiver_idx!,
+                      //   this.widget.productIdx,
+                      //   userController.accessToken.value,
+                      // );
                       print("에러체크");
                       print(uuid);
                       Navigator.push(

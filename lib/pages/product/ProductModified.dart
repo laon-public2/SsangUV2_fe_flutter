@@ -631,9 +631,9 @@ class _ProductRegState extends State<ProductModified> with SingleTickerProviderS
 
   _otherLoc(String type) {
     if (type == "lend1") {
-      return productController.firstAddress;
+      return productController.firstAddress.value;
     } else {
-      return productController.secondAddress;
+      return productController.secondAddress.value;
     }
   }
 

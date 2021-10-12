@@ -150,8 +150,8 @@ class _ProductDetailState extends State<ProductDetailWant> {
                                     ),
                                   ),
                                 ),
-                                Consumer<ProductController>(
-                                  builder: (_, _product, __) {
+                                GetBuilder<ProductController>(
+                                  builder: (_product) {
                                     return InkWell(
                                       child: Container(
                                         padding: const EdgeInsets.only(

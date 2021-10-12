@@ -5,12 +5,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/models/IOSLocaliztionsDelegate.dart';
 import 'package:share_product_v2/pages/KakaoMap.dart';
 import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
 import 'package:share_product_v2/providers/bannerController.dart';
-import 'package:share_product_v2/providers/contractProvider.dart';
+import 'package:share_product_v2/providers/contractController.dart';
 import 'package:share_product_v2/providers/fcm_model.dart';
 import 'package:share_product_v2/providers/mainProvider.dart';
 import 'package:share_product_v2/providers/mapController.dart';
@@ -50,44 +51,11 @@ class _MyAppState extends State<MyApp> {
           return Container();
         }
         if (snapshot.connectionState == ConnectionState.done) {
-          return MultiProvider(
-              providers: [
-                // ChangeNotifierProvider<MyPageProvider>(
-                //   create: (_) => MyPageProvider(),
-                // ),
-                // ChangeNotifierProvider<RegUserProvider>(
-                //   create: (_) => RegUserProvider(),
-                // ),
-                // ChangeNotifierProvider<UserController>(
-                //   create: (_) => UserController(),
-                // ),
-                // ChangeNotifierProvider<PolicyController>(
-                //   create: (_) => PolicyController(),
-                // ),
-                // ChangeNotifierProvider<ProductController>(
-                //   create: (_) => ProductController(),
-                // ),
-                // ChangeNotifierProvider<BannerProvider>(
-                //   create: (_) => BannerProvider(),
-                // ),
-                ChangeNotifierProvider<ContractController>(
-                  create: (_) => ContractController(),
-                ),
-                // ChangeNotifierProvider<MapProvider>(
-                //   create: (_) => MapProvider(),
-                // ),
-                // ChangeNotifierProvider<MainProvider>(
-                //   create: (_) => MainProvider(),
-                // ),
-                // ChangeNotifierProvider<FCMModel>(
-                //   create: (_) => FCMModel(),
-                // ),
-              ],
-              child: ScreenUtilInit(
+          return ScreenUtilInit(
                 designSize: Size(360, 680),
                 builder: () => ScrollConfiguration(
                   behavior: MyBehavior(),
-                  child: MaterialApp(
+                  child: GetMaterialApp(
                     navigatorKey: navigatorKey,
                     title: '쌩유',
                     debugShowCheckedModeBanner: false,
@@ -144,7 +112,7 @@ class _MyAppState extends State<MyApp> {
                     // },
                   ),
                 ),
-              ));
+              );
         }
         return CircularProgressIndicator();
       }

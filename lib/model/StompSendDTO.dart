@@ -10,9 +10,9 @@ class StompSendDTO {
   String? sender;
   String? content;
   String? type;
-  String? createAt;
+  String? createDate;
 
-  StompSendDTO({this.orderId, this.sender, this.content, this.type, this.createAt});
+  StompSendDTO({this.orderId, this.sender, this.content, this.type, this.createDate});
 
   // StompSendDTO(
   //     this.orderId, this.sender, this.content, this.type, this.createAt);

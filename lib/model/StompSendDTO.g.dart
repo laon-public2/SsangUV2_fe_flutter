@@ -12,7 +12,7 @@ StompSendDTO _$StompSendDTOFromJson(Map<String, dynamic> json) {
     sender: json['sender'] as String?,
     content: json['content'] as String?,
     type: json['type'] as String?,
-    createAt: json['createAt'] as String?,
+    createDate: json['createDate'] as String?,
   );
 }
 
@@ -22,5 +22,5 @@ Map<String, dynamic> _$StompSendDTOToJson(StompSendDTO instance) =>
       'sender': instance.sender,
       'content': instance.content,
       'type': instance.type,
-      'createAt': instance.createAt,
+      'createDate': instance.createDate,
     };

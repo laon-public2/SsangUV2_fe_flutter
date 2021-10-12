@@ -6,7 +6,7 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/pages/chat/CustomerMessage.dart';
-import 'package:share_product_v2/providers/contractProvider.dart';
+import 'package:share_product_v2/providers/contractController.dart';
 import 'package:share_product_v2/providers/productController.dart';
 import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/PageTransition.dart';

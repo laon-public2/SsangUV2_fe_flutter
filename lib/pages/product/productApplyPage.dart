@@ -624,9 +624,9 @@ class _ProductApplyPageState extends State<ProductApplyPage> with SingleTickerPr
 
   _otherLoc(String type) {
     if (type == "lend1") {
-      return productController.firstAddress;
+      return productController.firstAddress.value;
     } else {
-      return productController.secondAddress;
+      return productController.secondAddress.value;
     }
   }
 

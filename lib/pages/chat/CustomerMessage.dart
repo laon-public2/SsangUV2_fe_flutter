@@ -14,7 +14,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:share_product_v2/model/StompSendDTO.dart';
 import 'package:share_product_v2/pages/product/ProductDetailRent.dart';
-import 'package:share_product_v2/providers/contractProvider.dart';
+import 'package:share_product_v2/providers/contractController.dart';
 import 'package:share_product_v2/providers/productController.dart';
 import 'package:share_product_v2/providers/userController.dart';
 import 'package:share_product_v2/widgets/PageTransition.dart';
@@ -63,6 +63,7 @@ class _CustomerMessage extends State<CustomerMessage> with WidgetsBindingObserve
   int imgQuality = 100;
   var keyboardVisibilityController = KeyboardVisibilityController();
 
+  ContractController contractController = Get.put(ContractController());
 
   //스크롤 컨트롤러 애니메이션
   ScrollController bottomScrollController = ScrollController();
@@ -160,8 +161,7 @@ class _CustomerMessage extends State<CustomerMessage> with WidgetsBindingObserve
               var jsonRes = json.decode(frame.body!);
               print("frame.body : $jsonRes");
               StompSendDTO dto = StompSendDTO.fromJson(jsonRes);
-              await Provider.of<ContractController>(context, listen: false)
-                  .addChat(dto);
+              await contractController.addChat(dto);
               double _position =
                   50.0 + bottomScrollController.position.maxScrollExtent;
               bottomScrollController.animateTo(
@@ -190,6 +190,9 @@ class _CustomerMessage extends State<CustomerMessage> with WidgetsBindingObserve
   }
 
   _sendMsg(String text) {
+    print('======================== time ========================');
+    print(DateTime.now());
+    print('send msg $text');
     var user = userController;
     StompSendDTO data = StompSendDTO(
       orderId: "${this.widget.uuid}",
@@ -202,7 +205,7 @@ class _CustomerMessage extends State<CustomerMessage> with WidgetsBindingObserve
       body: json.encode(data.toJson()),
     );
     if(this.widget.senderIdx == user.userIdx.value){
-      Provider.of<ContractController>(context, listen: false).sendFcm(
+     contractController.sendFcm(
         this.widget.title,
         text,
         this.widget.productIdx,
@@ -219,7 +222,7 @@ class _CustomerMessage extends State<CustomerMessage> with WidgetsBindingObserve
         this.widget.senderIdx,
       );
     }else{
-      Provider.of<ContractController>(context, listen: false).sendFcm(
+     contractController.sendFcm(
         this.widget.title,
         text,
         this.widget.productIdx,
@@ -277,7 +280,7 @@ class _CustomerMessage extends State<CustomerMessage> with WidgetsBindingObserve
   }
 
   chatScroller() async{
-    final cvm = Provider.of<ContractController>(context, listen: false);
+    final cvm =contractController;
    if(bottomScrollController.position.pixels == bottomScrollController.position.minScrollExtent) {
      print("현재 채팅방의 스크롤이 가장 위에 위치하고 있습니다.");
      if(cvm.chatHistoriesCounter.totalCount != cvm.chatHistories.length){
@@ -401,7 +404,7 @@ class _CustomerMessage extends State<CustomerMessage> with WidgetsBindingObserve
   }
 
   Future<bool> _loadChat() async {
-    final cvm = Provider.of<ContractController>(context, listen: false);
+    final cvm =contractController;
     await cvm.getChatHistory(this.widget.uuid, this.page);
     return true;
   }
@@ -510,8 +513,8 @@ class _CustomerMessage extends State<CustomerMessage> with WidgetsBindingObserve
                                 child: Column(
                                   children: <Widget>[
                                     SizedBox(height: 80.h),
-                                    Consumer<ContractController>(
-                                      builder: (_, chat, __) {
+                                    GetBuilder<ContractController>(
+                                      builder: (chat) {
                                         return ListView.builder(
                                             shrinkWrap: true,
                                             physics: ClampingScrollPhysics(),
@@ -521,7 +524,7 @@ class _CustomerMessage extends State<CustomerMessage> with WidgetsBindingObserve
                                             itemBuilder: (context, idx) {
                                               return ChatMessage(
                                                 text: chat.chatHistories[idx].content!,
-                                                date: chat.chatHistories[idx].createAt!,
+                                                date: chat.chatHistories[idx].createDate!,
                                                 sender: chat.chatHistories[idx].sender!,
                                                 type: chat.chatHistories[idx].type!,
                                                 uuid: this.widget.uuid,
@@ -814,10 +817,7 @@ class _CustomerMessage extends State<CustomerMessage> with WidgetsBindingObserve
                                         builder: (BuildContext context) {
                                           return Loading();
                                         });
-                                    await Provider.of<ContractController>(
-                                        context,
-                                        listen: false)
-                                        .uploadImage(
+                                    await contractController.uploadImage(
                                       images,
                                       this.widget.uuid,
                                       userController.username.value,
@@ -894,8 +894,8 @@ class _CustomerMessage extends State<CustomerMessage> with WidgetsBindingObserve
                 borderRadius: BorderRadius.circular(50),
                 border: Border.all(color: Color(0xffdddddd)),
               ),
-              child: Consumer<ContractController>(
-                builder: (_, _contract, __) {
+              child: GetBuilder<ContractController>(
+                builder: (_contract) {
                   return IconButton(
                     icon: Image.asset('assets/icon/inputImg.png'),
                     iconSize: 16,

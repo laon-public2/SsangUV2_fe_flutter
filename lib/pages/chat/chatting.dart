@@ -4,7 +4,7 @@
 // import 'package:provider/provider.dart';
 // import 'package:share_product_v2/model/contract.dart';
 // import 'package:share_product_v2/model/paging.dart';
-// import 'package:share_product_v2/providers/contractProvider.dart';
+// import 'package:share_product_v2/providers/contractController.dart';
 // import 'package:share_product_v2/providers/userController.dart';
 // import 'package:share_product_v2/utils/APIUtil.dart';
 // import 'package:share_product_v2/widgets/chatItem.dart';

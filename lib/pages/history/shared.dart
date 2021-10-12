@@ -1,7 +1,7 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:provider/provider.dart';
-// import 'package:share_product_v2/providers/contractProvider.dart';
+// import 'package:share_product_v2/providers/contractController.dart';
 // import 'package:share_product_v2/utils/ConvertNumberFormat.dart';
 // import 'package:share_product_v2/widgets/customText.dart';
 //
